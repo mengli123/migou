@@ -8,7 +8,7 @@ use app\admin\model\AdminMenuModel;
 class OrderController extends AdminBaseController
 {
 	public function order_list(){
-		echo 'mengli123';
+		echo 'mengli1234';
 
 	}
 
