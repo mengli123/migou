@@ -8,8 +8,8 @@ use app\admin\model\AdminMenuModel;
 class OrderController extends AdminBaseController
 {
 	public function order_list(){
-		echo 'order_list';
-		echo 'order_list';
+		echo 'order_list123';
+
 	}
 
 }
