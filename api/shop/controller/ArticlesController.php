@@ -7,7 +7,7 @@
 // | Author: pl125 <xskjs888@163.com>
 // +----------------------------------------------------------------------
 
-namespace api\demo\controller;
+namespace api\shop\controller;
 
 use cmf\controller\RestBaseController;
 
