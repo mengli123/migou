@@ -76,6 +76,22 @@ class IndexController extends RestBaseController
             $this->error('请求失败');
         }
     }
+    /** 根据关键词或者分类名称返回列表*/
+    public function goods_list(){
+        $key = input('keyword');
+        $list = Db::name('goods_and_type')
+            ->alias('gt')
+            ->join('goods g','g.goods_id=gt.goods_id','left')
+            ->join('goods_type t','t.id=gt.type_id','right')
+            ->where('g.goods_name|t.type_name','like','%' . $key. '%')
+            ->order("gt.id DESC")
+            ->select();
+        if($list){
+            $this->success('请求成功!', $list);
+        }else{
+            $this->error('请求失败');
+        }
+    }
     public function index()
     {
         //$this->success('请求成功!', 1);
