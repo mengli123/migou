@@ -90,7 +90,7 @@ class IndexController extends RestBaseController
             echo $v['goods_id'];
             $list[$k]['price']=Db::name('goods_specs')->where('goods_id',1)->min('price');
         }
-        dump($list);
+       // dump($list);
         if($list){
             $this->success('请求成功!', $list);
         }else{
