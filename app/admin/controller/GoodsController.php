@@ -16,26 +16,16 @@ use app\admin\model\AdminMenuModel;
 
 class GoodsController extends AdminBaseController
 {
-    public function index(){
-        echo 123;
-    }
-    public function goods_list(){
-        echo 123;
-    }
-    
-    public function type_list(){
-        echo 123;
-    }
-    
+
 	
-	public function goods_lists()
+	public function goods_list()
 	{		
 		if($_REQUEST){
             $request = request();
             /**搜索条件**/
             $keyword = trim($request->param('keyword'));
             if ($keyword) {
-                 $where['g.goods_name|g.price'] =  ['like', '%' . $keyword . '%'];
+                 $where['goods_name|price'] =  ['like', '%' . $keyword . '%'];
             }
             $start=$request->param('start_time');
             $end=$request->param('end_time');
@@ -43,11 +33,11 @@ class GoodsController extends AdminBaseController
                 if ($start>=$end) {
                     $this->error("开始时间不能大于或等于结束时间");exit();
                 }
-                $where['g.time'] = array(array('gt',strtotime($start)),array('lt',strtotime($end)));
+                $where['create_time'] = array(array('gt',strtotime($start)),array('lt',strtotime($end)));
             }else if($start&&!$end){
-                $where['g.time'] = array('gt',strtotime($start));
+                $where['create_time'] = array('gt',strtotime($start));
             }else if(!$start&&$end){
-                $where['g.time'] = array('lt',strtotime($end));
+                $where['create_time'] = array('lt',strtotime($end));
             }
             if (empty($where)) {
                 $where=1;
@@ -56,12 +46,13 @@ class GoodsController extends AdminBaseController
             $where=1;
         }
         $goods = Db::name('goods')
-            ->alias("g")
-            ->join("goods_category c","c.cat_id=g.cat_id")
-            ->field("g.*,c.cat_name")
+//            ->alias("g")
+//            ->join("goods_category c","c.cat_id=g.cat_id")
+//            ->field("g.*,c.cat_name")
             ->where($where)
-            ->order("g.goods_id DESC")
+            ->order("goods_id DESC")
             ->paginate(10);
+		//dump($goods);
         $this->assign("goods",$goods);
         $goods->appends($request->param());
         $this->assign('page', $goods->render());
@@ -224,150 +215,94 @@ class GoodsController extends AdminBaseController
 		}
 	}
 
-    public function goods_attr(){
-        $goods_attr=Db::name("goods_attr")->paginate(10);
-        $this->assign("goods_attr",$goods_attr);
-        $this->assign('page', $goods_attr->render());
+	public function goods_specs(){
+        $goods_id      = $this->request->param('goods_id', 0, 'intval');
+        $result  = Db::name('goods_specs')->where('goods_id', $goods_id)->select();
+        $this->assign('goods_id', $goods_id);
+        $this->assign('result', $result);
+        $this->assign('status', ['否','是']);
         return $this->fetch();
     }
 
-    public function add_attr()
-    {
+    public function add_specs(){
+	    $goods_id = input('goods_id');
+	    $this->assign('goods_id',$goods_id);
         return $this->fetch();
     }
+    public function save_specs(){
+	    $data=input();
 
-    public function addattrPost()
-    {
         $request = request();
         //提取数据
-        $start = $request->param('start');
-        $end = $request->param('end');
-        
-        if ($start<0) {
-             $this->error('规格属性区间的开始值不能小于0');exit;
+        $goods_id = $request->param('goods_id');
+        $price = $request->param('price');
+        $pic = $request->param('pic');
+        $size  = $request->param('size');
+        $is_group_buying = $request->param('is_group_buying');
+        $all_current_count = $request->param('all_current_count');
+        $all_sale_count = $request->param('all_sale_count');
+        $group_max_count= $request->param('group_max_count');
+        $group_current_count= $request->param('group_current_count');
+        $group_price = $request->param('group_price');
+        if(strlen($size)>30){
+            $this->error('产品规格超过限制长度30');
         }
-        if (empty($start)) {
-            $this->error('请填写规格属性区间的开始值');exit;
+        if (empty($goods_id)) {
+            $this->error('商品id缺失');exit;
         }
-        if ($end<0) {
-             $this->error('规格属性区间的结束值不能小于0');exit;
+        if ($price<0) {
+             $this->error('价格不能低于0');exit;
         }
-        if (empty($end)) {
-            
-        }else{
-            if ($start>$end) {
-                $this->error('开始值不能小于结束值');exit;
-            }
+        if ($all_current_count<0) {
+            $this->error('库存不能低于0');exit;
+        }
+        if ($all_sale_count<0) {
+            $this->error('销售总量低于0');exit;
+        }
+        if (!$pic) {
+            $this->error('请上传规格图片');exit;
+        }
+        if($all_current_count<$group_max_count){
+            $this->error('最大团购量不能大于当前库存');exit;
+        }
+        if($group_max_count<0){
+            $this->error('最大团购量不能低于0');exit;
+        }
+        if ($group_price<0) {
+            $this->error('团购价格不能低于0');exit;
         }
 
-        
-
-        $list=Db::name("goods_attr")->order("id desc")->find();
-        if (!empty($list)) {
-            if ($list['end']=='') {
-                $this->error('上一个区间的结束值是无穷，所以不能添加');
-            }else{
-                if ($start<$list['end']) {
-                    $this->error('开始值不能小于上一个区间的结束值');exit;
-                }
-            }
-            
+        //判断是否存在该规格
+        $is_size = Db::name('goods_specs')->where(['size'=>$size,'goods_id'=>$goods_id])->find();
+        if($is_size){
+            $this->error('该商品已存在此规格');exit;
         }
-        
-        
+
         //封装数据
-        $data['start'] = $start;
-        $data['end'] = $end;
-       
-        if (Db::name('goods_attr')->insert($data)) {
-            $this->success('新增规格属性成功', 'goods/goods_attr');
+        $data=[];
+        $data['goods_id'] = $goods_id;
+        $data['price'] = $price;
+        $data['pic'] = $pic;
+        $data['size'] = $size;
+        $data['all_current_count'] = $all_current_count;
+        $data['all_sale_count'] = $all_sale_count;
+        $data['is_group_buying'] = $is_group_buying;
+        $data['group_max_count']=$group_max_count;
+        $data['group_current_count']=$group_current_count;
+        $data['group_price']=$group_price;
+
+        if (Db::name('goods_specs')->insert($data)) {
+            $this->success('新增商品规格成功', 'goods/goods_specs?goods_id='.$goods_id);
         }else{
-            $this->error('新增规格属性失败');
+            $this->error('新增商品规格失败');
         }
-            
+    }
+    public function edit_specs(){
+
     }
 
-    public function edit_attr(){
-        $request = request();
-        $id = $request->param('id');
-        $goods_attr = Db::name('goods_attr')->where('id',$id)->find();
-        $this->assign("goods_attr",$goods_attr);
-        return $this->fetch();
-    }
 
-    public function editattrPost()
-    {
-        $request = request();
-        //提取数据
-        $id = $request->param('id');
-        $start = $request->param('start');
-        $end = $request->param('end');
-        $data=array();
-        if ($id<0) {
-             $this->error('系统错误');exit;
-        }
-        if ($start<0) {
-             $this->error('规格属性区间的开始值不能小于0');exit;
-        }
-        if (empty($start)) {
-            $this->error('请填写规格属性区间的开始值');exit;
-        }
-        if ($end<0) {
-             $this->error('规格属性区间的结束值不能小于0');exit;
-        }
-        if (empty($end)) {
-            $check=Db::name("goods_attr")->where("end","")->find();
-            if ($check&&$check['id']!=$id) {
-              $this->error('已存在无穷的结束值，所以不能修改');exit; 
-            }
-        }else{
-            if ($start>$end) {
-                $this->error('开始值不能小于结束值');exit;
-            }
-        }
-
-        
-        //上一个
-        $list=Db::name("goods_attr")->where("id","lt",$id)->order("id desc")->find();
-
-        if (!empty($list)) {
-            if ($list['end']=='') {
-                $this->error('上一个区间的结束值是无穷，所以不能修改');
-            }else{
-                if ($start<$list['end']) {
-                    $this->error('开始值不能小于上一个区间的结束值');exit;
-                }
-            }
-        }
-        //下一个
-        $list=Db::name("goods_attr")->where("id","gt",$id)->order("id asc")->find();
-       
-        if (!empty($list)) {
-        
-            if ($end>$list['start']) {
-                $this->error('结束值不能大于下一个区间的开始值');exit;
-            }
-            
-        }
-        
-        if ($start) {
-            $data['start'] = $start;
-        }
-        if ($end) {
-            $data['end'] = $end;
-        }
-
-        if ($data) {
-            // dump($data);die;
-           Db::name('goods_attr')->where("id",$id)->update($data);
-           $this->success('修改规格属性成功', 'goods/goods_attr');
-        }
-        
-        
-            
-    }
-
-    public function attr_delete(){
+    public function specs_del(){
         $id = $this->request->param('id', 0, 'intval');
         $res=Db::name('goods_attr')->where('id',$id)->delete();
         if($res !== false){
@@ -379,14 +314,8 @@ class GoodsController extends AdminBaseController
 
 
     public function goods_category(){
-        $city=session('city');
-        $district=session('district');
-
-        $cat=Db::name("goods_category")->order('sort asc')->select();
+        $cat=Db::name("goods_type")->select();
         $cat=json_decode($cat,true);
-        foreach ($cat as $k=>$v){
-            $cat[$k]['img']=json_decode($v['img']);
-        }
         $this->assign("cat",$cat);
         return $this->fetch();
     }
@@ -401,20 +330,20 @@ class GoodsController extends AdminBaseController
         $request = request();
         //提取数据
         $cat_name = $request->param('cat_name');
-        $sort = $request->param('sort');
-        $is_show = $request->param('is_show');
+        //$sort = $request->param('sort');
+        $is_show = $request->param('status');
         $img = $request->file('img');
-        $img2 = $request->file('img2');
+        //$img2 = $request->file('img2');
 
         if ($cat_name=="") {
              $this->error('请填写分类名');exit;
         }
-       
-        if ($sort<0) {
-             $this->error('请填写排序');exit;
-        }
+//
+//        if ($sort<0) {
+//             $this->error('请填写排序');exit;
+//        }
 
-        $list=Db::name("goods_category")->where(array("cat_name"=>$cat_name))->find();
+        $list=Db::name("goods_type")->where(array("type_name"=>$cat_name))->find();
         if (!empty($list)) {
             $this->error("分类名已存在");
         }
@@ -426,25 +355,25 @@ class GoodsController extends AdminBaseController
         //头像存在
             $info=$img->move(ROOT_PATH.'public'.DS.'uploads'.DS.'img');
             $path=$info->getSavename();
-            $data['img'][]='\uploads\img'.DS.$path;
+            $data['url']='\uploads\img'.DS.$path;
         }
 
         //如果头像不存在
-        if(!$img2){
-            $this->error("请上传图片");
-        }else{
-            //头像存在
-            $info=$img2->move(ROOT_PATH.'public'.DS.'uploads'.DS.'img');
-            $path=$info->getSavename();
-            $data['img'][]='\uploads\img'.DS.$path;
-        }
-        $data['img']=json_encode($data['img']);
+//        if(!$img2){
+//            $this->error("请上传图片");
+//        }else{
+//            //头像存在
+//            $info=$img2->move(ROOT_PATH.'public'.DS.'uploads'.DS.'img');
+//            $path=$info->getSavename();
+//            $data['img'][]='\uploads\img'.DS.$path;
+//        }
+        //$data['img']=json_encode($data['img']);
         //封装数据
-        $data['cat_name'] = $cat_name;
-        $data['sort'] = $sort;
-        $data['is_show'] = $is_show;
+        $data['type_name'] = $cat_name;
+        //$data['sort'] = $sort;
+        $data['status'] = $is_show;
        
-        if (Db::name('goods_category')->insert($data)) {
+        if (Db::name('goods_type')->insert($data)) {
             $this->success('新增分类成功', 'goods/goods_category');
         }else{
             $this->error('新增分类失败');

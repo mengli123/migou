@@ -1,0 +1,71 @@
+<include file="public@header"/>
+</head>
+<body>
+<div class="wrap js-check-wrap">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="{:url('goods/goods_specs',['goods_id'=>$goods_id])}">规格列表</a></li>
+        <li><a href="{:url('goods/add_specs',['goods_id'=>$goods_id])}">添加规格页面</a></li>
+    </ul>
+    <form method="post" class="js-ajax-form margin-top-20" action="{:url('SlideItem/listOrder')}">
+
+        <table class="table table-hover table-bordered">
+            <thead>
+            <tr>
+                <th width="50">ID</th>
+                <th>规格大小</th>
+                <th>图片</th>
+                <th>价格</th>
+                <th>当前总存量</th>
+                <th>已售总量</th>
+                <th>是否参与团购</th>
+                <th>最大团购量</th>
+                <th>团购已售量</th>
+                <th>团购价格</th>
+                <th width="160">{:lang('ACTIONS')}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <foreach name="result" item="vo">
+                <tr>
+
+                    <td>{$vo.specs_id}</td>
+                    <td>{$vo.size}</td>
+                    <td>
+                        <if condition="!empty($vo['image'])">
+                            <a href="javascript:imagePreviewDialog('{:cmf_get_image_preview_url($vo.image)}');">
+                                <i class="fa fa-photo fa-fw"></i>
+                            </a>
+
+                        </if>
+                    </td>
+                    <td>{$vo.price}</td>
+                    <td>{$vo.all_current_count}</td>
+                    <td>{$vo.all_sale_count}</td>
+                    <td>{$status[$vo.is_group_buying]}</td>
+                    <td>{$vo.group_max_count}</td>
+                    <td>{$vo.group_current_count}</td>
+                    <td>{$vo.group_price}</td>
+
+
+                    <td>
+                        <a class="btn btn-xs btn-primary" href="{:url('SlideItem/edit',array('id'=>$vo['specs_id']))}">{:lang('EDIT')}</a>
+                        <a href="{:url('SlideItem/delete',array('id'=>$vo['specs_id']))}"
+                           class="btn btn-xs btn-danger js-ajax-delete">{:lang('DELETE')}</a>
+                        <if condition="empty($vo['status']) eq 1">
+                            <a href="{:url('SlideItem/cancelban',array('id'=>$vo['specs_id']))}" class="btn btn-xs btn-warning js-ajax-dialog-btn"
+                               data-msg="确定显示此幻灯片吗？">{:lang('DISPLAY')}</a>
+                            <else/>
+                            <a href="{:url('SlideItem/ban',array('id'=>$vo['specs_id']))}" class="btn btn-xs btn-warning js-ajax-dialog-btn"
+                               data-msg="确定隐藏此幻灯片吗？">{:lang('HIDE')}</a>
+                        </if>
+                    </td>
+                </tr>
+            </foreach>
+            </tbody>
+        </table>
+    </form>
+
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

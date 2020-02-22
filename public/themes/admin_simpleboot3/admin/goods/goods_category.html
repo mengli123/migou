@@ -1,0 +1,49 @@
+<include file="public@header" />
+</head>
+<body>
+	<div class="wrap js-check-wrap">
+		<ul class="nav nav-tabs">
+			<li class="active"><a href="{:url('goods/goods_category')}">分类</a></li>
+			<li><a href="{:url('goods/add_cat')}">添加分类</a></li>
+		</ul>
+       
+		<table class="table table-hover table-bordered">
+			<thead>
+				<tr>
+					<th width="30" style="text-align:center;">ID</th>
+					<th style="text-align:center;">分类名</th>
+					<th style="text-align:center;">是否显示</th>
+					<th style="text-align:center;">图片</th>
+					<th width="160" style="text-align:center;">操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				<foreach name="cat" item="vo">
+				<tr>
+					<td align="center">{$vo.id}</td>
+					<td align="center">{$vo.type_name}</td>
+					<td align="center"><if condition="$vo.status == 0">隐藏<else/>显示</if></td>
+					<td align="center"><img src="{$vo.url}" width="60" height="50"></td>
+					<td align="center">
+					<a href="{:url('goods/edit_cat')}?id={$vo.id}">
+						<button class="btn btn-primary">
+							{:lang('EDIT')}
+						</button>
+					</a>
+					<a class="js-ajax-delete" href="delete_cat/id/{$vo.id}">
+						<button class="btn btn-danger">
+							{:lang('DELETE')}
+						</button>
+					</a>
+					</td>
+				</tr>
+				</foreach>
+			</tbody>
+		</table>
+
+	</div>
+	<script src="__STATIC__/js/jquery.js"></script>
+	<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>
+

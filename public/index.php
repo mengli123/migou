@@ -22,7 +22,8 @@ define('CMF_DATA', CMF_ROOT . 'data/');
 
 // 定义应用目录
 define('APP_PATH', CMF_ROOT . 'app/');
-
+define('DS', DIRECTORY_SEPARATOR);
+defined('ROOT_PATH') or define('ROOT_PATH', dirname(realpath(APP_PATH)) . DS);
 // 定义网站入口目录
 define('WEB_ROOT', __DIR__ . '/');
 

@@ -1,0 +1,77 @@
+<include file="public@header" />
+</head>
+<body>
+	<div class="wrap">
+		<ul class="nav nav-tabs">
+			<li><a href="{:url('goods/goods_category')}">分类</a></li>
+			<li class="active"><a href="{:url('goods/add_cat')}">添加分类</a></li>
+		</ul>
+		<form method="post" class="form-horizontal js-ajax-form margin-top-20" action="{:url('goods/addcatPost')}" enctype="multipart/form-data">
+			
+			<div class="form-group">
+				<label for="input-user_email" class="col-sm-2 control-label"><span class="form-required"></span>分类名</label>
+				<div class="col-md-2 col-sm-10">
+					<input type="text" class="form-control" id="input-user_t_name" name="cat_name" placeholder="">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-user_email" class="col-sm-2 control-label"><span class="form-required">*</span>是否显示</label>
+				<div class="col-md-2 col-sm-10">
+						<select class="form-control" name="status" id="more-template-select">
+							<option value="1">是</option>
+                                <option value="0">否</option>
+
+                        </select>
+				</div>
+			</div>
+
+<!--			<div class="form-group">-->
+<!--				<label for="input-user_email" class="col-sm-2 control-label"><span class="form-required">*</span>排序</label>-->
+<!--				<div class="col-md-2 col-sm-10">-->
+<!--						<input type="text" class="form-control" id="input-user_t_name" name="sort" value="0" placeholder="">-->
+<!--				</div>-->
+<!--			</div>-->
+
+			<div class="form-group">
+				<label for="input-user_pic" class="col-sm-2 control-label">上传图标</label>
+				<div class="col-md-2 col-sm-10">
+					<input type="file" name="img" class="form-control" onchange="yuLan(this)">
+					<img id="img" width="120" height="70"><br>
+				</div>
+			</div>
+
+			
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn-primary js-ajax-submit">{:lang('ADD')}</button>
+					<button type="reset" class="btn btn-primary js-ajax-submit">{:lang('RESET')}</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<script src="__STATIC__/js/admin.js"></script>
+	<script src="__STATIC__/js/jquery-1.6.2.min.js"></script>
+	<script type="text/javascript">
+		//图片预览
+		function yuLan(img) {
+		    var file = img.files[0];
+		    window.FileReader
+		    var fr = new FileReader();
+		    fr.onloadend = function(e) {
+		        document.getElementById("img").src = e.target.result;
+		    };
+		    fr.readAsDataURL(file);
+		}
+		//图片预览
+		function yuLan2(img) {
+			var file = img.files[0];
+			window.FileReader
+			var fr = new FileReader();
+			fr.onloadend = function(e) {
+				document.getElementById("img2").src = e.target.result;
+			};
+			fr.readAsDataURL(file);
+		}
+	</script>
+</body>
+</html>
