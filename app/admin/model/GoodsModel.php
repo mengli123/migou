@@ -15,5 +15,7 @@ use think\Db;
 
 class GoodsModel extends Model
 {
-
+    public function specs(){
+        return $this->hasMany('GoodsSpecsModel','goods_id','goods_id');
+    }
 }

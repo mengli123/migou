@@ -13,6 +13,8 @@ use cmf\controller\RestBaseController;
 use think\Db;
 use think\Controller;
 use app\admin\model\GoodsAndTypeModel;
+use app\admin\model\GoodsModel;
+
 
 class IndexController extends RestBaseController
 {
@@ -76,7 +78,9 @@ class IndexController extends RestBaseController
             $this->error('请求失败');
         }
     }
-    /** 根据关键词或者分类名称返回列表*/
+    /**
+     * 根据关键词或者分类名称返回列表
+     */
     public function goods_list(){
         $key = input('keyword');
         $list = Db::name('goods_and_type')
@@ -87,12 +91,26 @@ class IndexController extends RestBaseController
             ->order("gt.id DESC")
             ->select()->all();
         foreach ($list as $k=>$v){
-            echo $v['goods_id'];
-            $list[$k]['price']=Db::name('goods_specs')->where('goods_id',1)->min('price');
+           // echo $v['goods_id'];
+            $list[$k]['price']=Db::name('goods_specs')->where('goods_id',$v['goods_id'])->min('price');
         }
        // dump($list);
         if($list){
             $this->success('请求成功!', $list);
+        }else{
+            $this->error('请求失败');
+        }
+    }
+    /**
+     商品详情查询
+     */
+    public function goods_detail(){
+        $goods_model = new GoodsModel();
+        $goods_id = input('goods_id');
+        $detail = $goods_model->where('goods_id',$goods_id)->with('specs')->find();
+        //dump($detail);
+        if($detail){
+            $this->success('请求成功!', $detail);
         }else{
             $this->error('请求失败');
         }
