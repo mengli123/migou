@@ -81,11 +81,16 @@ class IndexController extends RestBaseController
         $key = input('keyword');
         $list = Db::name('goods_and_type')
             ->alias('gt')
-            ->join('goods g','g.goods_id=gt.goods_id','left')
-            ->join('goods_type t','t.id=gt.type_id','right')
+            ->join('goods g','g.goods_id=gt.goods_id')
+            ->join('goods_type t','t.id=gt.type_id')
             ->where('g.goods_name|t.type_name','like','%' . $key. '%')
             ->order("gt.id DESC")
-            ->select();
+            ->select()->all();
+        foreach ($list as $k=>$v){
+            echo $v['goods_id'];
+            $list[$k]['price']=Db::name('goods_specs')->where('goods_id',1)->min('price');
+        }
+        dump($list);
         if($list){
             $this->success('请求成功!', $list);
         }else{
