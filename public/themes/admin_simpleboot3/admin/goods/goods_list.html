@@ -33,6 +33,7 @@
 					
 					<th style="text-align:center;"><span class="form-required">*</span>商品名</th>
 					<th style="text-align:center;">分类</th>
+					<th style="text-align:center;">缩略图</th>
 					<th style="text-align:center;">规格</th>
 					<th style="text-align:center;">供货商</th>
 					<th style="text-align:center;">产地</th>
@@ -48,6 +49,7 @@
 					<td align="center">{$vo.goods_id}</td>
 					<td align="center">{$vo.goods_name}</td>
 					<td align="center">分类</td>
+					<td align="center"><img src="/upload/{$vo.goods_pics|get_first_pic}" width="60" height="50"></td>
 					<td align="center">规格</td>
 					<td align="center">{$vo.supplier}</td>
 					<td align="center">{$vo.goods_area}</td>

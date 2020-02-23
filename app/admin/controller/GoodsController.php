@@ -52,7 +52,7 @@ class GoodsController extends AdminBaseController
             ->where($where)
             ->order("goods_id DESC")
             ->paginate(10);
-		//dump($goods);
+		//dump($goods);exit;
         $this->assign("goods",$goods);
         $goods->appends($request->param());
         $this->assign('page', $goods->render());

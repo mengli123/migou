@@ -63,6 +63,42 @@ class IndexController extends RestBaseController
             $this->error('请求失败');
         }
     }
+    /**
+    获取首页推荐商品栏目名称
+     */
+    public function get_recommend_title(){
+        $slide_id =2;
+        $list = Db::name('slide_item')->where('slide_id',$slide_id)->field('id,title,image')->select();
+        if($list){
+            $this->success('success',$list);
+        }else{
+            $this->error('请求失败');
+        }
+    }
+    /**
+    获取首页推荐商品列表
+     */
+    public function get_recommend_list(){
+        $list = Db::name('goods_and_type')
+            ->alias('gt')
+            ->join('goods g','g.goods_id=gt.goods_id')
+            //->join('goods_type t','t.id=gt.type_id')
+            ->where('g.recommend',1)
+            ->order("gt.id DESC")
+            ->select()->all();
+       // dump($list);
+
+
+        if($list){
+            foreach ($list as $k=>$v){
+            // echo $v['goods_id'];
+            $list[$k]['price']=Db::name('goods_specs')->where('goods_id',$v['goods_id'])->min('price');
+            }
+            $this->success('请求成功!', $list);
+        }else{
+            $this->error('请求失败');
+        }
+    }
     public function get_goods_list(){
         $goods_and_type =new GoodsAndTypeModel();
         $type_id=input('type_id');
@@ -90,17 +126,40 @@ class IndexController extends RestBaseController
             ->where('g.goods_name|t.type_name','like','%' . $key. '%')
             ->order("gt.id DESC")
             ->select()->all();
-        foreach ($list as $k=>$v){
-           // echo $v['goods_id'];
-            $list[$k]['price']=Db::name('goods_specs')->where('goods_id',$v['goods_id'])->min('price');
-        }
        // dump($list);
         if($list){
+            foreach ($list as $k=>$v){
+                // echo $v['goods_id'];
+                $list[$k]['price']=Db::name('goods_specs')->where('goods_id',$v['goods_id'])->min('price');
+            }
             $this->success('请求成功!', $list);
         }else{
             $this->error('请求失败');
         }
     }
+    /**
+    获取团购商品
+     */
+    public function get_group_list(){
+        $list = Db::name('goods_and_type')
+            ->alias('gt')
+            ->join('goods g','g.goods_id=gt.goods_id')
+            ->join('goods_specs s','s.goods_id=gt.goods_id')
+            ->where('s.is_group_buying',1)
+            ->order("gt.id DESC")
+            ->select()->all();
+        // dump($list);
+        if($list){
+            foreach ($list as $k=>$v){
+                // echo $v['goods_id'];
+                $list[$k]['price']=Db::name('goods_specs')->where(['goods_id'=>$v['goods_id'],'is_group_buying'=>1])->min('price');
+            }
+            $this->success('请求成功!', $list);
+        }else{
+            $this->error('请求失败');
+        }
+    }
+
     /**
      商品详情查询
      */
@@ -118,11 +177,14 @@ class IndexController extends RestBaseController
     public function index()
     {
         //$this->success('请求成功!', 1);
-        $list=1;
-        if(!$list){
-            $this->success('请求成功!', $list);
-        }else{
-            $this->error('请求失败');
-        }
+        $data=['admin/20200221/b0203fae9bb10e3a4176753abe05e0d4.jpg','admin/20200221/b0203fae9bb10e3a4176753abe05e0d4.jpg'];
+        $ins=Db::name('goods')->where('goods_id',1)->update(['goods_pics'=>json_encode($data)]);
+        dump($ins);
+//        $list=1;
+//        if(!$list){
+//            $this->success('请求成功!', $list);
+//        }else{
+//            $this->error('请求失败');
+//        }
     }
 }
