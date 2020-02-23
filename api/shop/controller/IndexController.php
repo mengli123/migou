@@ -76,29 +76,51 @@ class IndexController extends RestBaseController
         }
     }
     /**
-    获取首页推荐商品列表
+    获取首页推荐商品栏目名称对应商品
      */
     public function get_recommend_list(){
-        $list = Db::name('goods_and_type')
-            ->alias('gt')
-            ->join('goods g','g.goods_id=gt.goods_id')
-            //->join('goods_type t','t.id=gt.type_id')
-            ->where('g.recommend',1)
-            ->order("gt.id DESC")
-            ->select()->all();
-       // dump($list);
-
-
+        $goods_model = new GoodsModel();
+        $slide_id =2;
+        $list = Db::name('slide_item')->where('slide_id',$slide_id)->field('id,title,image')->select()->all();
+        foreach ($list as $k=>$v){
+           $goods =$goods_model
+                //->with('specs')
+                ->where('recommend_id',$v['id'])
+                ->limit(9)
+                ->field('goods_id,goods_pics')
+                ->select()
+                ->toArray();
+            $list[$k]['goods']=$goods;
+        }
+        //dump($list);
         if($list){
-            foreach ($list as $k=>$v){
-            // echo $v['goods_id'];
-            $list[$k]['price']=Db::name('goods_specs')->where('goods_id',$v['goods_id'])->min('price');
-            }
-            $this->success('请求成功!', $list);
+            $this->success('success',$list);
         }else{
             $this->error('请求失败');
         }
     }
+
+    /**
+    获取首页推荐商品列表
+     */
+//    public function get_recommend_list(){
+//        $list = Db::name('goods_and_type')
+//            ->alias('gt')
+//            ->join('goods g','g.goods_id=gt.goods_id')
+//            //->join('goods_type t','t.id=gt.type_id')
+//            ->where('g.recommend',1)
+//            ->order("gt.id DESC")
+//            ->select()->all();
+//        if($list){
+//            foreach ($list as $k=>$v){
+//            // echo $v['goods_id'];
+//            $list[$k]['price']=Db::name('goods_specs')->where('goods_id',$v['goods_id'])->min('price');
+//            }
+//            $this->success('请求成功!', $list);
+//        }else{
+//            $this->error('请求失败');
+//        }
+//    }
     public function get_goods_list(){
         $goods_and_type =new GoodsAndTypeModel();
         $type_id=input('type_id');

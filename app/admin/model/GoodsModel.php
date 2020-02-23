@@ -18,4 +18,7 @@ class GoodsModel extends Model
     public function specs(){
         return $this->hasMany('GoodsSpecsModel','goods_id','goods_id');
     }
+    public function price(){
+        return $this->hasMany('GoodsSpecsModel','goods_id','goods_id');
+    }
 }
