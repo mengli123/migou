@@ -90,6 +90,9 @@ class IndexController extends RestBaseController
                 ->field('goods_id,goods_pics')
                 ->select()
                 ->toArray();
+           foreach ($goods as $ke=>$va){
+               $goods[$ke]['goods_pics']=json_decode($va['goods_pics']);
+           }
             $list[$k]['goods']=$goods;
         }
         //dump($list);
