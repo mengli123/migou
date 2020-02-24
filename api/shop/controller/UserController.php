@@ -34,6 +34,30 @@ class UserController extends RestBaseController
     修改用户地址
      */
     public function add_user_address(){
-        $user_id = input('user_id');
+        //$user_id = input('user_id');
+        $user_id=1;
+        $name=input('name');
+        $mobile=input('mobile');
+        $address=input('address');
+        if (empty($name)) {
+            $this->error('请填写收件人');exit;
+        }
+        if (empty($mobile)) {
+            $this->error('请填写手机号');exit;
+        }
+        if (empty($address)) {
+            $this->error('请填写收件地址');exit;
+        }
+        $insert = Db::name('user_address')->insert([
+            'user_id'=>$user_id,
+            'name'=>$name,
+            'mobile'=>$mobile,
+            'address'=>$address
+        ]);
+        if($insert){
+            $this->success('添加成功',$insert);
+        }else{
+            $this->error('添加失败');
+        }
     }
 }
