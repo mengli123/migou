@@ -21,7 +21,8 @@ class UserController extends RestBaseController
     获取用户所有地址
      */
     public function get_user_address(){
-        $user_id = input('user_id');
+        //$user_id = input('user_id');
+        $user_id = 1;
         $address = Db::name('user_address')->where('user_id',$user_id)->select()->all();
         if($address){
             $this->success('请求成功!', $address);
