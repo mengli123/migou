@@ -31,7 +31,7 @@ class UserController extends RestBaseController
         }
     }
     /**
-    修改用户地址
+    添加用户地址
      */
     public function add_user_address(){
         //$user_id = input('user_id');
@@ -58,6 +58,37 @@ class UserController extends RestBaseController
             $this->success('添加成功',$insert);
         }else{
             $this->error('添加失败');
+        }
+    }
+    /**
+    修改用户地址
+     */
+    public function edit_user_address(){
+        $address_id =input('address_id');
+        $name=input('name');
+        $mobile=input('mobile');
+        $address=input('address');
+        if(!$address_id){
+            $this->error('缺少地址id');
+        }
+        if (empty($name)) {
+            $this->error('请填写收件人');exit;
+        }
+        if (empty($mobile)) {
+            $this->error('请填写手机号');exit;
+        }
+        if (empty($address)) {
+            $this->error('请填写收件地址');exit;
+        }
+        $insert = Db::name('user_address')->where(['id'=>$address_id])->update([
+            'name'=>$name,
+            'mobile'=>$mobile,
+            'address'=>$address
+        ]);
+        if($insert){
+            $this->success('修改成功',$insert);
+        }else{
+            $this->error('修改失败');
         }
     }
 }
