@@ -75,6 +75,7 @@ class IndexController extends RestBaseController
             $this->error('请求失败');
         }
     }
+
     /**
     获取首页推荐商品栏目名称对应商品
      */
@@ -91,7 +92,7 @@ class IndexController extends RestBaseController
                 ->select()
                 ->toArray();
            foreach ($goods as $ke=>$va){
-               $goods[$ke]['goods_pics']=json_decode($va['goods_pics']);
+               $goods[$ke]['goods_pics']=json_decode($va['goods_pics'])[0];
            }
             $list[$k]['goods']=$goods;
         }
@@ -199,6 +200,10 @@ class IndexController extends RestBaseController
             $this->error('请求失败');
         }
     }
+
+    /**
+    测试
+     */
     public function index()
     {
         //$this->success('请求成功!', 1);
