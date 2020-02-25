@@ -42,19 +42,6 @@ class IndexController extends RestBaseController
 	}
     /** 获取所有商品分类*/     
     public function get_type_list(){
-//        $res=[];
-//        try {
-//            $list=Db::name('goods_type')->where(['status'=>1])->select();
-//            // throw new \Exception("自定义错误");
-//            $res['code']=1;
-//            $res['msg']='success';
-//            $res['data']=$list;
-//
-//        } catch (\Exception $e) {
-//            $res['code']=0;
-//            $res['msg']=$e->getMessage();
-//        }
-//        return json($res);
 
         $list=Db::name('goods_type')->where(['status'=>1])->select();
         if($list){

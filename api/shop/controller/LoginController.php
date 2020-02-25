@@ -12,11 +12,46 @@ namespace api\shop\controller;
 
 
 use cmf\controller\HomeBaseController;
+use cmf\controller\RestBaseController;
 use think\Db;
 use think\Session;
 use think\Validate;
-class LoginController extends HomeBaseController
+class LoginController extends RestBaseController
 {
+    /**
+    获取手机验证码
+     */
+    public function get_phone_code(){
+        $mobile = input('mobile');
+        //手机号正则
+        if(!preg_match("/^(((13[0-9])|(14[579])|(15([0-3]|[5-9]))|(16[6])|(17[0135678])|(18[0-9])|(19[0-9]))\\d{8})$/",$mobile)){
+            $this->error('请填写正确手机号');
+        }
+        $code =rand(1000,9999);
+        session($mobile,$code);
+        $this->success('验证码发送成功',$code);
+    }
+    /**
+    手机号登录验证
+     */
+    public function do_mobile_login(){
+        $mobile = input('mobile');
+        $code = input('code');
+        if(!preg_match("/^(((13[0-9])|(14[579])|(15([0-3]|[5-9]))|(16[6])|(17[0135678])|(18[0-9])|(19[0-9]))\\d{8})$/",$mobile)){
+            $this->error('请填写正确手机号');
+        }
+        if($code!=session($mobile)){
+            $this->error('验证码不正确，请重新输入');
+        }
+        $user =Db::name('user')->where('mobile',$mobile) 
+    }
+
+    /**
+    手机号登录
+     */
+    public function mobile_login(){
+
+    }
 
     /**
      * 登录验证提交
