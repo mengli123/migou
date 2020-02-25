@@ -91,4 +91,19 @@ class UserController extends RestBaseController
             $this->error('修改失败');
         }
     }
+    /**
+    删除地址
+     */
+    public function delete_user_address(){
+        $address_id =input('address_id');
+        if(!$address_id){
+            $this->error('缺少地址id');
+        }
+        $del= Db::name('user_address')->where('id',$address_id)->delete();
+        if($del){
+            $this->success('删除成功');
+        }else{
+            $this->error('删除失败');
+        }
+    }
 }
