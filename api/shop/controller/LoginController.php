@@ -43,7 +43,9 @@ class LoginController extends RestBaseController
         if($code!=session($mobile)){
             $this->error('验证码不正确，请重新输入');
         }
-        $user =Db::name('user')->where('mobile',$mobile) 
+        $user =Db::name('user')->where('mobile',$mobile)->find();
+        unset($user['user_pass']);
+        dump($user);
     }
 
     /**
