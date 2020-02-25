@@ -36,22 +36,64 @@ class LoginController extends RestBaseController
      */
     public function do_mobile_login(){
         $mobile = input('mobile');
+        $openid= input('openid');
+        $nick_name = input('nick_name');
+        $avatar = input('avatar');
         $code = input('code');
         if(!preg_match("/^(((13[0-9])|(14[579])|(15([0-3]|[5-9]))|(16[6])|(17[0135678])|(18[0-9])|(19[0-9]))\\d{8})$/",$mobile)){
             $this->error('请填写正确手机号');
         }
+        if(!$nick_name){
+            $nick_name='咪购用户'.$mobile;
+        }
+
         if($code!=session($mobile)){
             $this->error('验证码不正确，请重新输入');
         }
-        $user =Db::name('user')->where('mobile',$mobile)->find();
-        unset($user['user_pass']);
-        dump($user);
+        $user =Db::name('user')->where(['mobile'=>$mobile])->find();
+
+        if(!$user){
+            /** 用户不存在，去注册*/
+            $insert = Db::name('user')->insertGetId(['mobile'=>$mobile,'openid'=>$openid,'user_nickname'=>$nick_name,'avatar'=>$avatar]);
+            if($insert){
+                $this->success('已注册并登录成功',['user_id'=>$insert]);
+            }
+           // echo '已注册并登录';
+        }else{
+            if($openid){
+                $update=Db::name('user')->where('mobile',$mobile)->update(['openid'=>$openid,'user_nick_name'=>$nick_name,'avatar'=>$avatar]);
+                if($update){
+                    $this->success('更新用户信息并且登录成功',['user_id'=>$user['id']]);
+                }
+            }else{
+                $this->success('登录成功',['user_id'=>$user['id']]);
+            }
+        }
+       // unset($user['user_pass']);
+
+        //dump($user);
+    }
+    /**
+    微信登录查询
+     */
+    public function wx_check_login(){
+        $openid = input('openid');
+        if(!$openid){
+            $this->error('请传入openid');
+        }
+        $user= Db::name('user')->where('openid',$openid)->find();
+        if(!$user){
+            /** 用户不存在*/
+                $this->error('用户不存在');
+            }else{
+                $this->success('用户存在');
+        }
     }
 
     /**
-    手机号登录
+    微信登录之后绑定手机号
      */
-    public function mobile_login(){
+    public function bind_mobile(){
 
     }
 
@@ -89,7 +131,7 @@ class LoginController extends RestBaseController
     /**
      * 微信登录验证提交
      */
-    public function wx_login()
+    public function wx_logins()
     {
         if ($_POST) {
             $this->origin();
