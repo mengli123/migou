@@ -72,8 +72,8 @@ class UserController extends RestBaseController
     获取用户所有地址
      */
     public function get_user_address(){
-        //$user_id = input('user_id');
-        $user_id = 1;
+        $user_id = input('user_id');
+        //$user_id = 1;
         $address = Db::name('user_address')->where('user_id',$user_id)->select()->all();
         if($address){
             $this->success('请求成功!', $address);
@@ -163,9 +163,41 @@ class UserController extends RestBaseController
     生成订单
      */
     public function create_order(){
-        $data=[[1,3],[2,3]];
-        foreach ($data as $k=>$v){
+        $data=[];
+       // $specs =input('specs_id');
+        $address_id=input('address_id');
+        $user_id= input('user_id');
+        $address_data = Db::name('user_address')->where('id',$address_id)->find();
 
+        $data['order_no']=time().mt_rand(111111,999999);
+        $data['ctime']=time();
+        $data['user_id']=$user_id;
+
+        $specs=[[1,3],[2,2]];
+        foreach ($specs as $k=>$v){
+            $goods=Db::name('goods_specs')->where('specs_id',$v[0])->find();
+            if($goods['all_current_count']<0){
+                $this->error('当前规格没有库存了');
+            }
+            $data['specs_id']=$v[0];
+            $data['goods_id']=$goods['goods_id'];
+            if($goods['is_group_buying']==1){
+                /** 团购中*/
+                if($goods['group_max_count']<$goods['group_current_count']+1){
+                    $this->error('当前规格团购数量已抢完');
+                }
+                $data['total']=$data['group_price']*$v[1];
+            }else{
+                /** 未在团购*/
+                $data['total']=$data['price']*$v[1];
+            }
+            $data['num'] = $v[1];
+            $insert = Db::name('order')->insert($data);
+        }
+        if($insert){
+            $this->success('下单成功');
+        }else{
+            $this->error('下单失败');
         }
     }
     /**
