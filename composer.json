@@ -26,7 +26,8 @@
         "topthink/think-image": "^1.0",
         "thinkcmf/cmf-app": "~5.1.0",
         "thinkcmf/cmf-install": "~5.1.0",
-        "thinkcmf/cmf-api": "~5.1.0"
+        "thinkcmf/cmf-api": "~5.1.0",
+        "alibabacloud/client": "^1.5"
     },
     "extra": {
         "think-path": "vendor/thinkphp",
