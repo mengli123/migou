@@ -129,17 +129,18 @@ class GoodsController extends AdminBaseController
         }
             
     }
-
+/** 修改商品*/
     public function edit(){
         $request = request();
         $id = $request->param('id');
         $goods = Db::name('goods')->where('goods_id',$id)->find();
-        $cat=Db::name("goods_category")->order("cat_id desc")->select();
-        $this->assign("cat",$cat);
+        $cat=Db::name("goods_type")->select();
+        $this->assign("type",$cat);
+        $this->assign("goods_id",$id);
         $this->assign("goods",$goods);
         return $this->fetch();
     }
-
+/** 保存修改商品*/
     public function editPost()
     {
         $request = request();
