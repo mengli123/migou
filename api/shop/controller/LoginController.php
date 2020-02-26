@@ -18,6 +18,10 @@ use think\Session;
 use think\Validate;
 class LoginController extends RestBaseController
 {
+    public function test(){
+        cache(16606332135,1234);
+        echo cache(16606332135);
+    }
     /**
     获取手机验证码
      */
@@ -30,7 +34,7 @@ class LoginController extends RestBaseController
         }
         $code=send_code($mobile);
         if($code){
-            session($mobile,$code);
+            cache($mobile,$code);
             $this->success('验证码发送成功',$code);
         }else{
             $this->error('验证码发送失败');
@@ -57,7 +61,7 @@ class LoginController extends RestBaseController
             $avatar='1';
         }
 
-        if($code!=session($mobile)){
+        if($code!=cache($mobile)){
             $this->error('验证码不正确，请重新输入','-1');
         }
         $user =Db::name('user')->where(['mobile'=>$mobile])->find();
