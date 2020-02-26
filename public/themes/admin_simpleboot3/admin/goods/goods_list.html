@@ -7,15 +7,15 @@
 			<li><a href="{:url('goods/add')}">添加产品</a></li>
 		</ul>
         <form class="well form-inline margin-top-20" method="post" action="{:url('goods/goods_list')}" id="form">
-            关键词:
-            <input type="text" class="form-control" name="keyword" style="width: 180px;" value="" placeholder="请输入关键词(带*符号的)">
-            &nbsp;&nbsp;
-        	时间:
-            <input type="text" class="form-control js-bootstrap-datetime" name="start_time" value="" style="width: 140px;" autocomplete="off">-
-        	<input type="text" class="form-control js-bootstrap-datetime" name="end_time" value="" style="width: 140px;" autocomplete="off"> &nbsp; &nbsp;
-            <input type="submit" class="btn btn-primary ssuo" value="搜索" />
-            
-            <a class="btn btn-danger" href="{:url('goods/goods_list')}">清空</a>
+<!--            关键词:-->
+<!--            <input type="text" class="form-control" name="keyword" style="width: 180px;" value="" placeholder="请输入关键词(带*符号的)">-->
+<!--            &nbsp;&nbsp;-->
+<!--        	时间:-->
+<!--            <input type="text" class="form-control js-bootstrap-datetime" name="start_time" value="" style="width: 140px;" autocomplete="off">- -->
+<!--        	<input type="text" class="form-control js-bootstrap-datetime" name="end_time" value="" style="width: 140px;" autocomplete="off"> &nbsp; &nbsp;-->
+<!--            <input type="submit" class="btn btn-primary ssuo" value="搜索" />-->
+<!--            -->
+<!--            <a class="btn btn-danger" href="{:url('goods/goods_list')}">清空</a>-->
             <!-- <input type="submit" class="btn btn-info daochu" value="导出" /> -->
         </form>
 		<script>
@@ -48,9 +48,9 @@
 				<tr>
 					<td align="center">{$vo.goods_id}</td>
 					<td align="center">{$vo.goods_name}</td>
-					<td align="center">分类</td>
+					<td align="center">{$vo.goods_id|get_type}</td>
 					<td align="center"><img src="/upload/{$vo.goods_pics|get_first_pic}" width="60" height="50"></td>
-					<td align="center">规格</td>
+					<td align="center">{$vo.goods_id|get_specs}</td>
 					<td align="center">{$vo.supplier}</td>
 					<td align="center">{$vo.goods_area}</td>
 

@@ -46,9 +46,10 @@ class GoodsController extends AdminBaseController
             $where=1;
         }
         $goods = Db::name('goods')
-//            ->alias("g")
-//            ->join("goods_category c","c.cat_id=g.cat_id")
-//            ->field("g.*,c.cat_name")
+            ->alias("g")
+//            ->join("goods_and_type gt","g.goods_id=gt.goods_id")
+//            ->join("goods_type t","t.goods_id=gt.goods_id")
+            //->field("g.*,c.cat_name")
             ->where($where)
             ->order("goods_id DESC")
             ->paginate(10);
@@ -61,8 +62,8 @@ class GoodsController extends AdminBaseController
 
     public function add()
     {
-        $cat=Db::name("goods_category")->order("cat_id desc")->select();
-        $this->assign("cat",$cat);
+        $cat=Db::name("goods_type")->select();
+        $this->assign("type",$cat);
         return $this->fetch();
     }
 
@@ -71,51 +72,57 @@ class GoodsController extends AdminBaseController
         $request = request();
         //提取数据
         $goods_name = $request->param('goods_name');
-        $price = $request->param('price');
-        $commission = $request->param('commission');
-        $cat_id = $request->param('cat_id');
-        $ulen = strlen($goods_name);
-        if($ulen>100){
-            $this->error('产品超过限制长度100');
+        $goods_dsc = $request->param('goods_dsc');
+        $goods_pics=$request->param('goods_pics');
+        $type_id=$request->param('type_id');
+        $supplier = $request->param('supplier');
+        $goods_area = $request->param('goods_area');
+        $status = $request->param('status');
+        $recommend_id = $request->param('recommend_id');
+
+        if(strlen($goods_name)>50){
+            $this->error('产品超过限制长度50');
         }
         if (empty($goods_name)) {
             $this->error('请填写产品名');exit;
         }
-//        if ($price<0) {
-//             $this->error('价格不能低于0');exit;
-//        }
-        if ($commission<0) {
-             $this->error('车夫提成不能低于0');exit;
+        if(strlen($goods_dsc)>200){
+            $this->error('产品详情超过限制长度200');
         }
-//        if (empty($price)) {
-//            $this->error('请填写价格');exit;
-//        }
+        if (!$goods_pics) {
+            $this->error('请至少上传一张图片');exit;
+        }
+        if (count($type_id)<1) {
+             $this->error('请至少选择一个分类');exit;
+        }
+        if (empty($supplier)) {
+            $this->error('请填写供货商');exit;
+        }
+        if (empty($goods_area)) {
+            $this->error('请填写发货地');exit;
+        }
 
-        
         //判断是否存在该用户名和手机号
         $is_name = Db::name('goods')->where('goods_name',$goods_name)->find();
         if($is_name){
             $this->error('该产品名已存在');exit;
         }
-       
         //封装数据
         $data['goods_name'] = $goods_name;
-        //$data['price'] = $price;
-        $data['price'] = 0;
-        $data['cat_id'] = $cat_id;
-        $data['time'] = time();
-        $data['commission'] = $commission;
-    
-        if (Db::name('goods')->insert($data)) {
+        $data['goods_dsc'] = $goods_dsc;
+        $data['goods_area'] = $goods_area;
+        $data['create_time'] = time();
+        $data['supplier'] = $supplier;
+        $data['status'] = $status;
+        $data['recommend_id'] = $recommend_id;
+        $data['goods_pics'] = json_encode($goods_pics);
 
-             //写入系统日志
-             $log['log_time']=time();
-             $log['user_id']=session("ADMIN_ID");//操作人ID
-             $log['name']=session("name");//操作人
-             $log['info']="管理员".session("name")."于".date("Y-m-d H:i:s")."新增了产品".$goods_name;
-             Db::name('system_log')->insert($log);
-
-
+        $goods_id = Db::name('goods')->insertGetId($data);
+        if ($goods_id) {
+             //写入商品分类表
+            foreach ($type_id as $k=>$v){
+                Db::name('goods_and_type')->insert(['goods_id'=>$goods_id,'type_id'=>$v]);
+            }
              $this->success('新增产品成功', 'goods/goods_list');
         }else{
             $this->error('新增产品失败');
@@ -209,6 +216,8 @@ class GoodsController extends AdminBaseController
 		$id = $this->request->param('id', 0, 'intval');
 		$res=Db::name('goods')->where('goods_id',$id)->delete();
 		if($res !== false){
+		    Db::name('goods_and_type')->where('goods_id',$id)->delete();
+		    Db::name('goods_specs')->where('goods_id',$id)->delete();
 			$this->success("删除成功！");
 		}else{
 			$this->error("删除失败！");
@@ -298,13 +307,16 @@ class GoodsController extends AdminBaseController
         }
     }
     public function edit_specs(){
-
+        $specs_id = input('specs_id');
+        $specs = Db::name('goods_specs')->where('id',$specs_id)->find();
+        $this->assign('specs',$specs);
+        return $this->fetch();
     }
 
 
-    public function specs_del(){
-        $id = $this->request->param('id', 0, 'intval');
-        $res=Db::name('goods_attr')->where('id',$id)->delete();
+    public function del_specs(){
+        $id = $this->request->param('specs_id', 0, 'intval');
+        $res=Db::name('goods_specs')->where('id',$id)->delete();
         if($res !== false){
             $this->success("删除成功！");
         }else{

@@ -193,10 +193,12 @@ class IndexController extends RestBaseController
      */
     public function index()
     {
+       $typs_names= get_type(30);
+       dump($typs_names);
         //$this->success('请求成功!', 1);
-        $data=['admin/20200221/b0203fae9bb10e3a4176753abe05e0d4.jpg','admin/20200221/b0203fae9bb10e3a4176753abe05e0d4.jpg'];
-        $ins=Db::name('goods')->where('goods_id',1)->update(['goods_pics'=>json_encode($data)]);
-        dump($ins);
+//        $data=['admin/20200221/b0203fae9bb10e3a4176753abe05e0d4.jpg','admin/20200221/b0203fae9bb10e3a4176753abe05e0d4.jpg'];
+//        $ins=Db::name('goods')->where('goods_id',1)->update(['goods_pics'=>json_encode($data)]);
+//        dump($ins);
 //        $list=1;
 //        if(!$list){
 //            $this->success('请求成功!', $list);

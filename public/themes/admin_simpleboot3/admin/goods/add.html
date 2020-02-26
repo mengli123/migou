@@ -1,5 +1,21 @@
 <include file="public@header" />
+<style type="text/css">
+	.pic-list li {
+		margin-bottom: 5px;
+	}
+</style>
 </head>
+<script type="text/html" id="photos-item-tpl">
+	<li id="saved-image{id}">
+		<input id="photo-{id}" type="hidden" name="goods_pics[]" value="{filepath}">
+		<input class="form-control" id="photo-{id}-name" type="text" name="photo_names[]" value="{name}"
+			   style="width: 200px;" title="图片名称">
+		<img id="photo-{id}-preview" src="{url}" style="height:36px;width: 36px;"
+			 onclick="imagePreviewDialog(this.src);">
+		<a href="javascript:uploadOneImage('图片上传','#photo-{id}');">替换</a>
+		<a href="javascript:(function(){$('#saved-image{id}').remove();})();">移除</a>
+	</li>
+</script>
 <body>
 	<div class="wrap">
 		<ul class="nav nav-tabs">
@@ -9,33 +25,74 @@
 		<form method="post" class="form-horizontal js-ajax-form margin-top-20" action="{:url('goods/addpost')}" enctype="multipart/form-data">
 			
 			<div class="form-group">
-				<label for="input-user_email" class="col-sm-2 control-label"><span class="form-required"></span>产品名</label>
+				<label for="input-user_email" class="col-sm-2 control-label"><span class="form-required"></span>商品名</label>
 				<div class="col-md-2 col-sm-10">
 					<input type="text" class="form-control" id="input-user_t_name" name="goods_name" placeholder="">
 				</div>
 			</div>
-			<!--<div class="form-group">-->
-				<!--<label for="input-user_email" class="col-sm-2 control-label"><span class="form-required"></span>价格/公斤</label>-->
-				<!--<div class="col-md-2 col-sm-10">-->
-					<!--<input type="text" class="form-control" id="input-user_t_name" name="price"  >-->
-				<!--</div>-->
-			<!--</div>-->
+
 			<div class="form-group">
-				<label for="input-user_email" class="col-sm-2 control-label"><span class="form-required"></span>车夫提成(每公斤)</label>
+				<label for="input-user_email" class="col-sm-2 control-label"><span class="form-required"></span>商品描述</label>
 				<div class="col-md-2 col-sm-10">
-					<input type="text" class="form-control" id="input-user_t_name" name="commission" >
+					<input type="text" class="form-control" id="input-user_t_name" name="goods_dsc" placeholder="">
 				</div>
 			</div>
+
+			<div class="form-group">
+
+				<label for="input-user_email" class="col-sm-2 control-label"><span class="form-required"></span>商品图片</label>
+				<div class="col-md-2 col-sm-10">
+					<ul id="photos" class="pic-list list-unstyled form-inline"></ul>
+					<a href="javascript:uploadMultiImage('图片上传','#photos','photos-item-tpl');"
+					   class="btn btn-default btn-sm">选择图片</a>
+				</div>
+			</div>
+
+
+
 			<div class="form-group">
 				<label for="input-user_email" class="col-sm-2 control-label"><span class="form-required"></span>选择分类</label>
 				<div class="col-md-2 col-sm-10">
-					<select class="form-control" name="cat_id" id="">
-						<foreach name="cat" item="vo">
-						<option value="{$vo.cat_id}">{$vo.cat_name}</option>
-						</foreach>
+					<foreach name="type" id="vo">
+					<label><input name="type_id[]" type="checkbox" value="{$vo.id}" />{$vo.type_name}</label>
+					</foreach>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-user_email" class="col-sm-2 control-label"><span class="form-required"></span>供货商</label>
+				<div class="col-md-2 col-sm-10">
+					<input type="text" class="form-control" id="input-user_t_name" name="supplier"  >
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-user_email" class="col-sm-2 control-label"><span class="form-required"></span>产地</label>
+				<div class="col-md-2 col-sm-10">
+					<input type="text" class="form-control" id="input-user_t_name" name="goods_area" >
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="input-user_email" class="col-sm-2 control-label"><span class="form-required"></span>是否上架</label>
+				<div class="col-md-2 col-sm-10">
+					<select class="form-control" name="status" id="">
+							<option value="1">上架</option>
+							<option value="0">下架</option>
 					</select>
 				</div>
 			</div>
+
+			<div class="form-group">
+				<label for="input-user_email" class="col-sm-2 control-label"><span class="form-required"></span>推荐栏目</label>
+				<div class="col-md-2 col-sm-10">
+					<select class="form-control" name="recommend_id" id="">
+						<option value="0">不推荐</option>
+						<option value="2">今日爆款</option>
+						<option value="3">今日特价</option>
+						<option value="4">店长推荐</option>
+					</select>
+				</div>
+			</div>
+
 		
 			<div class="form-group">
 				<div class="col-sm-offset-2 col-sm-10">
@@ -48,4 +105,22 @@
 	<script src="__STATIC__/js/admin.js"></script>
 	<script src="__STATIC__/js/jquery-1.6.2.min.js"></script>
 </body>
+<script>
+
+	$(function () {
+
+		editorcontent = new baidu.editor.ui.Editor();
+		editorcontent.render('content');
+		try {
+			editorcontent.sync();
+		} catch (err) {
+		}
+
+		$('.btn-cancel-thumbnail').click(function () {
+			$('#thumbnail-preview').attr('src', '__TMPL__/public/assets/images/default-thumbnail.png');
+			$('#thumbnail').val('');
+		});
+
+	});
+</script>
 </html>
