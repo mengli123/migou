@@ -22,15 +22,19 @@ class LoginController extends RestBaseController
     获取手机验证码
      */
     public function get_phone_code(){
-        send_code();exit;
         $mobile = input('mobile');
         //手机号正则
         if(!preg_match("/^(((13[0-9])|(14[579])|(15([0-3]|[5-9]))|(16[6])|(17[0135678])|(18[0-9])|(19[0-9]))\\d{8})$/",$mobile)){
             $this->error('请填写正确手机号');
         }
-        $code =rand(1000,9999);
-        session($mobile,$code);
-        $this->success('验证码发送成功',$code);
+        $code=send_code($mobile);
+        if($code){
+            session($mobile,$code);
+            $this->success('验证码发送成功',$code);
+        }else{
+            $this->error('验证码发送失败');
+        }
+
     }
     /**
     手机号登录验证
