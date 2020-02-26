@@ -51,6 +51,9 @@ class LoginController extends RestBaseController
         if(!$nick_name){
             $nick_name='咪购用户'.$mobile;
         }
+        if(!$avatar){
+            $avatar='1';
+        }
 
         if($code!=session($mobile)){
             $this->error('验证码不正确，请重新输入',['code0'=>$code,'code1'=>session($mobile)]);
