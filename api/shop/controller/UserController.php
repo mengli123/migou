@@ -54,8 +54,18 @@ class UserController extends RestBaseController
     public function mobile_login(){
 
     }
-
-    public function check_user(){
+    /**
+    获取用户信息
+     */
+    public function get_user_info(){
+        $user_id = input('user_id');
+        $user=Db::name('user')->where('id',$user_id)->find();
+        if($user){
+            unset($user['user_pass']);
+            $this->success('请求成功',$user);
+        }else{
+            $this->error('请求失败');
+        }
 
     }
     /**
