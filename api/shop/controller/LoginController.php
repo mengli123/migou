@@ -22,6 +22,7 @@ class LoginController extends RestBaseController
     获取手机验证码
      */
     public function get_phone_code(){
+        $this->origin();
         $mobile = input('mobile');
         //手机号正则
         if(!preg_match("/^(((13[0-9])|(14[579])|(15([0-3]|[5-9]))|(16[6])|(17[0135678])|(18[0-9])|(19[0-9]))\\d{8})$/",$mobile)){
@@ -40,6 +41,7 @@ class LoginController extends RestBaseController
     手机号登录验证
      */
     public function do_mobile_login(){
+        $this->origin();
         $mobile = input('mobile');
         $openid= input('openid');
         $nick_name = input('nick_name');
