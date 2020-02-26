@@ -1,5 +1,6 @@
 <include file="public@header"/>
 </head>
+<script src="__STATIC__/js/admin.js"></script>
 <body>
 <div class="wrap js-check-wrap">
     <ul class="nav nav-tabs">
@@ -31,9 +32,9 @@
                     <td>{$vo.specs_id}</td>
                     <td>{$vo.size}</td>
                     <td>
-                        <if condition="!empty($vo['image'])">
-                            <a href="javascript:imagePreviewDialog('{:cmf_get_image_preview_url($vo.image)}');">
-                                <i class="fa fa-photo fa-fw"></i>
+                        <if condition="!empty($vo['pic'])">
+                            <a href="javascript:imagePreviewDialog('{:cmf_get_image_preview_url($vo.pic)}');">
+                               <img src="/upload/{$vo.pic}">
                             </a>
 
                         </if>
@@ -66,6 +67,6 @@
     </form>
 
 </div>
-<script src="__STATIC__/js/admin.js"></script>
+
 </body>
 </html>

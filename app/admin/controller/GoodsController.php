@@ -239,8 +239,7 @@ class GoodsController extends AdminBaseController
         return $this->fetch();
     }
     public function save_specs(){
-	    $data=input();
-
+	    //$data=input();
         $request = request();
         //提取数据
         $goods_id = $request->param('goods_id');
@@ -308,9 +307,79 @@ class GoodsController extends AdminBaseController
     }
     public function edit_specs(){
         $specs_id = input('specs_id');
-        $specs = Db::name('goods_specs')->where('id',$specs_id)->find();
+        $specs = Db::name('goods_specs')->where('specs_id',$specs_id)->find();
         $this->assign('specs',$specs);
+        $this->assign('specs_id',$specs_id);
+
         return $this->fetch();
+    }
+
+    public function save_edit_specs(){
+        $request = request();
+        //提取数据
+        $goods_id = $request->param('goods_id');
+        $specs_id =$request->param('specs_id');
+        $price = $request->param('price');
+        $pic = $request->param('pic');
+        $size  = $request->param('size');
+        $is_group_buying = $request->param('is_group_buying');
+        $all_current_count = $request->param('all_current_count');
+        $all_sale_count = $request->param('all_sale_count');
+        $group_max_count= $request->param('group_max_count');
+        $group_current_count= $request->param('group_current_count');
+        $group_price = $request->param('group_price');
+        if(strlen($size)>30){
+            $this->error('产品规格超过限制长度30');
+        }
+        if (empty($specs_id)) {
+            $this->error('商品规格id缺失');exit;
+        }
+        if ($price<0) {
+            $this->error('价格不能低于0');exit;
+        }
+        if ($all_current_count<0) {
+            $this->error('库存不能低于0');exit;
+        }
+        if ($all_sale_count<0) {
+            $this->error('销售总量低于0');exit;
+        }
+        if (!$pic) {
+            $this->error('请上传规格图片');exit;
+        }
+        if($all_current_count<$group_max_count){
+            $this->error('最大团购量不能大于当前库存');exit;
+        }
+        if($group_max_count<0){
+            $this->error('最大团购量不能低于0');exit;
+        }
+        if ($group_price<0) {
+            $this->error('团购价格不能低于0');exit;
+        }
+
+        //判断是否存在该规格
+//        $is_size = Db::name('goods_specs')->where(['size'=>$size,'goods_id'=>$goods_id])->find();
+//        if($is_size){
+//            $this->error('该商品已存在此规格');exit;
+//        }
+
+        //封装数据
+        $data=[];
+        $data['specs_id'] = $specs_id;
+        $data['price'] = $price;
+        $data['pic'] = $pic;
+        $data['size'] = $size;
+        $data['all_current_count'] = $all_current_count;
+        $data['all_sale_count'] = $all_sale_count;
+        $data['is_group_buying'] = $is_group_buying;
+        $data['group_max_count']=$group_max_count;
+        $data['group_current_count']=$group_current_count;
+        $data['group_price']=$group_price;
+
+        if (Db::name('goods_specs')->where('specs_id',$specs_id)->update($data)) {
+            $this->success('修改商品规格成功', 'goods/goods_specs?goods_id='.$goods_id);
+        }else{
+            $this->error('修改商品规格失败');
+        }
     }
 
 

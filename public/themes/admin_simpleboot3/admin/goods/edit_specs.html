@@ -3,11 +3,12 @@
 <body>
 <div class="wrap js-check-wrap">
     <ul class="nav nav-tabs">
-        <li><a href="{:url('goods/goods_specs',['goods_id'=>$goods_id])}">产品规格列表</a></li>
-        <li class="active"><a href="{:url('Goods/edit_specs',['goods_id'=>$goods_id])}">修改产品规格</a></li>
+        <li><a href="{:url('goods/goods_specs',['goods_id'=>$specs.goods_id])}">产品规格列表</a></li>
+        <li class="active"><a href="{:url('Goods/edit_specs',['specs_id'=>$specs_id])}">修改产品规格</a></li>
     </ul>
     <form action="{:url('goods/save_edit_specs')}" method="post" class="form-horizontal js-ajax-form margin-top-20">
-        <input type="hidden" name="goods_id" value="{$goods_id}">
+        <input type="hidden" name="specs_id" value="{$specs_id}">
+        <input type="hidden" name="goods_id" value="{$specs.goods_id}">
         <div class="row">
             <div class="col-md-9">
                 <table class="table table-bordered">
@@ -36,7 +37,7 @@
                         <th>总销量<span class="form-required">*</span></th>
                         <td>
                             <input class="form-control" type="text" style="width:400px;" name="all_sale_count" id="all_sale_count"
-                                   required value="{$vo.all_sale_count}" placeholder="请输入总销量"/>
+                                   required value="{$specs.all_sale_count}" placeholder="请输入总销量"/>
                         </td>
                     </tr>
 
@@ -54,21 +55,21 @@
                         <th>团购限额<span class="form-required">*</span></th>
                         <td>
                             <input class="form-control" type="text" style="width:400px;" name="group_max_count" id="group_max_count"
-                                   required value="{$vo.group_max_count}" placeholder="请输入团购限额"/>
+                                   required value="{$specs.group_max_count}" placeholder="请输入团购限额"/>
                         </td>
                     </tr>
                     <tr>
                         <th>已团购量<span class="form-required">*</span></th>
                         <td>
                             <input class="form-control" type="text" style="width:400px;" name="group_current_count" id="group_current_count"
-                                   required value="{$vo.group_current_count}" placeholder="请输入已团购量"/>
+                                   required value="{$specs.group_current_count}" placeholder="请输入已团购量"/>
                         </td>
                     </tr>
                     <tr>
                         <th>团购价格<span class="form-required">*</span></th>
                         <td>
                             <input class="form-control" type="text" style="width:400px;" name="group_price" id="group_price"
-                                   required value="{$vo.group_price}" placeholder="请输入团购价格"/>
+                                   required value="{$specs.group_price}" placeholder="请输入团购价格"/>
                         </td>
                     </tr>
 
@@ -82,9 +83,9 @@
                     <tr>
                         <td>
                             <div style="text-align: center;">
-                                <input type="hidden" name="pic" id="thumb" value="">
+                                <input type="hidden" name="pic" id="thumb" value="{$specs.pic}">
                                 <a href="javascript:uploadOneImage('图片上传','#thumb');">
-                                    <img src="__TMPL__/public/assets/images/default-thumbnail.png" id="thumb-preview"
+                                    <img src="/upload/{$specs.pic|default='__TMPL__/public/assets/images/default-thumbnail.png'}" id="thumb-preview"
                                          width="135" style="cursor: hand"/>
                                 </a>
                                 <input type="button" class="btn btn-sm"
@@ -100,7 +101,7 @@
             <div class="col-sm-offset-2 col-sm-10">
 
                 <button type="submit" class="btn btn-primary js-ajax-submit">{:lang('ADD')}</button>
-                <a class="btn btn-default" href="{:url('goods/goods_specs',['goods_id'=>$goods_id])}">{:lang('BACK')}</a>
+                <a class="btn btn-default" href="{:url('goods/goods_specs',['goods_id'=>$specs.goods_id])}">{:lang('BACK')}</a>
             </div>
         </div>
     </form>
