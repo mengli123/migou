@@ -61,17 +61,17 @@ class LoginController extends RestBaseController
             /** 用户不存在，去注册*/
             $insert = Db::name('user')->insertGetId(['mobile'=>$mobile,'openid'=>$openid,'user_nickname'=>$nick_name,'avatar'=>$avatar]);
             if($insert){
-                $this->success('已注册并登录成功',['user_id'=>$insert]);
+                $this->success('已注册并登录成功',$insert);
             }
            // echo '已注册并登录';
         }else{
             if($openid){
                 $update=Db::name('user')->where('mobile',$mobile)->update(['openid'=>$openid,'user_nick_name'=>$nick_name,'avatar'=>$avatar]);
                 if($update){
-                    $this->success('更新用户信息并且登录成功',['user_id'=>$user['id']]);
+                    $this->success('更新用户信息并且登录成功',$user['id']);
                 }
             }else{
-                $this->success('登录成功',['user_id'=>$user['id']]);
+                $this->success('登录成功',$user['id']);
             }
         }
        // unset($user['user_pass']);
@@ -91,7 +91,7 @@ class LoginController extends RestBaseController
             /** 用户不存在*/
                 $this->error('用户不存在');
             }else{
-                $this->success('用户存在');
+                $this->success('用户存在',$user['id']);
         }
     }
 
