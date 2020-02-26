@@ -32,7 +32,7 @@ class LoginController extends RestBaseController
             session($mobile,$code);
             $this->success('验证码发送成功',$code);
         }else{
-            $this->error('验证码发送失败');
+            $this->error('验证码发送失败',-1);
         }
 
     }
