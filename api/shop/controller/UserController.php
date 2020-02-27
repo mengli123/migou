@@ -148,7 +148,7 @@ class UserController extends RestBaseController
     /**
     删除地址
      */
-    public function delete_user_address(){
+    public function del_user_address(){
         $address_id =input('address_id');
         if(!$address_id){
             $this->error('缺少地址id');
@@ -165,19 +165,26 @@ class UserController extends RestBaseController
      */
     public function create_order(){
         $data=[];
-       // $specs =input('specs_id');
+        $specs =input('specs_id');
         $address_id=input('address_id');
+        if(!$address_id){
+            $this->error('请选择地址');
+        }
         $user_id= input('user_id');
+        if(!$user_id){
+            $this->error('请传入用户id');
+        }
         $address_data = Db::name('user_address')->where('id',$address_id)->find();
 
         $data['order_no']=time().mt_rand(111111,999999);
         $data['ctime']=time();
         $data['user_id']=$user_id;
 
-        $specs=[[4,3],[5,2]];
+       // $specs=[[6,3],[7,2]];
         foreach ($specs as $k=>$v){
             $goods_specs=Db::name('goods_specs')->where('specs_id',$v[0])->find();
             $goods=Db::name('goods')->where('goods_id',$goods_specs['goods_id'])->find();
+            //dump($goods);
             if($goods_specs['all_current_count']<0){
                 $this->error('当前规格没有库存了');
             }
@@ -190,17 +197,21 @@ class UserController extends RestBaseController
                     $this->error('当前数量超过库存团购余量');
                 }
 
-                $data['total']=$goods_specs['group_price']*$v[1];
+                $data['total_price']=$goods_specs['group_price']*$v[1];
+                $data['price']=$goods_specs['group_price'];
             }else{
                 /** 未在团购*/
-                $data['total']=$goods_specs['price']*$v[1];
+                $data['total_price']=$goods_specs['price']*$v[1];
+                $data['price']=$goods_specs['price'];
             }
+            $data['goods_name']=$goods['goods_name'];
             $data['goods_area']=$goods['goods_area'];
             $data['supplier']=$goods['supplier'];
             $data['num'] = $v[1];
             $data['name']=$address_data['name'];
             $data['mobile']=$address_data['mobile'];
             $data['address']=$address_data['address'];
+            //dump($data);exit;
             $insert = Db::name('order')->insert($data);
         }
         if($insert){
