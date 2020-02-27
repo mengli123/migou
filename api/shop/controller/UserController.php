@@ -167,7 +167,7 @@ class UserController extends RestBaseController
         $data=[];
         $specs =input('specs_id');
        $data=['str'=>$specs];
-       return json($data);
+        $this->success('下单成功',$data);exit;
         $specs=json_decode($specs);
         $address_id=input('address_id');
         if(!$address_id){
