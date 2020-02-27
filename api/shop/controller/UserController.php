@@ -166,6 +166,7 @@ class UserController extends RestBaseController
     public function create_order(){
         $data=[];
         $specs =input('specs_id');
+        echo $specs;exit;
         $specs=json_decode($specs);
         $address_id=input('address_id');
         if(!$address_id){
