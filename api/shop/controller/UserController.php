@@ -166,7 +166,7 @@ class UserController extends RestBaseController
     public function create_order(){
         $data=[];
         $specs =input('specs_id');
-        $specs=json_decode($specs,true);
+        $specs=json_decode($specs);
         $address_id=input('address_id');
         if(!$address_id){
             $this->error('请选择地址');
@@ -229,7 +229,8 @@ class UserController extends RestBaseController
      */
     public function user_order_list(){
         $user_id= input('user_id');
-        $status = input('status');
+        //$status = input('status');
+        $status='';
         $order = Db::name('order')->where(['user_id'=>$user_id,'status'=>$status])->select();
         if($order){
             $this->success('查询成功',$order);
