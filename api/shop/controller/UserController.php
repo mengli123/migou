@@ -11,6 +11,7 @@ namespace api\shop\controller;
 
 use cmf\controller\RestBaseController;
 use think\Db;
+use think\Request;
 
 class UserController extends RestBaseController
 {
@@ -164,8 +165,10 @@ class UserController extends RestBaseController
     生成订单
      */
     public function create_order(){
+        $request = request();
         $data=[];
-        $specs =input('specs_id/a');
+        $specs =$request->param('specs_id/a');
+        
        // $this->success('下单成功',$specs);
         //$specs=json_decode($specs);
         $address_id=input('address_id');
