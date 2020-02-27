@@ -166,6 +166,7 @@ class UserController extends RestBaseController
     public function create_order(){
         $data=[];
         $specs =input('specs_id');
+        $specs=json_decode($specs,true);
         $address_id=input('address_id');
         if(!$address_id){
             $this->error('请选择地址');
@@ -227,13 +228,26 @@ class UserController extends RestBaseController
     订单列表
      */
     public function user_order_list(){
-
+        $user_id= input('user_id');
+        $status = input('status');
+        $order = Db::name('order')->where(['user_id'=>$user_id,'status'=>$status])->select();
+        if($order){
+            $this->success('查询成功',$order);
+        }else{
+            $this->error('查询失败',[]);
+        }
     }
     /**
     查看订单详情
      */
     public function user_order_detail(){
-
+        $order_id= input('order_id');
+        $order = Db::name('order')->where('order_id',$order_id)->find();
+        if($order){
+            $this->success('查询成功',$order);
+        }else{
+            $this->error('查询失败',[]);
+        }
     }
 
 
