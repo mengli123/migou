@@ -1,0 +1,79 @@
+<include file="public@header" />
+</head>
+<body>
+	<div class="wrap js-check-wrap">
+		<ul class="nav nav-tabs">
+			<li class="active"><a href="{:url('order/order_list')}">订单列表</a></li>
+<!--			<li><a href="{:url('order/add')}">添加产品</a></li>-->
+		</ul>
+        <form class="well form-inline margin-top-20" method="post" action="{:url('order/order_list')}" id="form">
+            关键词:
+            <input type="text" class="form-control" name="keyword" style="width: 180px;" value="" placeholder="请输入关键词(带*符号的)">
+            &nbsp;&nbsp;
+        	时间:
+            <input type="text" class="form-control js-bootstrap-datetime" name="start_time" value="" style="width: 140px;" autocomplete="off">-
+        	<input type="text" class="form-control js-bootstrap-datetime" name="end_time" value="" style="width: 140px;" autocomplete="off"> &nbsp; &nbsp;
+            <input type="submit" class="btn btn-primary ssuo" value="搜索" />
+
+            <a class="btn btn-danger" href="{:url('order/order_list')}">清空</a>
+             <input type="submit" class="btn btn-info daoru" value="导入" />
+             <input type="submit" class="btn btn-info daochu" value="导出" />
+        </form>
+		<script>
+            $(".ssuo").click(function(){
+                $("#form").attr("action","/admin/order/order_list");
+            })
+            $(".daochu").click(function(){
+                $("#form").attr("action","/admin/order/export");
+            })
+		</script>
+		<table class="table table-hover table-bordered">
+			<thead>
+				<tr>
+					<th width="30" style="text-align:center;">订单ID</th>
+					<th width="30" style="text-align:center;">订单编号</th>
+					<th style="text-align:center;"><span class="form-required">*</span>商品名</th>
+					<th style="text-align:center;">商品规格</th>
+					<th style="text-align:center;">供货商</th>
+					<th style="text-align:center;">产地</th>
+					<th style="text-align:center;">商品单价</th>
+					<th style="text-align:center;">商品数量</th>
+					<th style="text-align:center;">下单时间</th>
+					<th style="text-align:center;">收件人</th>
+					<th style="text-align:center;">手机号</th>
+					<th style="text-align:center;">收件地址</th>
+					<th style="text-align:center;">总价</th>
+					<th style="text-align:center;">订单状态</th>
+					<th width="160" style="text-align:center;">操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				<foreach name="list" item="vo">
+				<tr>
+					<td align="center">{$vo.order_id}</td>
+					<td align="center">{$vo.order_no}</td>
+					<td align="center">[{$vo.goods_id}]{$vo.goods_name}</td>
+					<td align="center">[{$vo.specs_id}]{$vo.goods_specs}</td>
+					<td align="center">{$vo.supplier}</td>
+					<td align="center">{$vo.goods_area}</td>
+					<td align="center">{$vo.price}</td>
+					<td align="center">{$vo.num}</td>
+					<td align="center">{$vo.ctime|date="Y-m-d H:i:s"}</td>
+					<td align="center">{$vo.name}</td>
+					<td align="center">{$vo.mobile}</td>
+					<td align="center">{$vo.address}</td>
+					<td align="center">{$vo.total_price}</td>
+					<td align="center">{$vo.status}</td>
+					<td align="center">操作</td>
+
+				</tr>
+				</foreach>
+			</tbody>
+		</table>
+		<div class="pagination">{$page}</div>
+	</div>
+	<script src="__STATIC__/js/jquery.js"></script>
+	<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>
+

@@ -74,19 +74,19 @@ class UserController extends RestBaseController
     public function get_user_address(){
         $user_id = input('user_id');
         //$user_id = 1;
-        $address = Db::name('user_address')->where('user_id',$user_id)->select()->all();
+        $address = Db::name('user_address')->where('user_id',$user_id)->order('is_default desc')->order('c_time desc')->select()->all();
         if($address){
             $this->success('请求成功!', $address);
         }else{
-            $this->error('请求失败');
+            $this->error('请求失败',[]);
         }
     }
     /**
     添加用户地址
      */
     public function add_user_address(){
-        //$user_id = input('user_id');
-        $user_id=1;
+        $user_id = input('user_id');
+        //$user_id=1;
         $name=input('name');
         $mobile=input('mobile');
         $address=input('address');
@@ -105,7 +105,8 @@ class UserController extends RestBaseController
             'name'=>$name,
             'mobile'=>$mobile,
             'address'=>$address,
-            'is_'
+            'is_default'=>$is_default,
+            'c_time'=>time()
         ]);
         if($insert){
             $this->success('添加成功',$insert);
@@ -173,25 +174,33 @@ class UserController extends RestBaseController
         $data['ctime']=time();
         $data['user_id']=$user_id;
 
-        $specs=[[1,3],[2,2]];
+        $specs=[[4,3],[5,2]];
         foreach ($specs as $k=>$v){
-            $goods=Db::name('goods_specs')->where('specs_id',$v[0])->find();
-            if($goods['all_current_count']<0){
+            $goods_specs=Db::name('goods_specs')->where('specs_id',$v[0])->find();
+            $goods=Db::name('goods')->where('goods_id',$goods_specs['goods_id'])->find();
+            if($goods_specs['all_current_count']<0){
                 $this->error('当前规格没有库存了');
             }
             $data['specs_id']=$v[0];
-            $data['goods_id']=$goods['goods_id'];
-            if($goods['is_group_buying']==1){
+            $data['goods_id']=$goods_specs['goods_id'];
+            $data['goods_specs']=$goods_specs['size'];
+            if($goods_specs['is_group_buying']==1){
                 /** 团购中*/
-                if($goods['group_max_count']<$goods['group_current_count']+1){
-                    $this->error('当前规格团购数量已抢完');
+                if($goods_specs['group_max_count']<$goods_specs['group_current_count']+1){
+                    $this->error('当前数量超过库存团购余量');
                 }
-                $data['total']=$data['group_price']*$v[1];
+
+                $data['total']=$goods_specs['group_price']*$v[1];
             }else{
                 /** 未在团购*/
-                $data['total']=$data['price']*$v[1];
+                $data['total']=$goods_specs['price']*$v[1];
             }
+            $data['goods_area']=$goods['goods_area'];
+            $data['supplier']=$goods['supplier'];
             $data['num'] = $v[1];
+            $data['name']=$address_data['name'];
+            $data['mobile']=$address_data['mobile'];
+            $data['address']=$address_data['address'];
             $insert = Db::name('order')->insert($data);
         }
         if($insert){

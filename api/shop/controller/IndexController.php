@@ -161,10 +161,9 @@ class IndexController extends RestBaseController
             ->where('s.is_group_buying',1)
             ->order("gt.id DESC")
             ->select()->all();
-        // dump($list);
+         //dump($list);
         if($list){
             foreach ($list as $k=>$v){
-                // echo $v['goods_id'];
                 $list[$k]['price']=Db::name('goods_specs')->where(['goods_id'=>$v['goods_id'],'is_group_buying'=>1])->min('price');
             }
             $this->success('请求成功!', $list);
