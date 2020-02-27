@@ -215,7 +215,7 @@ class UserController extends RestBaseController
             $insert = Db::name('order')->insert($data);
         }
         if($insert){
-            $this->success('下单成功');
+            $this->success('下单成功',$data['order_no']);
         }else{
             $this->error('下单失败');
         }
