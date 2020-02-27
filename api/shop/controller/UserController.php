@@ -174,6 +174,9 @@ class UserController extends RestBaseController
         if(!$user_id){
             $this->error('请传入用户id');
         }
+        if(!$specs){
+            $this->error('请传入商品规格和数量数组');
+        }
         $address_data = Db::name('user_address')->where('id',$address_id)->find();
 
         $data['order_no']=time().mt_rand(111111,999999);
