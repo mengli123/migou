@@ -167,9 +167,13 @@ class UserController extends RestBaseController
     public function create_order(){
         $request = request();
         $data=[];
-        $specs =$request->param('specs_id/a');
-        
-       // $this->success('下单成功',$specs);
+        $specs =$request->param('specs_id');
+        $array = explode(';',$specs);
+        $specs=[];
+        foreach ($array as $k=>$v){
+            $specs[]=explode(',',$v);
+        }
+        // $this->success('下单成功',$specs);
         //$specs=json_decode($specs);
         $address_id=input('address_id');
         if(!$address_id){
