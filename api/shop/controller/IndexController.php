@@ -179,6 +179,7 @@ class IndexController extends RestBaseController
         $goods_model = new GoodsModel();
         $goods_id = input('goods_id');
         $detail = $goods_model->where('goods_id',$goods_id)->with('specs')->find();
+        $detail['goods_pics']=json_decode($detail['goods_pics']);
         //dump($detail);
         if($detail){
             $this->success('请求成功!', $detail);

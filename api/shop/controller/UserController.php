@@ -250,12 +250,28 @@ class UserController extends RestBaseController
     查看订单详情
      */
     public function user_order_detail(){
-        $order_id= input('order_id');
-        $order = Db::name('order')->where('order_id',$order_id)->find();
+       // $order_id= input('order_id');
+        $order_no=input('order_no');
+        $order = Db::name('order')->where('order_no',$order_no)->find();
         if($order){
             $this->success('查询成功',$order);
         }else{
             $this->error('查询失败',[]);
+        }
+    }
+    /**
+    取消订单
+     */
+    public function cancel_user_order(){
+        $order_no=input('order_no');
+        if($order_no!=0){
+            $this->error('只有未支付状态订单才能取消');
+        }
+        $cancel = Db::name('order')->where('order_no',$order_no)->update(['status'=>-1]);
+        if($cancel){
+            $this->success('取消订单成功');
+        }else{
+            $this->error('取消订单失败');
         }
     }
 

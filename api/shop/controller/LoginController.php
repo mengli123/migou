@@ -98,7 +98,7 @@ class LoginController extends RestBaseController
         $user= Db::name('user')->where('openid',$openid)->find();
         if(!$user){
             /** 用户不存在*/
-                $this->error('用户不存在');
+                $this->error('用户不存在','');
             }else{
                 $this->success('用户存在',$user['id']);
         }
