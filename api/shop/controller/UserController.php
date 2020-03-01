@@ -70,6 +70,52 @@ class UserController extends RestBaseController
 
     }
     /**
+    用户购物车列表
+     */
+    public function user_car_list(){
+        $user_id =input('user_id');
+        if(!$user_id){
+            $this->error('请传入user_id');
+        }
+        $list = Db::name('goods_car')
+            ->alias('c')
+            ->join('goods g','g.goods_id=c.goods_id')
+            ->join('goods_specs s','c.specs_id=s.specs_id')
+            ->where(['user_id'=>$user_id])
+            ->order("c.id DESC")
+            ->select()->all();
+
+        if($list){
+            foreach ($list as $k=>$v){
+                // echo $v['goods_id'];
+                $list[$k]['goods_pics']=json_decode($v['goods_pics']);
+            }
+            //dump($list);
+            $this->success('请求成功!', $list);
+        }else{
+            $this->error('请求失败',[]);
+        }
+    }
+    /**
+    用户++购物车
+     */
+    public function user_car_add(){
+
+    }
+    /**
+    用户--购物车
+     */
+    public function user_car_cut(){
+
+    }
+    /**
+    用户清购物车
+     */
+    public function user_car_clear(){
+
+    }
+
+    /**
     获取用户所有地址
      */
     public function get_user_address(){

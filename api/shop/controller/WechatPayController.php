@@ -188,6 +188,23 @@ class WechatPayController extends RestBaseController {
         return $reqPar;
     }
     public function notify_url(){
-        echo 123;
+        $d = $this->xmlToArray(file_get_contents('php://input'));
+        if (empty($d)) {
+            $this->error('缺失参数');
+        }
+        if ($d['return_code'] != 'SUCCESS') {
+            $this->error($d['return_msg']);
+        }else{
+            $this->success($d['return_msg']);
+        }
+
+
+//  验证函数
+        if (empty($d['sign'])) {
+            return false;
+        }
+        $sign = $d['sign'];
+        unset($d['sign']);
+        return $sign == $this->sign($d);
     }
 }
