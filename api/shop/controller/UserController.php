@@ -168,6 +168,9 @@ class UserController extends RestBaseController
         $request = request();
         $data=[];
         $specs =$request->param('specs_id');
+        if(!$specs){
+            $this->error('请传入商品规格和数量字符串');
+        }
         $array = explode(';',$specs);
         $specs=[];
         foreach ($array as $k=>$v){
@@ -183,12 +186,10 @@ class UserController extends RestBaseController
         if(!$user_id){
             $this->error('请传入用户id');
         }
-        if(!$specs){
-            $this->error('请传入商品规格和数量数组');
-        }
+
         $address_data = Db::name('user_address')->where('id',$address_id)->find();
 
-        $data['order_no']=time().mt_rand(111111,999999);
+        $data['order_no']=date('YmdHis').mt_rand(111111,999999);
         $data['ctime']=time();
         $data['user_id']=$user_id;
 
@@ -237,8 +238,7 @@ class UserController extends RestBaseController
      */
     public function user_order_list(){
         $user_id= input('user_id');
-        //$status = input('status');
-        $status='';
+        $status = input('status');
         $order = Db::name('order')->where(['user_id'=>$user_id,'status'=>$status])->select();
         if($order){
             $this->success('查询成功',$order);
@@ -252,7 +252,7 @@ class UserController extends RestBaseController
     public function user_order_detail(){
        // $order_id= input('order_id');
         $order_no=input('order_no');
-        $order = Db::name('order')->where('order_no',$order_no)->find();
+        $order = Db::name('order')->where('order_no',$order_no)->select();
         if($order){
             $this->success('查询成功',$order);
         }else{

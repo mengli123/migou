@@ -393,6 +393,27 @@ class GoodsController extends AdminBaseController
             $this->error("删除失败！");
         }
     }
+    /**
+    积分规则
+     */
+    public function point_rule(){
+        $rule =Db::name('point_rule')->find();
+        $this->assign('rule',$rule);
+        return $this->fetch();
+    }
+    /**
+     保存积分修改规则
+    */
+    public function save_rule_change(){
+        $id=input('id');
+        $money= input('money');
+        $update= Db::name('point_rule')->where('id',$id)->update(['money'=>$money]);
+        if($update){
+        $this->success("已修改！");
+    }else{
+            $this->error("未修改！");
+        }
+    }
 
 
     public function goods_category(){

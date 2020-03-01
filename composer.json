@@ -27,7 +27,9 @@
         "thinkcmf/cmf-app": "~5.1.0",
         "thinkcmf/cmf-install": "~5.1.0",
         "thinkcmf/cmf-api": "~5.1.0",
-        "alibabacloud/client": "^1.5"
+        "alibabacloud/client": "^1.5",
+        "phpoffice/phpexcel": "^1.8",
+        "overtrue/wechat": "~4.0"
     },
     "extra": {
         "think-path": "vendor/thinkphp",

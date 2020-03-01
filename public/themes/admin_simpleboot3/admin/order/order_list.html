@@ -17,16 +17,29 @@
 
             <a class="btn btn-danger" href="{:url('order/order_list')}">清空</a>
             <a class="btn btn-info" href="read">导入</a>
+            <a class="btn btn-info" href="out_excel">导出</a>
 
-             <input type="submit" class="btn btn-info daochu" value="导出" />
+<!--             <input type="button" class="btn btn-info daochu" value="导出" />-->
         </form>
 		<script>
             $(".ssuo").click(function(){
                 $("#form").attr("action","/admin/order/order_list");
             })
-            $(".daochu").click(function(){
-                $("#form").attr("action","/admin/order/export");
-            })
+            // $(".daochu").click(function(){
+            //     $("#form").attr("action","/admin/order/export");
+            // })
+			// $( '.daochu').click( function(e){
+			// 	$.ajax({
+			// 		url: "out_excel",
+			// 		//data:{"id":id,'money':money},
+			// 		dataType: "json",
+			// 		success: function(res) {
+			// 			//layer.msg(res.msg)
+			// 			console.log(res)
+			// 		}
+			// 	});
+			// })
+
 		</script>
 		<table class="table table-hover table-bordered">
 			<thead>
@@ -76,5 +89,8 @@
 	<script src="__STATIC__/js/jquery.js"></script>
 	<script src="__STATIC__/js/admin.js"></script>
 </body>
+<script>
+
+</script>
 </html>
 

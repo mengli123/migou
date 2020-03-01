@@ -1,20 +1,22 @@
 <?php
+namespace api\shop\controller;
+//use cmf\controller\RestBaseController;
+use think\Controller;
 
+class WechatPayController{
 
-class WechatPayController {
-
-    protected $mchid;
-    protected $appid;
-    protected $appKey;
-    protected $apiKey;
+    protected $mchid='1567722331';
+    protected $appid='wxf5ebee3eedc05935';
+    protected $appKey='beb089e88f083d23389d1d4e822aaad0';
+    protected $apiKey='gkff3f44nxr4qvf7fayjkhw0aiqrxjew';
     public $data = null;
-    public function __construct($mchid, $appid, $appKey,$key)
-    {
-        $this->mchid = $mchid; //https://pay.weixin.qq.com 产品中心-开发配置-商户号
-        $this->appid = $appid; //微信支付申请对应的公众号的APPID
-        $this->appKey = $appKey; //微信支付申请对应的公众号的APP Key
-        $this->apiKey = $key;   //https://pay.weixin.qq.com 帐户设置-安全设置-API安全-API密钥-设置API密钥
-    }
+//    public function __construct($mchid, $appid, $appKey,$key)
+//    {
+//        $this->mchid = $mchid; //https://pay.weixin.qq.com 产品中心-开发配置-商户号
+//        $this->appid = $appid; //微信支付申请对应的公众号的APPID
+//        $this->appKey = $appKey; //微信支付申请对应的公众号的APP Key
+//        $this->apiKey = $key;   //  帐户设置-安全设置-API安全-API密钥-设置API密钥
+//    }
     /**
      * 统一下单
      * @param string $openid 调用【网页授权获取用户信息】接口获取到用户在该公众号下的Openid
@@ -25,13 +27,17 @@ class WechatPayController {
      * @param string $timestamp 支付时间
      * @return string
      */
-    public function createJsBizPackage($openid, $totalFee, $outTradeNo, $orderName, $notifyUrl, $timestamp)
+    public function Pay($totalFee, $outTradeNo)
     {
+        $orderName='migou';
+        $timestamp=time();
+        $notifyUrl='https://www.justmetu.top/api/shop/wechat_pay/notify_url';
         $config = array(
             'mch_id' => $this->mchid,
             'appid' => $this->appid,
             'key' => $this->apiKey,
         );
+        //dump($config);exit;
         //$orderName = iconv('GBK','UTF-8',$orderName);
         $unified = array(
             'appid' => $config['appid'],
@@ -40,14 +46,16 @@ class WechatPayController {
             'mch_id' => $config['mch_id'],
             'nonce_str' => self::createNonceStr(),
             'notify_url' => $notifyUrl,
-            'openid' => $openid,            //rade_type=JSAPI，此参数必传
             'out_trade_no' => $outTradeNo,
-            'spbill_create_ip' => '127.0.0.1',
+            'spbill_create_ip' =>  request()->ip(),
             'total_fee' => intval($totalFee * 100),       //单位 转为分
-            'trade_type' => 'JSAPI',
+            'trade_type' => 'APP',
+            'sign' =>'6d46e0eb91e3f12a959cd9d9effb42aa'
         );
-        $unified['sign'] = self::getSign($unified, $config['key']);
+
+        //$unified['sign'] = self::getSign($unified, $config['key']);
         $responseXml = self::curlPost('https://api.mch.weixin.qq.com/pay/unifiedorder', self::arrayToXml($unified));
+        dump($responseXml);exit;
         //禁止引用外部xml实体
         libxml_disable_entity_loader(true);
         $unifiedOrder = simplexml_load_string($responseXml, 'SimpleXMLElement', LIBXML_NOCDATA);
@@ -152,5 +160,7 @@ class WechatPayController {
         }
         return $reqPar;
     }
-
+    public function notify_url(){
+        echo 123;
+    }
 }

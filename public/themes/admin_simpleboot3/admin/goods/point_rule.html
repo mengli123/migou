@@ -1,0 +1,61 @@
+<include file="public@header" />
+</head>
+<body>
+	<div class="wrap js-check-wrap">
+		<ul class="nav nav-tabs">
+			<li class="active"><a href="javascript:;">积分规则</a></li>
+<!--			<li><a href="{:url('goods/add')}">添加产品</a></li>-->
+		</ul>
+
+		<table class="table table-hover table-bordered">
+			<thead>
+				<tr>
+					<th width="30" style="text-align:center;">钱数（元）</th>
+					<th width="90" style="text-align:center;">兑换积分值</th>
+<!--					<th width="160" style="text-align:center;">操作</th>-->
+				</tr>
+			</thead>
+			<tbody>
+
+				<tr>
+
+					<td align="center"><input data-id="{$rule.id}" class="change" name="money" value="{$rule.money}"/></td>
+					<td align="center">{$rule.point}</td>
+					<td align="center">
+<!--					<a href="save_point_rule/id/{$rule.id}">-->
+<!--						<button class="btn btn-primary">-->
+<!--							保存修改-->
+<!--						</button>-->
+<!--					</a>-->
+
+					</td>
+				</tr>
+
+			</tbody>
+		</table>
+
+	</div>
+	<script src="__STATIC__/js/jquery.js"></script>
+	<script src="__STATIC__/js/admin.js"></script>
+	<script src="__STATIC__/js/layer/layer.js"></script>
+</body>
+<script>
+	$( '.change').blur( function(e){
+		console.log(e)
+		var id=e.target.dataset.id
+		var money =e.target.value
+		$.ajax({
+			type: "post",
+			url: "save_rule_change",
+			data:{"id":id,'money':money},
+			dataType: "json",
+			success: function(res) {
+				layer.msg(res.msg)
+				console.log(res)
+			}
+		});
+	})
+
+</script>
+</html>
+

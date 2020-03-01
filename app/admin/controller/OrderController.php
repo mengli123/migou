@@ -43,7 +43,78 @@ class OrderController extends AdminBaseController
         return $this->fetch();
 
 	}
+/**
+导出excel表格
+ */
+	public function out_excel(){
+        $fieldinfo = Db::query('SHOW FULL COLUMNS FROM cmf_order');
+        $table= [];
+        foreach ($fieldinfo as $ka=>$va){
 
+            $table[$va['Field']]=$va['Comment'];
+        }
+        //dump($table);
+        //dump($fieldinfo);
+//        $data = array(
+//            array(NULL, 2010, 2011, 2012),
+//            array('Q1',   12,   15,   21),
+//            array('Q2',   56,   73,   86),
+//            array('Q3',   52,   61,   69),
+//            array('Q4',   30,   32,    10),
+//        );
+//        $cn_name = [
+//            ''
+//        ]
+        $data = Db::name('order')->select()->all();
+       $v = array_keys($data[0]);
+       foreach ($v as $key=>$val){
+           $v[$key]=$table[$val];
+       }
+
+        $data = array_merge([$v],$data);
+        //dump($data);exit;
+        $filename =date('YmdHis');
+        $this->create_xls($data,$filename);
+    }
+
+
+
+    /**
+     * 数组存入xls格式的excel文件
+
+     */
+    function create_xls($data,$filename='simple.xls'){
+        ini_set('max_execution_time', '0');
+        //Vendor('PHPExcel.PHPExcel');
+        $filename=str_replace('.xls', '', $filename).'.xls';
+        $phpexcel = new \PHPExcel();
+        $phpexcel->getProperties()
+            ->setCreator("Maarten Balliauw")
+            ->setLastModifiedBy("Maarten Balliauw")
+            ->setTitle("Office 2007 XLSX Test Document")
+            ->setSubject("Office 2007 XLSX Test Document")
+            ->setDescription("Test document for Office 2007 XLSX, generated using PHP classes.")
+            ->setKeywords("office 2007 openxml php")
+            ->setCategory("Test result file");
+        $phpexcel->getActiveSheet()->fromArray($data);
+        $phpexcel->getActiveSheet()->setTitle('Sheet1');
+        $phpexcel->setActiveSheetIndex(0);
+        header('Content-Type: application/vnd.ms-excel');
+        header("Content-Disposition: attachment;filename=$filename");
+        header('Cache-Control: max-age=0');
+        header('Cache-Control: max-age=1');
+        header ('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+        header ('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'); // always modified
+        header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+        header ('Pragma: public'); // HTTP/1.0
+        $objwriter = \PHPExcel_IOFactory::createWriter($phpexcel, 'Excel5');
+        $objwriter->save('php://output');
+        exit;
+    }
+
+	/**
+	读取excel文件
+     */
     public function read(){
         header("Content-Type: text/html;charset=utf-8");
         if(request()->file("file")){
@@ -52,9 +123,10 @@ class OrderController extends AdminBaseController
             if($info){
                 $path = "./uploads/excel/".$info->getSaveName();
                 $data=$this->import_excel($path);
-                $res=$this->save_data($data);
+               // $res=$this->save_data($data);
                 if($data){
-                    return json(['state'=>1,'data'=>$res]);
+                    //return json(['state'=>1,'data'=>$res]);
+                    return json(['state'=>1,'data'=>$data]);
 
                 }else{
                     return json(['state'=>0,'msg'=>'处理错误']);
