@@ -119,7 +119,7 @@ class UserController extends RestBaseController
         $sel = Db::name('goods_car')->where(['user_id'=>$user_id,'specs_id'=>$specs_id,'goods_id'=>$goods_id])->select()->all();
         if(count($sel)<1){
             //购物车没有，新建
-            echo 'no';
+            //echo 'no';
             $add=Db::name('goods_car')->insert(['user_id'=>$user_id,'specs_id'=>$specs_id,'goods_id'=>$goods_id,'num'=>1]);
         }else{
             $add=Db::name('goods_car')->where(['user_id'=>$user_id,'specs_id'=>$specs_id,'goods_id'=>$goods_id])->setInc('num',$num);
@@ -135,13 +135,50 @@ class UserController extends RestBaseController
     用户--购物车
      */
     public function user_car_cut(){
-
+        $user_id=input('user_id');
+        $specs_id =input('specs_id');
+        $goods_id = input('goods_id');
+        $num=input('num');
+        if(!$user_id){
+            $this->error('请传入用户id');
+        }
+        if(!$specs_id){
+            $this->error('请传入规格id');
+        }
+        if(!$goods_id){
+            $this->error('请传入商品id');
+        }
+        if(!$user_id){
+            $this->error('请传入商品数量');
+        }
+        $now_num = Db::name('goods_car')->where(['user_id'=>$user_id,'specs_id'=>$specs_id,'goods_id'=>$goods_id])->value('num');
+        if($now_num<=$num){
+            //echo 'no';
+            //$this->error('最少保留1件');
+            $cut=Db::name('goods_car')->where(['user_id'=>$user_id,'specs_id'=>$specs_id,'goods_id'=>$goods_id])->delete();
+        }else{
+            $cut=Db::name('goods_car')->where(['user_id'=>$user_id,'specs_id'=>$specs_id,'goods_id'=>$goods_id])->setDec('num',$num);
+        }
+        if($cut){
+            $this->success('减掉商品成功');
+        }else{
+            $this->error('减掉商品失败');
+        }
     }
     /**
     用户清购物车
      */
     public function user_car_clear(){
-
+        $user_id=input('user_id');
+        if(!$user_id){
+            $this->error('请传入用户id');
+        }
+        $clear = Db::name('goods_car')->where('user_id',$user_id)->delete();
+        if($clear){
+            $this->success('清购物车成功');
+        }else{
+            $this->error('清购物车失败');
+        }
     }
 
     /**
