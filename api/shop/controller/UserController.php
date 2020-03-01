@@ -100,6 +100,35 @@ class UserController extends RestBaseController
     用户++购物车
      */
     public function user_car_add(){
+        $user_id=input('user_id');
+        $specs_id =input('specs_id');
+        $goods_id = input('goods_id');
+        $num=input('num');
+        if(!$user_id){
+            $this->error('请传入用户id');
+        }
+        if(!$specs_id){
+            $this->error('请传入规格id');
+        }
+        if(!$goods_id){
+            $this->error('请传入商品id');
+        }
+        if(!$user_id){
+            $this->error('请传入商品数量');
+        }
+        $sel = Db::name('goods_car')->where(['user_id'=>$user_id,'specs_id'=>$specs_id,'goods_id'=>$goods_id])->select()->all();
+        if(count($sel)<1){
+            //购物车没有，新建
+            echo 'no';
+            $add=Db::name('goods_car')->insert(['user_id'=>$user_id,'specs_id'=>$specs_id,'goods_id'=>$goods_id,'num'=>1]);
+        }else{
+            $add=Db::name('goods_car')->where(['user_id'=>$user_id,'specs_id'=>$specs_id,'goods_id'=>$goods_id])->setInc('num',$num);
+        }
+        if($add){
+            $this->success('加入购物车成功');
+        }else{
+            $this->error('添加购物车失败');
+        }
 
     }
     /**
@@ -298,7 +327,7 @@ class UserController extends RestBaseController
     public function user_order_detail(){
        // $order_id= input('order_id');
         $order_no=input('order_no');
-        $order = Db::name('order')->where('order_no',$order_no)->select();
+        $order = Db::name('order')->where('order_no',$order_no)->select()->all();
         if($order){
             $this->success('查询成功',$order);
         }else{
