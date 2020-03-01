@@ -73,28 +73,37 @@ class WechatPayController extends RestBaseController {
         //dump($responseXml);exit;
         //禁止引用外部xml实体
         libxml_disable_entity_loader(true);
-        $unifiedOrder = simplexml_load_string($responseXml, 'SimpleXMLElement', LIBXML_NOCDATA);
+       // $unifiedOrder = simplexml_load_string($responseXml, 'SimpleXMLElement', LIBXML_NOCDATA);
+
+        $unifiedOrder=$this->xmlToArray($responseXml);
+        //dump($unifiedOrder);
+
+       // echo $unifiedOrder->return_code;
         if ($unifiedOrder === false) {
             die('parse xml error');
         }
-        if ($unifiedOrder->return_code != 'SUCCESS') {
+        if ($unifiedOrder['return_code'] != 'SUCCESS') {
             die($unifiedOrder->return_msg);
         }
-        if ($unifiedOrder->result_code != 'SUCCESS') {
+        if ($unifiedOrder['result_code'] != 'SUCCESS') {
             die($unifiedOrder->err_code);
         }
+
         $arr = array(
             "appId" => $config['appid'],
             "timeStamp" => "$timestamp",        //这里是字符串的时间戳，不是int，所以需加引号
             "nonceStr" => self::createNonceStr(),
             //"package" => "prepay_id=" . $unifiedOrder->prepay_id,
             "package" => "Sign=WXPay",
-            "prepayid"=>$unifiedOrder->prepay_id,
+            "prepayid"=>$unifiedOrder['prepay_id'],
             "partnerid"=>$config['mch_id'],
             "sign" => $sign,
         );
        // $arr['paySign'] = self::getSign($arr, $config['key']);
         return json($arr);
+    }
+    public function xmlToArray($xml){
+        return json_decode(json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA)), true);
     }
     public static function curlGet($url = '', $options = array())
     {
