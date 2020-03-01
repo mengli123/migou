@@ -1,14 +1,15 @@
 <?php
 namespace api\shop\controller;
 //use cmf\controller\RestBaseController;
+use cmf\controller\RestBaseController;
 use think\Controller;
 
-class WechatPayController{
+class WechatPayController extends RestBaseController {
 
     protected $mchid='1567722331';
     protected $appid='wxf5ebee3eedc05935';
     protected $appKey='beb089e88f083d23389d1d4e822aaad0';
-    protected $apiKey='gkff3f44nxr4qvf7fayjkhw0aiqrxjew';
+    protected $apiKey='qwer2020qwer2020qwer2020qwer2020';
     public $data = null;
 //    public function __construct($mchid, $appid, $appKey,$key)
 //    {
@@ -50,14 +51,26 @@ class WechatPayController{
             'spbill_create_ip' =>  request()->ip(),
             'total_fee' => intval($totalFee * 100),       //单位 转为分
             'trade_type' => 'APP',
-            'sign' =>'6d46e0eb91e3f12a959cd9d9effb42aa'
+            //'sign' =>'6d46e0eb91e3f12a959cd9d9effb42aa'
         );
-
-        dump($unified);
+        ksort($unified);
+        $a = array();
+        foreach ($unified as $k => $v) {
+            if ((string) $v === '') {
+                continue;
+            }
+            $a[] = "{$k}={$v}";
+        }
+        $a = implode('&', $a);
+        $sign=  strtoupper(md5($a.'&key='.$config['key']));
+        $unified['sign'] =$sign;
+        //$unified['sign'] = hash_hmac('sha256', $a,$config['key']);
+        //dump($unified);
 
         //$unified['sign'] = self::getSign($unified, $config['key']);
+       // dump($unified);exit;
         $responseXml = self::curlPost('https://api.mch.weixin.qq.com/pay/unifiedorder', self::arrayToXml($unified));
-        dump($responseXml);exit;
+        //dump($responseXml);exit;
         //禁止引用外部xml实体
         libxml_disable_entity_loader(true);
         $unifiedOrder = simplexml_load_string($responseXml, 'SimpleXMLElement', LIBXML_NOCDATA);
@@ -74,11 +87,14 @@ class WechatPayController{
             "appId" => $config['appid'],
             "timeStamp" => "$timestamp",        //这里是字符串的时间戳，不是int，所以需加引号
             "nonceStr" => self::createNonceStr(),
-            "package" => "prepay_id=" . $unifiedOrder->prepay_id,
-            "signType" => 'MD5',
+            //"package" => "prepay_id=" . $unifiedOrder->prepay_id,
+            "package" => "Sign=WXPay",
+            "prepayid"=>$unifiedOrder->prepay_id,
+            "partnerid"=>$config['mch_id'],
+            "sign" => $sign,
         );
-        $arr['paySign'] = self::getSign($arr, $config['key']);
-        return $arr;
+       // $arr['paySign'] = self::getSign($arr, $config['key']);
+        return json($arr);
     }
     public static function curlGet($url = '', $options = array())
     {
