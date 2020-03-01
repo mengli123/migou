@@ -53,6 +53,8 @@ class WechatPayController{
             'sign' =>'6d46e0eb91e3f12a959cd9d9effb42aa'
         );
 
+        dump($unified);
+
         //$unified['sign'] = self::getSign($unified, $config['key']);
         $responseXml = self::curlPost('https://api.mch.weixin.qq.com/pay/unifiedorder', self::arrayToXml($unified));
         dump($responseXml);exit;
