@@ -73,7 +73,7 @@ class WechatPayController extends RestBaseController {
         //$unified['sign'] = self::getSign($unified, $config['key']);
        // dump($unified);exit;
         $xml=self::arrayToXml($unified);
-        echo $xml;
+        //echo $xml;
         $responseXml = self::curlPost('https://api.mch.weixin.qq.com/pay/unifiedorder', self::arrayToXml($unified));
         //dump($responseXml);exit;
         //禁止引用外部xml实体
