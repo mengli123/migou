@@ -72,6 +72,8 @@ class WechatPayController extends RestBaseController {
 
         //$unified['sign'] = self::getSign($unified, $config['key']);
        // dump($unified);exit;
+        $xml=self::arrayToXml($unified);
+        echo $xml;
         $responseXml = self::curlPost('https://api.mch.weixin.qq.com/pay/unifiedorder', self::arrayToXml($unified));
         //dump($responseXml);exit;
         //禁止引用外部xml实体
@@ -100,9 +102,19 @@ class WechatPayController extends RestBaseController {
             "package" => "Sign=WXPay",
             "prepayid"=>$unifiedOrder['prepay_id'],
             "partnerid"=>$config['mch_id'],
-            "sign" => $sign,
+           // "sign" => $sign,
         );
-       // $arr['paySign'] = self::getSign($arr, $config['key']);
+        ksort( $arr);
+        $a = array();
+        foreach ( $arr as $k => $v) {
+            if ((string) $v === '') {
+                continue;
+            }
+            $a[] = "{$k}={$v}";
+        }
+        $a = implode('&', $a);
+        $sign=  strtoupper(md5($a.'&key='.$config['key']));
+        $arr['sign'] = $sign;
         return json($arr);
     }
     public function xmlToArray($xml){
