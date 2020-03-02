@@ -84,12 +84,12 @@ layui.use('upload', function(){
       //如果上传失败
       layer.close(load);
       if(res.state == 1){
-        layer.msg("上传成功，请查看下方数据",{icon:1});
+        layer.msg(res.msg,{icon:1});
         //$(".npm").text(JSON.stringify(res.data));
-        $msg='插入MySQL起止ID：'+res.data[0]+'--'+res.data[1]
-        $(".npm").text($msg)
+        //$msg='插入MySQL起止ID：'+res.data[0]+'--'+res.data[1]
+       // $(".npm").text($msg)
         }else{
-            layer.alert("抱歉，数据处理失败！",{icon:2});
+            layer.alert(res.msg,{icon:2});
         }
       //上传成功
     }

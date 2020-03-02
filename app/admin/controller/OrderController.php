@@ -1,6 +1,7 @@
 <?php
 namespace app\admin\controller;
 
+use app\admin\model\OrderModel;
 use cmf\controller\AdminBaseController;
 use think\Db;
 use app\admin\model\AdminMenuModel;
@@ -12,6 +13,11 @@ class OrderController extends AdminBaseController
             $request = request();
             /**搜索条件**/
             $keyword = trim($request->param('keyword'));
+            $status= $request->param('status');
+            if($status){
+             $where_word['status']=$status;
+             $this->assign('status',$status);
+            }
             if ($keyword) {
                 $where_word['goods_name|price|name'] =  ['like', '%' . $keyword . '%'];
                 $this->assign('keyword',$keyword);
@@ -47,6 +53,7 @@ class OrderController extends AdminBaseController
 		$list = Db::name('order')
             ->where($where_word)
             ->where($where)
+            ->order('order_id desc')
             ->paginate(10);
         //dump($goods);exit;
         $status= [
@@ -64,6 +71,72 @@ class OrderController extends AdminBaseController
         return $this->fetch();
 
 	}
+	/**
+	编辑订单发货
+     */
+	public function edit_order(){
+	    $order_id=input('order_id');
+	    $order =Db::name('order')->where('order_id',$order_id)->find();
+	    $this->assign('order',$order);
+	    $this->assign('order_id',$order_id);
+        return $this->fetch();
+    }
+    /**
+    保存编辑物流信息
+     */
+    public function save_edit_order(){
+        $request = request();
+        $data=[];
+        //提取数据
+        $id = $request->param('order_id');
+        if (empty($id)) {
+            $this->error('请传入订单错误');
+        }
+        $express_no = $request->param('express_no');
+        $express_type = $request->param('express_type');
+        $status = $request->param('status');
+
+        if (empty($express_no)) {
+            $this->error('请填写物流单号');exit;
+        }
+        if (empty($express_type)) {
+            $this->error('请填写物流快递名称');exit;
+        }
+        $data['express_no']=$express_no;
+        $data['express_type']=$express_type;
+        $data['status']=$status;
+        $save= Db::name('order')->where("order_id",$id)->update($data);
+        if ($save) {
+            $this->success('编辑物流信息成功', 'order/order_list');
+        }else{
+            $this->error('暂无修改', 'order/order_list');
+        }
+
+    }
+    /**
+    删除订单
+     */
+    public function del_order(){
+        $order_id = input('order_id');
+        $del= Db::name('order')->where('order_id',$order_id)->delete();
+        if($del){
+            $this->success('删除成功', 'order/order_list');
+        }else{
+            $this->error('删除失败', 'order/order_list');
+        }
+    }
+
+	public function test(){
+	    $a=['a','b','c'];
+	    $b=[[1,1,1],[2,2,2],[3,3,3]];
+	    $c=[];
+	    foreach ($b as $k=>$v){
+            $c[]=array_combine($a,$v);
+        }
+	    dump($c);
+
+
+    }
 /**
 导出excel表格
  */
@@ -129,11 +202,12 @@ class OrderController extends AdminBaseController
         }
        // dump($data);exit;
        $v = array_keys($data[0]);
+        $q=$v;
        foreach ($v as $key=>$val){
            $v[$key]=$table[$val];
        }
 
-        $data = array_merge([$v],$data);
+        $data = array_merge([$q],[$v],$data);
         //dump($data);exit;
         $filename =date('YmdHis');
         $this->create_xls($data,$filename);
@@ -185,11 +259,30 @@ class OrderController extends AdminBaseController
             if($info){
                 $path = "./uploads/excel/".$info->getSaveName();
                 $data=$this->import_excel($path);
+                //dump($data);exit;
                // $res=$this->save_data($data);
                 if($data){
                     //return json(['state'=>1,'data'=>$res]);
                     //return json(['state'=>1,'data'=>$data]);
-                    dump($data);
+                   // dump($data);
+                    //$order = new OrderModel();
+                    $a=$data[1];
+                    array_pop($a);
+                    unset($data[1]);
+                    unset($data[2]);
+                    $c=[];
+                    $num=0;
+                    foreach ($data as $k=>$v){
+                        array_pop($v);
+                        $c=array_combine($a,$v);
+                        //dump($c);
+                        $save = Db::name('order')->update($c);
+                        if($save==1){
+                            $num++;
+                        }
+                    }
+
+                    return json(['state'=>1,'msg'=>'更新了'.$num.'条订单数据']);
 
                 }else{
                     return json(['state'=>0,'msg'=>'处理错误']);

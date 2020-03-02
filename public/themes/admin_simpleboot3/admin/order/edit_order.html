@@ -1,0 +1,84 @@
+<include file="public@header" />
+</head>
+<body>
+	<div class="wrap">
+		<ul class="nav nav-tabs">
+			<li><a href="{:url('order/order_list')}">订单列表</a></li>
+			<li class="active"><a href="javascript:;">编辑物流信息并发</a></li>
+		</ul>
+		<form method="post" class="form-horizontal js-ajax-form margin-top-20" action="{:url('order/save_edit_order')}" enctype="multipart/form-data">
+			<input type="hidden" name="order_id" value="{$order_id}">
+			
+			<div class="form-group">
+				<label for="input-user_email" class="col-sm-2 control-label"><span class="form-required"></span>物流单号</label>
+				<div class="col-md-2 col-sm-10">
+					<input type="text" class="form-control" id="input-user_t_name" value="{$order.express_no}" name="express_no" placeholder="">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-user_email" class="col-sm-2 control-label"><span class="form-required"></span>快递名称</label>
+				<div class="col-md-2 col-sm-10">
+					<input type="text" class="form-control" id="input-user_t_name"  value="{$order.express_type}" name="express_type" placeholder="">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-user_email" class="col-sm-2 control-label"><span class="form-required">*</span>是否发货</label>
+				<div class="col-md-2 col-sm-10">
+						<select class="form-control" name="status" id="more-template-select">
+							<option value="2">是</option>
+                                <option value="1">否</option>
+
+                        </select>
+				</div>
+			</div>
+
+<!--			<div class="form-group">-->
+<!--				<label for="input-user_email" class="col-sm-2 control-label"><span class="form-required">*</span>排序</label>-->
+<!--				<div class="col-md-2 col-sm-10">-->
+<!--						<input type="text" class="form-control" id="input-user_t_name" name="sort" value="0" placeholder="">-->
+<!--				</div>-->
+<!--			</div>-->
+
+<!--			<div class="form-group">-->
+<!--				<label for="input-user_pic" class="col-sm-2 control-label">上传图标</label>-->
+<!--				<div class="col-md-2 col-sm-10">-->
+<!--					<input type="file" name="img" class="form-control" onchange="yuLan(this)">-->
+<!--					<img id="img" width="120" height="70"><br>-->
+<!--				</div>-->
+<!--			</div>-->
+
+			
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn-primary js-ajax-submit">保存</button>
+					<button type="reset" class="btn btn-primary js-ajax-submit">{:lang('RESET')}</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<script src="__STATIC__/js/admin.js"></script>
+	<script src="__STATIC__/js/jquery-1.6.2.min.js"></script>
+	<script type="text/javascript">
+		//图片预览
+		function yuLan(img) {
+		    var file = img.files[0];
+		    window.FileReader
+		    var fr = new FileReader();
+		    fr.onloadend = function(e) {
+		        document.getElementById("img").src = e.target.result;
+		    };
+		    fr.readAsDataURL(file);
+		}
+		//图片预览
+		function yuLan2(img) {
+			var file = img.files[0];
+			window.FileReader
+			var fr = new FileReader();
+			fr.onloadend = function(e) {
+				document.getElementById("img2").src = e.target.result;
+			};
+			fr.readAsDataURL(file);
+		}
+	</script>
+</body>
+</html>

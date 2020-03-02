@@ -13,7 +13,19 @@
         	时间:
             <input type="text" class="form-control js-bootstrap-datetime" name="start_time" value="{$start|default=''}" style="width: 140px;" autocomplete="off">-
         	<input type="text" class="form-control js-bootstrap-datetime" name="end_time" value="{$end|default=''}" style="width: 140px;" autocomplete="off"> &nbsp; &nbsp;
-            <input type="submit" class="btn btn-primary ssuo" value="搜索" />
+
+			<select class="form-control" name="status">
+				　　　　<option value="">全部订单</option>
+				　　　　<option value="0">待付款</option>
+				　　　　<option value="1">已支付</option>
+				　　　　<option value="2">待收货</option>
+				　　　　<option value="3">已收货</option>
+				　　　　<option value="4">已完成</option>
+				　　　　<option value="-1">已取消</option>
+
+			</select>
+
+			<input type="submit" class="btn btn-primary ssuo" value="搜索" />
 
             <a class="btn btn-danger" href="{:url('order/order_list')}">清空</a>
             <a class="btn btn-info" href="read">导入</a>
@@ -58,6 +70,8 @@
 					<th style="text-align:center;">手机号</th>
 					<th style="text-align:center;">收件地址</th>
 					<th style="text-align:center;">总价</th>
+					<th style="text-align:center;">支付种类</th>
+					<th style="text-align:center;">支付订单号</th>
 					<th style="text-align:center;">快递方</th>
 					<th style="text-align:center;">物流单号</th>
 					<th style="text-align:center;">订单状态</th>
@@ -80,10 +94,31 @@
 					<td align="center">{$vo.mobile}</td>
 					<td align="center">{$vo.address}</td>
 					<td align="center">{$vo.total_price}</td>
+					<td align="center">{$vo.payment_type}</td>
+					<td align="center">{$vo.payment_no}</td>
 					<td align="center">{$vo.express_type}</td>
 					<td align="center">{$vo.express_no}</td>
 					<td align="center">{$status[$vo.status]}</td>
-					<td align="center">操作</td>
+					<td align="center">
+						<a href="{:url('edit_order',['order_id'=>$vo['order_id']])}">
+													<button class="btn btn-primary">
+														发货
+													</button>
+						</a>
+
+
+						<!--						<a href="javascript:parent.openIframeLayer('{:url('edit_order',['order_id'=>$vo['order_id']])}')">-->
+						<!--							<button class="btn btn-primary">-->
+						<!--								发货-->
+						<!--							</button>-->
+						<!--						</a>-->
+
+						<a class="js-ajax-delete" href="del_order/order_id/{$vo.order_id}">
+							<button class="btn btn-danger">
+								{:lang('DELETE')}
+							</button>
+						</a>
+					</td>
 
 				</tr>
 				</foreach>
