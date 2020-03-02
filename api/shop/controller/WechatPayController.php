@@ -95,13 +95,17 @@ class WechatPayController extends RestBaseController {
         }
 
         $arr = array(
-            "appId" => $config['appid'],
-            "timeStamp" => "$timestamp",        //这里是字符串的时间戳，不是int，所以需加引号
-            "nonceStr" => self::createNonceStr(),
-            //"package" => "prepay_id=" . $unifiedOrder->prepay_id,
-            "package" => "Sign=WXPay",
-            "prepayid"=>$unifiedOrder['prepay_id'],
+            "appid" => $config['appid'],
             "partnerid"=>$config['mch_id'],
+            "prepayid"=>$unifiedOrder['prepay_id'],
+            "package" => "Sign=WXPay",
+            "noncestr" => self::createNonceStr(),
+            "timestamp" => "$timestamp",        //这里是字符串的时间戳，不是int，所以需加引号
+
+            //"package" => "prepay_id=" . $unifiedOrder->prepay_id,
+
+
+
            // "sign" => $sign,
         );
         ksort( $arr);
