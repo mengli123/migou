@@ -8,16 +8,17 @@
 		</ul>
         <form class="well form-inline margin-top-20" method="post" action="{:url('order/order_list')}" id="form">
             关键词:
-            <input type="text" class="form-control" name="keyword" style="width: 180px;" value="" placeholder="请输入关键词(带*符号的)">
+            <input type="text" class="form-control" name="keyword" style="width: 180px;" value="{$keyword|default=''}" placeholder="请输入关键词(带*符号的)">
             &nbsp;&nbsp;
         	时间:
-            <input type="text" class="form-control js-bootstrap-datetime" name="start_time" value="" style="width: 140px;" autocomplete="off">-
-        	<input type="text" class="form-control js-bootstrap-datetime" name="end_time" value="" style="width: 140px;" autocomplete="off"> &nbsp; &nbsp;
+            <input type="text" class="form-control js-bootstrap-datetime" name="start_time" value="{$start|default=''}" style="width: 140px;" autocomplete="off">-
+        	<input type="text" class="form-control js-bootstrap-datetime" name="end_time" value="{$end|default=''}" style="width: 140px;" autocomplete="off"> &nbsp; &nbsp;
             <input type="submit" class="btn btn-primary ssuo" value="搜索" />
 
             <a class="btn btn-danger" href="{:url('order/order_list')}">清空</a>
             <a class="btn btn-info" href="read">导入</a>
-            <a class="btn btn-info" href="out_excel">导出</a>
+<!--            <a class="btn btn-info" href="out_excel">导出</a>-->
+			<input type="submit" class="btn btn-info daochu" value="导出" />
 
 <!--             <input type="button" class="btn btn-info daochu" value="导出" />-->
         </form>
@@ -25,9 +26,9 @@
             $(".ssuo").click(function(){
                 $("#form").attr("action","/admin/order/order_list");
             })
-            // $(".daochu").click(function(){
-            //     $("#form").attr("action","/admin/order/export");
-            // })
+            $(".daochu").click(function(){
+                $("#form").attr("action","/admin/order/out_excel");
+            })
 			// $( '.daochu').click( function(e){
 			// 	$.ajax({
 			// 		url: "out_excel",
@@ -57,8 +58,10 @@
 					<th style="text-align:center;">手机号</th>
 					<th style="text-align:center;">收件地址</th>
 					<th style="text-align:center;">总价</th>
+					<th style="text-align:center;">快递方</th>
+					<th style="text-align:center;">物流单号</th>
 					<th style="text-align:center;">订单状态</th>
-					<th width="160" style="text-align:center;">操作</th>
+					<th width="" style="text-align:center;">操作</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -77,6 +80,8 @@
 					<td align="center">{$vo.mobile}</td>
 					<td align="center">{$vo.address}</td>
 					<td align="center">{$vo.total_price}</td>
+					<td align="center">{$vo.express_type}</td>
+					<td align="center">{$vo.express_no}</td>
 					<td align="center">{$vo.status}</td>
 					<td align="center">操作</td>
 

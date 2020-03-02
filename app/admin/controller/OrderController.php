@@ -13,27 +13,39 @@ class OrderController extends AdminBaseController
             /**搜索条件**/
             $keyword = trim($request->param('keyword'));
             if ($keyword) {
-                $where['goods_name|price|name'] =  ['like', '%' . $keyword . '%'];
+                $where_word['goods_name|price|name'] =  ['like', '%' . $keyword . '%'];
+                $this->assign('keyword',$keyword);
             }
             $start=$request->param('start_time');
             $end=$request->param('end_time');
             if ($start&&$end) {
+                $this->assign('start',$start);
+                $this->assign('end',$end);
                 if ($start>=$end) {
                     $this->error("开始时间不能大于或等于结束时间");exit();
                 }
-                $where['ctime'] = array(array('gt',strtotime($start)),array('lt',strtotime($end)));
+                $str =strtotime($start).','.strtotime($end);
+                $where[] =  ['ctime','between',strtotime($start).','.strtotime($end)];
+                dump($where);
             }else if($start&&!$end){
-                $where['ctime'] = array('gt',strtotime($start));
+                $this->assign('start',$start);
+                $where[] = array('ctime','gt',strtotime($start));
             }else if(!$start&&$end){
-                $where['ctime'] = array('lt',strtotime($end));
+                $this->assign('end',$end);
+                $where[] = array('ctime','lt',strtotime($end));
             }
             if (empty($where)) {
                 $where=1;
             }
+            if(empty($where_word)){
+                $where_word=1;
+            }
         }else{
             $where=1;
+            $where_word=1;
         }
 		$list = Db::name('order')
+            ->where($where_word)
             ->where($where)
             ->paginate(10);
         //dump($goods);exit;
@@ -65,7 +77,48 @@ class OrderController extends AdminBaseController
 //        $cn_name = [
 //            ''
 //        ]
-        $data = Db::name('order')->select()->all();
+        if($_REQUEST){
+            $request = request();
+            /**搜索条件**/
+            $keyword = trim($request->param('keyword'));
+            if ($keyword) {
+                $where_word['goods_name|price|name'] =  ['like', '%' . $keyword . '%'];
+                $this->assign('keyword',$keyword);
+            }
+            $start=$request->param('start_time');
+            $end=$request->param('end_time');
+            if ($start&&$end) {
+                $this->assign('start',$start);
+                $this->assign('end',$end);
+                if ($start>=$end) {
+                    $this->error("开始时间不能大于或等于结束时间");exit();
+                }
+                $str =strtotime($start).','.strtotime($end);
+                $where[] =  ['ctime','between',strtotime($start).','.strtotime($end)];
+                dump($where);
+            }else if($start&&!$end){
+                $this->assign('start',$start);
+                $where[] = array('ctime','gt',strtotime($start));
+            }else if(!$start&&$end){
+                $this->assign('end',$end);
+                $where[] = array('ctime','lt',strtotime($end));
+            }
+            if (empty($where)) {
+                $where=1;
+            }
+            if(empty($where_word)){
+                $where_word=1;
+            }
+        }else{
+            $where=1;
+            $where_word=1;
+        }
+        //dump($where);
+        $data = Db::name('order')->where($where)->select()->all();
+        foreach ($data as $k=>$v){
+            $data[$k]['ctime'] = date('Y-m-d H:i:s',$v['ctime']);
+        }
+       // dump($data);exit;
        $v = array_keys($data[0]);
        foreach ($v as $key=>$val){
            $v[$key]=$table[$val];
@@ -126,7 +179,8 @@ class OrderController extends AdminBaseController
                // $res=$this->save_data($data);
                 if($data){
                     //return json(['state'=>1,'data'=>$res]);
-                    return json(['state'=>1,'data'=>$data]);
+                    //return json(['state'=>1,'data'=>$data]);
+                    dump($data);
 
                 }else{
                     return json(['state'=>0,'msg'=>'处理错误']);

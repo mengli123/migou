@@ -52,6 +52,7 @@ class WechatPayController extends RestBaseController {
             'total_fee' => intval($totalFee * 100),       //单位 转为分
             'trade_type' => 'APP',
             //'sign' =>'6d46e0eb91e3f12a959cd9d9effb42aa'
+            'sign_type' =>'MD5'
         );
         ksort($unified);
         $a = array();
@@ -63,8 +64,10 @@ class WechatPayController extends RestBaseController {
         }
         $a = implode('&', $a);
         $sign=  strtoupper(md5($a.'&key='.$config['key']));
-        $unified['sign'] =$sign;
+
+        //$unified['sign_type'] ='MD5';
         //$unified['sign'] = hash_hmac('sha256', $a,$config['key']);
+        $unified['sign'] =$sign;
         //dump($unified);
 
         //$unified['sign'] = self::getSign($unified, $config['key']);
