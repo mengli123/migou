@@ -253,9 +253,9 @@ class GoodsController extends AdminBaseController
         $group_max_count= $request->param('group_max_count');
         $group_current_count= $request->param('group_current_count');
         $group_price = $request->param('group_price');
-        if(strlen($size)>30){
-            $this->error('产品规格超过限制长度30');
-        }
+//        if(strlen($size)>30){
+//            $this->error('产品规格超过限制长度30');
+//        }
         if (empty($goods_id)) {
             $this->error('商品id缺失');exit;
         }

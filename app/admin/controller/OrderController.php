@@ -49,6 +49,15 @@ class OrderController extends AdminBaseController
             ->where($where)
             ->paginate(10);
         //dump($goods);exit;
+        $status= [
+            '-1'=>'<b style="color: gray">已取消</b>',
+            '0'=>'<b style="color: red">待支付</b>',
+            '1'=>'<b style="color: green">待发货</b>',
+            '2'=>'<b style="color: blue">待收货</b>',
+            '3'=>'<b style="color:pink">已收货</b>',
+            '4'=>'<b style="color: black">已完成</b>'
+        ];
+        $this->assign('status',$status);
         $this->assign("list",$list);
         $list->appends($request->param());
         $this->assign('page', $list->render());
