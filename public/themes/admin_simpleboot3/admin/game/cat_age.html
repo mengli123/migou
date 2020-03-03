@@ -60,7 +60,7 @@
                             <div style="text-align: center;">
                                 <input type="hidden" name="img" id="thumb" value="{$cat_age.img|default=''}">
                                 <a href="javascript:uploadOneImage('图片上传','#thumb');">
-                                    <img src="__TMPL__/public/assets/images/default-thumbnail.png" id="thumb-preview"
+                                    <img src="/upload/{$cat_age.img|default='__TMPL__/public/assets/images/default-thumbnail.png'}" id="thumb-preview"
                                          width="135" style="cursor: hand"/>
                                 </a>
                                 <input type="button" class="btn btn-sm"

@@ -69,7 +69,7 @@ class GameController extends AdminBaseController
         $data['cat_id'] = $cat_id;
         $data['age_id'] = $age_id;
         $data['feed_num'] = $feed_num;
-        $data['$interval'] = $$interval;
+        $data['interval'] = $interval;
         $data['img'] = $img;
         $data['feed_times'] = $feed_times;
         $data['width'] = $width;
