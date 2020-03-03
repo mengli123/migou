@@ -80,8 +80,9 @@ class CatController extends RestBaseController
             ->select()->all();
         foreach ($sel as $k=>$v){
             $sel[$k]['feed_num']=Db::name('cat_age')->where(['cat_id'=>$v['cat_id'],'age_id'=>$v['age_id']])->value('feed_num');
-            $sel[$k]['x']=Db::name('cat_age')->where(['cat_id'=>$v['cat_id'],'age_id'=>$v['age_id']])->value('x');
-            $sel[$k]['y']=Db::name('cat_age')->where(['cat_id'=>$v['cat_id'],'age_id'=>$v['age_id']])->value('y');
+            $sel[$k]['width']=Db::name('cat_age')->where(['cat_id'=>$v['cat_id'],'age_id'=>$v['age_id']])->value('width');
+            $sel[$k]['height']=Db::name('cat_age')->where(['cat_id'=>$v['cat_id'],'age_id'=>$v['age_id']])->value('height');
+            $sel[$k]['img']=Db::name('cat_age')->where(['cat_id'=>$v['cat_id'],'age_id'=>$v['age_id']])->value('img');
         }
 //        dump($sel);
 //        exit;
