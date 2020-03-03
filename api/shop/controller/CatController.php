@@ -78,6 +78,11 @@ class CatController extends RestBaseController
         $sel = Db::name('user_cat')
             ->where(['user_id'=>$user_id])
             ->select()->all();
+        foreach ($sel as $k=>$v){
+            $sel[$k]['feed_num']=Db::name('cat_age')->where(['cat_id'=>$v['cat_id'],'age_id'=>$v['age_id']])->value('feed_num');
+        }
+//        dump($sel);
+//        exit;
         $user_cat_info=Db::name('user_cat_info')->where('user_id',$user_id)->find();
         if($sel&&$user_cat_info){
             $data=[
@@ -116,17 +121,17 @@ class CatController extends RestBaseController
         $data = [
             'user_id'=>$user_id,
             'cat_id'=>$cat_id,
-            'feed_num'=>$feed_num,
             'ctime'=>time(),
             'user_cat_id'=>$user_cat_id
         ];
         $ins=Db::name('user_cat_log')->insert($data);
-        $age_feed_num =Db::name('user_cat_log')->where('user_cat_log',$user_cat_id)->count();
-        $up_data=[$last_feed_time=>time()];
+        $age_feed_num =Db::name('user_cat_log')->where('user_cat_id',$user_cat_id)->count();
+        $up_data=['last_feed_time'=>time()];
         if($age_feed_num==$feed_num){
-            $up_data[]=['age_id'=>$age_id+1];
+            $up_data['age_id']=$age_id+1;
         }
-        $upd= Db::name('user_cat')->where('user_cat')->update($up_data);
+        //dump($up_data);
+        $upd= Db::name('user_cat')->where('user_cat_id',$user_cat_id)->update($up_data);
         if($ins&&$upd){
             $this->success('喂猫成功');
         }else{
