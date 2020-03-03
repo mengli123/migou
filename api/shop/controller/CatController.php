@@ -82,8 +82,8 @@ class CatController extends RestBaseController
             $cat_age=Db::name('cat_age')->where(['cat_id'=>$v['cat_id'],'age_id'=>$v['age_id']])->find();
             $sel[$k]['feed_num']=$cat_age['feed_num'];
             $sel[$k]['feed_times']=$cat_age['feed_times'];
-            $sel[$k]['width']=$cat_age['feed_width'];
-            $sel[$k]['height']=$cat_age['feed_height'];
+            $sel[$k]['width']=$cat_age['width'];
+            $sel[$k]['height']=$cat_age['height'];
             $sel[$k]['img']=$cat_age['img'];
         }
 //        dump($sel);

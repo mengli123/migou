@@ -20,7 +20,7 @@ class GameController extends AdminBaseController
 	管理阶段猫咪
      */
 	public function cat_age(){
-	    $
+	    $cat_id=input('cat_id');
         return $this->fetch();
     }
 
