@@ -34,7 +34,7 @@ class CatController extends RestBaseController
 
     /**
     领养猫咪
-     * 问题，可以同时喂养几只猫
+     * 可以同时喂养5只猫
      */
     public function buy_cat(){
         $user_id =input('user_id');
@@ -46,11 +46,10 @@ class CatController extends RestBaseController
             $this->error('请传入cat_id');
         }
         $sel = Db::name('user_cat')
-            ->where(['user_id'=>$user_id,])
-            ->where('age_id','in',[1,2,3])
+            ->where(['user_id'=>$user_id,'status'=>0])
             ->select()->all();
-        if(count($sel)>0){
-            $this->error('已存在喂养中的猫咪');
+        if(count($sel)>4){
+            $this->error('最多领养5只猫咪，请卖出后再来');
         }
         $data= [
             'user_id'=>$user_id,
@@ -85,6 +84,7 @@ class CatController extends RestBaseController
                 'info'=>$user_cat_info,
                 'cat'=>$sel
             ];
+           // dump($data);
             $this->success('查询成功',$data);
         }else{
             $this->error('查询失败',[]);
@@ -98,13 +98,18 @@ class CatController extends RestBaseController
      */
     public function feed_cat(){
         $user_id=input('user_id');
-        $cat_id =input('cat_id');
-        $age_id =input('age_id');
-        $last_feed_time = Db::name('user_cat_log')->where(['user_id'=>$user_id,'cat_id'=>$cat_id])->value('ctime');
+        $user_cat_id =input('user_cat_id');
+        $cat_id=Db::name('user_cat')->where('user_cat_id',$user_cat_id)->value('cat_id');
+        $age_id =Db::name('user_cat')->where('user_cat_id',$user_cat_id)->value('age_id');
+        $last_feed_time = Db::name('user_cat')->where(['user_id'=>$user_id,'user_cat_id'=>$user_cat_id])->value('last_feed_time');
         $interval =Db::name('cat_age')->where(['cat_id'=>$cat_id,'age_id'=>$age_id])->value('interval');
         $feed_num =Db::name('cat_age')->where(['cat_id'=>$cat_id,'age_id'=>$age_id])->value('feed_num');
+        $feed=Db::name('user_cat_info')->where('user_id',$user_id)->value('feed');
         $duration=time()-$last_feed_time; //距上次喂猫过去了$interval秒
         $will =$interval-$duration;  //$will秒后可以喂猫
+        if($feed<$feed_num){
+            $this->error('饲料不足');
+        }
         if($duration<$interval){
             $this->error('未到喂猫时间，请在'.$will.'秒后再来');
         }
@@ -112,10 +117,17 @@ class CatController extends RestBaseController
             'user_id'=>$user_id,
             'cat_id'=>$cat_id,
             'feed_num'=>$feed_num,
-            'ctime'=>time()
+            'ctime'=>time(),
+            'user_cat_id'=>$user_cat_id
         ];
-        $ins=Db::name('cat_age')->insert($data);
-        if($ins){
+        $ins=Db::name('user_cat_log')->insert($data);
+        $age_feed_num =Db::name('user_cat_log')->where('user_cat_log',$user_cat_id)->count();
+        $up_data=[$last_feed_time=>time()];
+        if($age_feed_num==$feed_num){
+            $up_data[]=['age_id'=>$age_id+1];
+        }
+        $upd= Db::name('user_cat')->where('user_cat')->update($up_data);
+        if($ins&&$upd){
             $this->success('喂猫成功');
         }else{
             $this->error('喂猫失败');
