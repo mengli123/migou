@@ -24,7 +24,7 @@ class CatController extends RestBaseController
     猫咪列表
      */
     public function get_cat_list(){
-        $cat = Db::name('game')->select()->all();
+        $cat = Db::name('cat')->select()->all();
         if($cat){
             $this->success('获取成功',$cat);
         }else{

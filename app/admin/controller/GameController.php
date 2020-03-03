@@ -8,7 +8,9 @@ use app\admin\model\AdminMenuModel;
 class GameController extends AdminBaseController
 {
 	public function cat_list(){
-		echo 'mengli1234';
+        $cat = Db::name('cat')->select()->all();
+        $this->assign("cat",$cat);
+        return $this->fetch();
 	}
 
 }
