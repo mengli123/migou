@@ -211,12 +211,13 @@ class WechatPayController extends RestBaseController {
         if (empty($d)) {
             $this->error('缺失参数');
         }
-        if ($d['return_code'] != 'SUCCESS') {
-            $this->error($d['return_msg']);
-        }else{
-            $this->success($d['return_msg']);
-        }
-
+        return json($d);
+//        if ($d['return_code'] != 'SUCCESS') {
+//            $this->error($d['return_msg']);
+//        }else{
+//
+//            $this->success($d['return_msg']);
+//        }
 
 //  验证函数
         if (empty($d['sign'])) {
