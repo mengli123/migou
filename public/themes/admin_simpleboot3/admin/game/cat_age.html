@@ -15,61 +15,36 @@
                     <tr>
                         <th>食量<span class="form-required">*</span></th>
                         <td>
-                            <input class="form-control" type="text" style="width:400px;" name="feed_num" id="size"
-                                   required value="" placeholder="请输入规格"/>
+                            <input class="form-control" type="text" style="width:400px;" name="feed_num" id="feed_num"
+                                   required value="{$cat_age.feed_num|default=''}" placeholder="请输入食量"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>喂量次数<span class="form-required">*</span></th>
+                        <td>
+                            <input class="form-control" type="text" style="width:400px;" name="feed_times" id="feed_times"
+                                   required value="{$cat_age.feed_times|default=''}" placeholder="请输入喂食次数"/>
                         </td>
                     </tr>
                     <tr>
                         <th>喂食间隔<span class="form-required">*</span></th>
                         <td>
-                            <input class="form-control" type="text" style="width:400px;" name="price" id="price"
-                                   required value="" placeholder="请输入价格"/>
+                            <input class="form-control" type="text" style="width:400px;" name="interval" id="interval"
+                                   required value="{$cat_age.interval|default=''}" placeholder="请输入喂食间隔"/>
                         </td>
                     </tr>
                     <tr>
                         <th>width<span class="form-required">*</span></th>
                         <td>
-                            <input class="form-control" type="text" style="width:400px;" name="all_current_count" id="all_current_count"
-                                   required value="" placeholder="请输入总库存"/>
+                            <input class="form-control" type="text" style="width:400px;" name="width" id="width"
+                                   required value="{$cat_age.width|default=''}" placeholder="请输宽"/>
                         </td>
                     </tr>
                     <tr>
                         <th>height<span class="form-required">*</span></th>
                         <td>
-                            <input class="form-control" type="text" style="width:400px;" name="all_sale_count" id="all_sale_count"
-                                   required value="" placeholder="请输入总销量"/>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <th>是否团购</th>
-                        <td>
-                            <select class="form-control" name="is_group_buying" id="target" style="width: 400px">
-                                <option value="0" selected="selected">否</option>
-                                <option value="1">是</option>
-
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>团购限额<span class="form-required">*</span></th>
-                        <td>
-                            <input class="form-control" type="text" style="width:400px;" name="group_max_count" id="group_max_count"
-                                   required value="" placeholder="请输入团购限额"/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>已团购量<span class="form-required">*</span></th>
-                        <td>
-                            <input class="form-control" type="text" style="width:400px;" name="group_current_count" id="group_current_count"
-                                   required value="" placeholder="请输入已团购量"/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>团购价格<span class="form-required">*</span></th>
-                        <td>
-                            <input class="form-control" type="text" style="width:400px;" name="group_price" id="group_price"
-                                   required value="" placeholder="请输入团购价格"/>
+                            <input class="form-control" type="text" style="width:400px;" name="height" id="height"
+                                   required value="{$cat_age.height|default=''}" placeholder="请输入高"/>
                         </td>
                     </tr>
 
@@ -83,7 +58,7 @@
                     <tr>
                         <td>
                             <div style="text-align: center;">
-                                <input type="hidden" name="pic" id="thumb" value="">
+                                <input type="hidden" name="img" id="thumb" value="{$cat_age.img|default=''}">
                                 <a href="javascript:uploadOneImage('图片上传','#thumb');">
                                     <img src="__TMPL__/public/assets/images/default-thumbnail.png" id="thumb-preview"
                                          width="135" style="cursor: hand"/>
@@ -101,7 +76,7 @@
             <div class="col-sm-offset-2 col-sm-10">
 
                 <button type="submit" class="btn btn-primary js-ajax-submit">{:lang('ADD')}</button>
-                <a class="btn btn-default" href="{:url('game/game_specs',['game_id'=>$game_id])}">{:lang('BACK')}</a>
+                <a class="btn btn-default" href="{:url('game/cat_list')}">{:lang('BACK')}</a>
             </div>
         </div>
     </form>

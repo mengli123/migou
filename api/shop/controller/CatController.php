@@ -84,7 +84,7 @@ class CatController extends RestBaseController
             $sel[$k]['feed_times']=$cat_age['feed_times'];
             $sel[$k]['width']=$cat_age['width'];
             $sel[$k]['height']=$cat_age['height'];
-            $sel[$k]['img']=$cat_age['img'];
+            $sel[$k]['img']='/upload/'.$cat_age['img'];
         }
 //        dump($sel);
 //        exit;
