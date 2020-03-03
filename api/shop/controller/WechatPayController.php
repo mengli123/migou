@@ -32,7 +32,7 @@ class WechatPayController extends RestBaseController {
     {
         $orderName='migou';
         $timestamp=time();
-        $notifyUrl='https://www.justmetu.top/api/shop/wechat_pay/notify_url';
+        $notifyUrl='https://migou.justmetu.top/api/shop/wechat_pay/notify_url';
         $config = array(
             'mch_id' => $this->mchid,
             'appid' => $this->appid,
@@ -220,11 +220,11 @@ class WechatPayController extends RestBaseController {
 //        }
 
 //  验证函数
-        if (empty($d['sign'])) {
-            return false;
-        }
-        $sign = $d['sign'];
-        unset($d['sign']);
-        return $sign == $this->sign($d);
+//        if (empty($d['sign'])) {
+//            return false;
+//        }
+//        $sign = $d['sign'];
+//        unset($d['sign']);
+//        return $sign == $this->sign($d);
     }
 }
