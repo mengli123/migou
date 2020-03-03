@@ -3,6 +3,7 @@ namespace api\shop\controller;
 //use cmf\controller\RestBaseController;
 use cmf\controller\RestBaseController;
 use think\Controller;
+use think\Db;
 
 class WechatPayController extends RestBaseController {
 
@@ -211,13 +212,18 @@ class WechatPayController extends RestBaseController {
         if (empty($d)) {
             $this->error('缺失参数');
         }
-        return json($d);
-//        if ($d['return_code'] != 'SUCCESS') {
-//            $this->error($d['return_msg']);
-//        }else{
-//
-//            $this->success($d['return_msg']);
-//        }
+        //return json($d);
+        if ($d['return_code'] == 'SUCCESS') {
+            $order_no=$d['out_trade_no'];
+            $upd=Db::name('order')->where('order_no',$order_no)->update(['status'=>1]);
+            if($upd){
+                $this->success($d['return_msg']);
+            }else{
+                $this->error($d['return_msg'].'修改订单状态失败');
+            }
+        }else{
+            $this->error($d['return_msg']);
+        }
 
 //  验证函数
 //        if (empty($d['sign'])) {
