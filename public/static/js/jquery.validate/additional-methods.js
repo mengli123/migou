@@ -435,7 +435,7 @@ $.validator.addMethod( "dateFA", function( value, element ) {
  *
  * @name $.validator.methods.dateITA
  * @type Boolean
- * @cat Plugins/Validate/Methods
+ * @game Plugins/Validate/Methods
  */
 $.validator.addMethod( "dateITA", function( value, element ) {
 	var check = false,
@@ -721,7 +721,7 @@ $.validator.addMethod( "nowhitespace", function( value, element ) {
 *
 * @name $.validator.methods.pattern
 * @type Boolean
-* @cat Plugins/Validate/Methods
+* @game Plugins/Validate/Methods
 */
 $.validator.addMethod( "pattern", function( value, element, param ) {
 	if ( this.optional( element ) ) {
@@ -803,7 +803,7 @@ $.validator.addMethod( "phonesUK", function( phone_number, element ) {
  *
  * @name jQuery.validator.methods.postalCodeCA
  * @type Boolean
- * @cat Plugins/Validate/Methods
+ * @game Plugins/Validate/Methods
  */
 $.validator.addMethod( "postalCodeCA", function( value, element ) {
 	return this.optional( element ) || /^[ABCEGHJKLMNPRSTVXY]\d[ABCEGHJKLMNPRSTVWXYZ] *\d[ABCEGHJKLMNPRSTVWXYZ]\d$/i.test( value );
@@ -1000,7 +1000,7 @@ $.validator.addMethod( "url2", function( value, element ) {
  *
  * @name $.validator.methods.vinUS
  * @type Boolean
- * @cat Plugins/Validate/Methods
+ * @game Plugins/Validate/Methods
  */
 $.validator.addMethod( "vinUS", function( v ) {
 	if ( v.length !== 17 ) {

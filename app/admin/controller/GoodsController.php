@@ -419,7 +419,7 @@ class GoodsController extends AdminBaseController
     public function goods_category(){
         $cat=Db::name("goods_type")->select();
         $cat=json_decode($cat,true);
-        $this->assign("cat",$cat);
+        $this->assign("game",$cat);
         return $this->fetch();
     }
 
@@ -490,7 +490,7 @@ class GoodsController extends AdminBaseController
         $id = $request->param('id');
         $cat = Db::name('goods_category')->where('cat_id',$id)->find();
         $cat['img']=json_decode($cat['img']);
-        $this->assign("cat",$cat);
+        $this->assign("game",$cat);
         return $this->fetch();
     }
 

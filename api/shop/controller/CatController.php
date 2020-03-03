@@ -24,7 +24,7 @@ class CatController extends RestBaseController
     猫咪列表
      */
     public function get_cat_list(){
-        $cat = Db::name('cat')->select()->all();
+        $cat = Db::name('game')->select()->all();
         if($cat){
             $this->success('获取成功',$cat);
         }else{
@@ -80,6 +80,8 @@ class CatController extends RestBaseController
             ->select()->all();
         foreach ($sel as $k=>$v){
             $sel[$k]['feed_num']=Db::name('cat_age')->where(['cat_id'=>$v['cat_id'],'age_id'=>$v['age_id']])->value('feed_num');
+            $sel[$k]['x']=Db::name('cat_age')->where(['cat_id'=>$v['cat_id'],'age_id'=>$v['age_id']])->value('x');
+            $sel[$k]['y']=Db::name('cat_age')->where(['cat_id'=>$v['cat_id'],'age_id'=>$v['age_id']])->value('y');
         }
 //        dump($sel);
 //        exit;
@@ -87,7 +89,7 @@ class CatController extends RestBaseController
         if($sel&&$user_cat_info){
             $data=[
                 'info'=>$user_cat_info,
-                'cat'=>$sel
+                'game'=>$sel
             ];
            // dump($data);
             $this->success('查询成功',$data);

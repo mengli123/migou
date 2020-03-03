@@ -1288,7 +1288,7 @@ baidu.json.parse = function (data) {
  * Copyright 2009 Baidu Inc. All rights reserved.
  * 
  * path: baidu/json/decode.js
- * author: erik, cat
+ * author: erik, game
  * version: 1.3.4
  * date: 2010/12/23
  */
@@ -1474,7 +1474,7 @@ baidu.json.stringify = (function () {
  * Copyright 2009 Baidu Inc. All rights reserved.
  * 
  * path: baidu/json/encode.js
- * author: erik, cat
+ * author: erik, game
  * version: 1.3.4
  * date: 2010/12/23
  */
