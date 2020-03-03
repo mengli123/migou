@@ -212,17 +212,22 @@ class WechatPayController extends RestBaseController {
         if (empty($d)) {
             $this->error('缺失参数');
         }
+//        $d= [
+//            'return_code'=>'SUCCESS',
+//            'out_trade_no'=>'20200301173225653173'
+//        ];
         //return json($d);
         if ($d['return_code'] == 'SUCCESS') {
             $order_no=$d['out_trade_no'];
             $upd=Db::name('order')->where('order_no',$order_no)->update(['status'=>1]);
+            dump($upd);
             if($upd){
-                $this->success($d['return_msg']);
+                $this->success('支付成功');
             }else{
-                $this->error($d['return_msg'].'修改订单状态失败');
+                $this->error('支付成功修改订单状态失败');
             }
         }else{
-            $this->error($d['return_msg']);
+            $this->error('支付失败');
         }
 
 //  验证函数
