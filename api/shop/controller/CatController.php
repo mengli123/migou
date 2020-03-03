@@ -79,10 +79,12 @@ class CatController extends RestBaseController
             ->where(['user_id'=>$user_id])
             ->select()->all();
         foreach ($sel as $k=>$v){
-            $sel[$k]['feed_num']=Db::name('cat_age')->where(['cat_id'=>$v['cat_id'],'age_id'=>$v['age_id']])->value('feed_num');
-            $sel[$k]['width']=Db::name('cat_age')->where(['cat_id'=>$v['cat_id'],'age_id'=>$v['age_id']])->value('width');
-            $sel[$k]['height']=Db::name('cat_age')->where(['cat_id'=>$v['cat_id'],'age_id'=>$v['age_id']])->value('height');
-            $sel[$k]['img']=Db::name('cat_age')->where(['cat_id'=>$v['cat_id'],'age_id'=>$v['age_id']])->value('img');
+            $cat_age=Db::name('cat_age')->where(['cat_id'=>$v['cat_id'],'age_id'=>$v['age_id']])->find();
+            $sel[$k]['feed_num']=$cat_age['feed_num'];
+            $sel[$k]['feed_times']=$cat_age['feed_times'];
+            $sel[$k]['width']=$cat_age['feed_width'];
+            $sel[$k]['height']=$cat_age['feed_height'];
+            $sel[$k]['img']=$cat_age['img'];
         }
 //        dump($sel);
 //        exit;

@@ -27,9 +27,9 @@
 					<td align="center">{$vo.desc}</td>
 					<td align="center"><img src="/upload/{$vo.logo}"/> </td>
 					<td align="center">
-						<a class="btn btn-xs btn-primary" href="javascript:parent.openIframeLayer('{:url('game/cat_age',array('cat_id'=>$vo['cat_id']，’age_id'=>1))}','管理幼年{$vo.cat}',{});"><button class="btn  btn-primary">幼年</button></a>
-						<a class="btn btn-xs btn-primary" href="javascript:parent.openIframeLayer('{:url('goods/cat_age',array('cat_id'=>$vo['cat_id']))}','管理青年{$vo.cat}',{});"><button class="btn  btn-primary">青年</button></a>
-						<a class="btn btn-xs btn-primary" href="javascript:parent.openIframeLayer('{:url('goods/cat_age',array('cat_id'=>$vo['cat_id']))}','管理成年{$vo.cat}',{});"><button class="btn  btn-primary">成年</button></a>
+						<a class="btn btn-xs btn-primary" href="{:url('game/cat_age',['cat_id'=>$vo['cat_id'],'age_id'=>1])}"><button class="btn  btn-primary">幼年</button></a>
+						<a class="btn btn-xs btn-primary" href="{:url('game/cat_age',['cat_id'=>$vo['cat_id'],'age_id'=>2])}"><button class="btn  btn-primary">青年</button></a>
+						<a class="btn btn-xs btn-primary" href="{:url('game/cat_age',['cat_id'=>$vo['cat_id'],'age_id'=>3])}"><button class="btn  btn-primary">成年</button></a>
 					</td>
 					<td align="center">
 					<a href="edit/id/{$vo.cat_id}">
