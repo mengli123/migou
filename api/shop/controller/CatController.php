@@ -114,9 +114,13 @@ class CatController extends RestBaseController
         $last_feed_time = Db::name('user_cat')->where(['user_id'=>$user_id,'user_cat_id'=>$user_cat_id])->value('last_feed_time');
         $interval =Db::name('cat_age')->where(['cat_id'=>$cat_id,'age_id'=>$age_id])->value('interval');
         $feed_num =Db::name('cat_age')->where(['cat_id'=>$cat_id,'age_id'=>$age_id])->value('feed_num');
+        $feed_times =Db::name('cat_age')->where(['cat_id'=>$cat_id,'age_id'=>$age_id])->value('feed_times');
         $feed=Db::name('user_cat_info')->where('user_id',$user_id)->value('feed');
         $duration=time()-$last_feed_time; //距上次喂猫过去了$interval秒
         $will =$interval-$duration;  //$will秒后可以喂猫
+        if($age_id>2){
+            $this->error('已经养到成年,不需要再喂啦');
+        }
         if($feed<$feed_num){
             $this->error('饲料不足');
         }
@@ -126,21 +130,30 @@ class CatController extends RestBaseController
         $data = [
             'user_id'=>$user_id,
             'cat_id'=>$cat_id,
+            'age_id'=>$age_id,
             'ctime'=>time(),
             'user_cat_id'=>$user_cat_id
         ];
         $ins=Db::name('user_cat_log')->insert($data);
         $age_feed_num =Db::name('user_cat_log')->where('user_cat_id',$user_cat_id)->count();
         $up_data=['last_feed_time'=>time()];
-        if($age_feed_num==$feed_num){
+        if($age_feed_num==$feed_times){
             $up_data['age_id']=$age_id+1;
         }
         //dump($up_data);
         $upd= Db::name('user_cat')->where('user_cat_id',$user_cat_id)->update($up_data);
         if($ins&&$upd){
-            $this->success('喂猫成功');
+            $new = Db::name('user_cat')->where('user_cat_id',$user_cat_id)->find();
+            $cat_age=Db::name('cat_age')->where(['cat_id'=>$new['cat_id'],'age_id'=>$new['age_id']])->find();
+            $new['feed_num']=$cat_age['feed_num'];
+            $new['feed_times']=$cat_age['feed_times'];
+            $new['width']=$cat_age['width'];
+            $new['interval']=$cat_age['interval'];
+            $new['height']=$cat_age['height'];
+            $new['img']=$cat_age['img'];
+            $this->success('喂猫成功',$new);
         }else{
-            $this->error('喂猫失败');
+            $this->error('喂猫失败',[]);
         }
 
     }
