@@ -164,7 +164,7 @@ class CatController extends RestBaseController
         $duration=time()-$last_feed_time; //距上次喂猫过去了$interval秒
         $will =$interval-$duration;  //$will秒后可以喂猫
         if($age_id>2){
-            $this->error('已经养到成年,不需要再喂啦');
+            $this->error('已经养到成年,不需要再喂啦',['age_id'=>$age_id]);
         }
         if($feed<$feed_num){
             $this->error('饲料不足');
