@@ -58,11 +58,19 @@ class CatController extends RestBaseController
             'ctime'=>time(),
             'status'=>0
         ];
-        $ins = Db::name('user_cat')->insert($data);
+        $ins = Db::name('user_cat')->insertGetId($data);
         if($ins){
-            $this->success('领养成功');
+            $new = Db::name('user_cat')->where('user_cat_id',$ins)->find();
+            $cat_age=Db::name('cat_age')->where(['cat_id'=>$new['cat_id'],'age_id'=>$new['age_id']])->find();
+            $new['feed_num']=$cat_age['feed_num'];
+            $new['feed_times']=$cat_age['feed_times'];
+            $new['width']=$cat_age['width'];
+            $new['interval']=$cat_age['interval'];
+            $new['height']=$cat_age['height'];
+            $new['img']=$cat_age['img'];
+            $this->success('领养成功',$new);
         }else{
-            $this->error('领养失败');
+            $this->error('领养失败',[]);
         }
     }
 
