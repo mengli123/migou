@@ -341,4 +341,20 @@ class OrderController extends AdminBaseController
         return $data;
     }
 
+    /**
+    用户积分记录表
+     */
+    public function log_list(){
+        $list=Db::name('user_score_log')
+            ->alias("sl")
+            ->join("user u","sl.user_id=u.id")
+            ->field("sl.*,u.user_nickname")
+            ->order('id desc')
+            ->paginate(15);
+        $this->assign('list',$list);
+        $this->assign('page', $list->render());
+        return $this->fetch();
+    }
+
+
 }

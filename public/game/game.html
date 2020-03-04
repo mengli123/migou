@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
+<body style="display:block;position:absolute;left:0px;top:0px;width:100%;height:100%;overflow:hidden;margin: 0;padding: 0">
+
+<!--<canvas id="canvas1" style="width: 100%;height: 100%">-->
+
+<!--</canvas>-->
+<div id="app">
+    <div id="container">
+
+        <canvas id="cavsImage" style="position: absolute;z-index: 99">
+            您的浏览器不支持canvas,请升级浏览器
+        </canvas>
+
+        <div class="mask" :class="{'maskpop':adopt_show}" @click="adopt_Change()"></div>
+        <div class="content" :class="{'trans':adopt_show}"  >
+            <div class="adopt_title">当前猫舍容量5只</div>
+            <div class="adopt_box">
+                <div class="adopt_item" v-for="(item,index) in catList" >
+                    <img :src="'https://migou.justmetu.top/upload/'+item.logo" alt="" class="img">
+                    <div class="adopt_text">{{item.cat}}</div>
+                    <div class="adopt_text">{{item.desc}}</div>
+                    <div class="pay" @click="pay(item,index)">购买</div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mask" :class="{'maskpop':info}" @click="info_Change()"></div>
+        <div class="content" :class="{'trans':info}"  >
+            <div class="adopt_title">暂无消息记录</div>
+
+        </div>
+
+        <div class="mask" :class="{'maskpop':feed_show}" @click="feed_Change()"></div>
+        <div class="content" :class="{'trans':feed_show}"  >
+            <div class="adopt_title">可领取以下任务</div>
+            <div class="adopt_box">
+                <div class="adopt_item" v-for="(item,index) in itemlist" >
+                    {{index}}
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="friend">
+        <div class="flow-scoller">
+            <div v-for="(item,index) in friend " :key="index" class="friend-item">
+                <img :src="item.img" alt="" class="headimg">
+                <div class="name">{{item.name}}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+
+
+</div>
+
+
+<!--<script src="scene.js"></script>-->
+</body>
+
+</html>
+
+<style>
+    .friend-item{
+        margin: 0.777rem  1.333rem;
+        text-align: center;
+    }
+    .flow-scoller{
+        display: flex;
+        overflow-x: scroll;
+        white-space: nowrap;
+        width: 100%;
+    }
+    .headimg{
+        border-radius: 50%;
+        width: 6.5rem;
+    }
+    .name{
+        font-size: 1.89rem;
+        color: white;
+    }
+    .flow-right{
+
+
+    }
+    .flow-right::-webkit-scrollbar {
+        display: none;
+    }
+    .friend{
+        position: absolute;
+        z-index: 998;
+        background-color: rgba(0, 0, 0, 0.5);
+
+        width: 100%;
+        bottom: -10px;
+
+    }
+    .adopt_text{
+        font-size: 1.98rem;
+        color: #84694e;
+        font-family: "Palatino Linotype";
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 0.4rem;
+    }
+    .adopt_box{
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .adopt_title{
+        font-size: 2.56rem;
+        color: #84694e;
+        font-family: "Palatino Linotype";
+        font-weight: 600;
+        margin: 5rem auto;
+        text-align: center;
+    }
+    .mask {
+        background-color: rgba(0, 0, 0, 0.5);
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        top: 0;
+        right: 0;
+        opacity: 0;
+        will-change: opacity;
+        transition: all 0.5s;
+        visibility: hidden;
+        z-index: 999;
+    }
+    .content {
+        z-index: 999;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 20px 20px 0 0;
+        background: #fff5e7;
+        transform: translateY(100%);
+        transition: 0.5s;
+        overflow: auto;
+        margin: 0 auto;
+        width: 100%;
+
+    }
+    .trans {
+        transform: translateY(0);
+    }
+    .maskpop {
+        pointer-events: auto;
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .adopt_item{
+        font-size: 2.56rem;
+        flex: 1;
+        background: #fff;
+        text-align: center;
+        margin: 1.4rem;
+        box-shadow: rgba(228, 190, 146, 0.8) 0.96rem 1rem 4rem 1rem;
+        padding: .8rem;
+        border-radius: 1.888rem;
+
+    }
+    .img{
+        width: 10rem;
+        height: 10rem;
+        border-radius: 50%;
+        margin: 0 auto;
+        border: 0.8rem dotted #ff8554;
+    }
+    .pay{
+        margin: 0 auto;
+        width: 12rem;
+        height: 4rem;
+        line-height: 4rem;
+        text-align: center;
+        font-size: 2.56rem;
+        color: #fff;
+        background: #ff8554;
+        padding: 0.4rem;
+        border-radius: 0.8rem;
+
+
+    }
+
+</style>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            catList:[],
+            info:false,
+            adopt_show:false,
+            feed_show:false,
+            message: 'Hello Vue!',
+            lyshow:false,
+            itemlist:[
+                {img:'https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=1422507097,3247872807&fm=26&gp=0.jpg',name:'小花猫2',detail:'是一种性格古怪的小猫',feed:"10次可以售出"},
+                {img:'https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=1422507097,3247872807&fm=26&gp=0.jpg',name:'小花猫2',detail:'是一种性格古怪的小猫',feed:"10次可以售出"},
+                {img:'https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=1422507097,3247872807&fm=26&gp=0.jpg',name:'小花猫2',detail:'是一种性格古怪的小猫',feed:"10次可以售出"},
+
+            ],
+            friend:[
+                {img:'https://img2.woyaogexing.com/2020/03/01/564f018c38a94b93a7a69103f818bfcd!400x400.jpeg',name:'守望的天空',detail:'是一种性格古怪的小猫',feed:"10次可以售出"},
+                {img:'https://img2.woyaogexing.com/2020/03/01/bd40cc6ac0ac4454b573de95890a7a36!400x400.jpeg',name:'烟花易冷',detail:'是一种性格古怪的小猫',feed:"10次可以售出"},
+                {img:'https://img2.woyaogexing.com/2020/03/01/bd40cc6ac0ac4454b573de95890a7a36!400x400.jpeg',name:'深海鱼',detail:'是一种性格古怪的小猫',feed:"10次可以售出"},
+                {img:'https://img2.woyaogexing.com/2020/02/29/cddcb77f559d4ae4bdcbb21ccb42f7a7!400x400.jpeg',name:'孤独患者',detail:'是一种性格古怪的小猫',feed:"10次可以售出"},
+                {img:'https://img2.woyaogexing.com/2020/02/29/d8d547be6cee4b1e94d20187dce95fa4!400x400.jpeg',name:'不知名阿卡丽',detail:'是一种性格古怪的小猫',feed:"10次可以售出"},
+                {img:'https://img2.woyaogexing.com/2020/02/29/e5ffacc567c640fa8444ee16ebed1227!400x400.jpeg',name:'测试用户',detail:'是一种性格古怪的小猫',feed:"10次可以售出"},
+                {img:'https://img2.woyaogexing.com/2020/02/29/d329d9a48b9d4e04a6795c4f6ae017ca!400x400.jpeg',name:'测试用户',detail:'是一种性格古怪的小猫',feed:"10次可以售出"},
+                {img:'https://img2.woyaogexing.com/2020/02/29/0424a5de0fb4454eb681f53af523fef8!400x400.jpeg',name:'测试用户',detail:'是一种性格古怪的小猫',feed:"10次可以售出"},
+                {img:'https://img2.woyaogexing.com/2020/02/29/b4934328de3447a0a18d1c74296d9162!400x400.jpeg',name:'测试用户',detail:'是一种性格古怪的小猫',feed:"10次可以售出"},
+                {img:'https://img2.woyaogexing.com/2020/02/29/ec17c9f5c9b14e62a890856b533f630d!400x400.jpeg',name:'测试用户',detail:'是一种性格古怪的小猫',feed:"10次可以售出"},
+                {img:'https://img2.woyaogexing.com/2020/02/29/6a1149a9b1514d6fbe1f47fa681915e9!400x400.jpeg',name:'测试用户',detail:'是一种性格古怪的小猫',feed:"10次可以售出"},
+
+            ],
+
+        },
+        methods:{
+            adopt_Change(){
+
+                app.adopt_show  = false
+            },
+            feed_Change(){
+                app.feed_show  = false
+            },
+            info_Change(){
+                app.info  = false
+            },
+            close(){
+
+                app.lyshow = false
+
+            },
+            pay(item,index){
+                console.log(item,index);
+
+                axios.get('https://migou.justmetu.top/api/shop/cat/buy_cat',{
+                    params:{
+                        user_id:userid,
+                        cat_id:item.cat_id
+
+                    }
+                })
+                    .then(function (response) {
+                        console.log(response.data.data);
+                        catList_User.push(new cat(response.data.data,randomNum(150,400),randomNum(600,document.body.clientHeight - 600)))
+                        console.log(catList_User,"小猫");
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            }
+        }
+    })
+
+    function Toast(msg,duration){
+        duration=isNaN(duration)?3000:duration;
+        var m = document.createElement('div');
+        m.innerHTML = msg;
+        m.style.cssText="max-width:60%;min-width: 50rem;padding:0 14px;height: 5rem;color: rgb(255, 255, 255);line-height: 5rem;text-align: center;border-radius: 4px;position: fixed;top: 50%;left: 50%;transform: translate(-50%, -50%);z-index: 999999;background: rgba(0, 0, 0,.7);font-size: 1.89rem;";
+        document.body.appendChild(m);
+        setTimeout(function() {
+            var d = 0.5;
+            m.style.webkitTransition = '-webkit-transform ' + d + 's ease-in, opacity ' + d + 's ease-in';
+            m.style.opacity = '0';
+            setTimeout(function() { document.body.removeChild(m) }, d * 1000);
+        }, duration);
+    }
+    var userid = AndroidJs.getUserId()
+    var url = 'https://migou.justmetu.top/api/'
+    //初始化
+    function init(){
+        axios.get('https://migou.justmetu.top/api/shop/cat/get_cat_list')
+            .then(function (response) {
+                app.catList = response.data.data
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+    }
+    init();
+
+    let feed_time = 12000
+    let food  = 120
+    function randomNum(minNum,maxNum){
+        switch(arguments.length){
+            case 1:
+                return parseInt(Math.random()*minNum+1,10);
+                break;
+            case 2:
+                return parseInt(Math.random()*(maxNum-minNum+1)+minNum,10);
+                break;
+            default:
+                return 0;
+                break;
+        }
+    }
+    var catList_User =[]
+    var  userArr = {}
+
+    function catint(){
+        this.list  = []
+        axios.get('https://migou.justmetu.top/api/shop/cat/user_cat_status',{
+            params: {
+                user_id: userid
+            }
+        })
+            .then(function (response) {
+                let  catUserListArr =   response.data.data.game
+                userArr = response.data.data.info
+                let list  = []
+                console.log(catUserListArr);
+                for(let i = 0 ;i< catUserListArr.length;i++){
+                    list.push(new cat(catUserListArr[i],randomNum(150,400),randomNum(600,document.body.clientHeight - 600)))
+                }
+
+                catList_User = list
+                console.log(list);
+                console.log(  app.catUserList,"访问");
+
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+    }
+    catint()
+    function sencnL(){
+
+        var canvas = document.querySelector('#cavsImage');
+        var ctx = canvas.getContext('2d');
+        let top = 600;
+        let bottom  =   document.body.clientHeight -600;
+        let left=  150;
+        let right = document.body.clientWidth - 300
+        let inter=50;
+        let delt_x=0;
+        let delt_y=0;
+        let fram_count=0;
+        let temp_count=0;
+        let crop_width=360.00;
+        let crop_height=310.00;
+        let frameIndex = 0;
+        let direction = 0;
+
+        //实例化小猫
+        let sencen = new Image();
+        sencen.src = 'bg.jpg';
+
+        let feedimg = new Image();
+        feedimg.src = 'img/lingdongwu.png'
+
+        let foods = new Image();
+        foods.src = 'img/liang.png'
+
+        let ad = new Image();
+        ad.src = 'img/ling.png'
+
+        let information = new Image();
+        information.src = 'img/dongtai.png'
+
+        //场景加载函数
+
+        this.sence = function (runx,runy){
+
+            //检测宠物状态
+            console.log(bottom);
+
+            setInterval(function () {
+
+                ctx.clearRect(0,0,canvas.width,canvas.height);
+                // 裁剪图片
+                ctx.drawImage(sencen,0,0,canvas.width,canvas.height);
+                ctx.drawImage(feedimg,50 ,document.body.clientHeight -400,180,180);
+                ctx.drawImage(ad,250 ,document.body.clientHeight -400,180,180);
+                ctx.drawImage(information,450 ,document.body.clientHeight -400,180,180);
+                ctx.drawImage(foods,document.body.clientWidth - 250,document.body.clientHeight -500,300,300);
+
+                if ( catList_User  === undefined ){
+                    console.log('没有猫咪',catList_User)
+                } else {
+
+                    setInterval(function () {
+                        catList_User.forEach(value => {
+                            if (value.needFeed() == true){
+
+                            }
+                        })
+
+                    },1000)
+
+                    for (let i = 0;i<catList_User.length;i++){
+
+                        if(catList_User[i].temp_count!=catList_User[i].fram_count){
+                            catList_User[i].runx =catList_User[i].runx+catList_User[i].delt_x
+                            catList_User[i].runy = catList_User[i].runy+catList_User[i].delt_y
+                            catList_User[i].temp_count=catList_User[i].temp_count+1
+                        }else{
+                            // console.log('s停止')
+                            catList_User[i].delt_x=0
+                            catList_User[i].delt_y = 0
+                            catList_User[i].fram_count=0
+                            catList_User[i].temp_count=0
+                            catList_User[i].direction = 0
+                        }
+
+                        if (catList_User[i].feed_state =="我好饿" && catList_User[i].ageid != 3 ){
+                            move(0,0,1000,2,catList_User[i])
+
+                        }else {
+
+                        }
+
+                        ctx.drawImage(catList_User[i].image,crop_width * frameIndex,crop_height* catList_User[i].direction,crop_width,crop_height,catList_User[i].runx,catList_User[i].runy,catList_User[i].crop_width,catList_User[i].crop_height);
+
+                        ctx.font = '3rem fontFamilu';//第二个参数必填
+                        ctx.textBaseLine = 'top';	//top middle bottom
+
+
+                        if(catList_User[i].feed_state=="我好饿"){
+
+                        }else{
+                            ctx.fillText(`${catList_User[i].feed_state}`,catList_User[i].runx+(crop_width/6)-25,catList_User[i].runy-15,); //文字居中水平垂直
+
+                        }
+
+
+
+
+                        // let adopt =  ctx.fillText("领养",document.body.clientWidth - 135,document.body.clientHeight -100)
+
+
+                        let foodText =   ctx.fillText(`${userArr.feed}g`,document.body.clientWidth - 150,document.body.clientHeight -300)
+
+                        //移动边界检测
+                        if (catList_User[i].runx <= left ) {
+                            if (catList_User[i].runy <= top ) {
+                                console.log(`${catList_User[i].id}左上边超出`);
+                            }else if(catList_User[i].runy >= bottom){
+                                console.log(`${catList_User[i].id}左下边超出`);
+                            }else {
+                                //todo::这里需要修改一下move的参数，具体修改为delt_X 跟 y 正负数判断跟 帧动画执行秒数的一个比例
+                                move(100,0,3000,1,catList_User[i])
+                                console.log(`${catList_User[i].id}左边超出`);
+                            }
+                            console.log(`${catList_User[i].id}左边超出`);
+                        }else if (catList_User[i].runx >= right){
+                            if (catList_User[i].runy <= top ) {
+                                console.log(`${catList_User[i].id}右上边超出`);
+                            }else if(catList_User[i].runy >= bottom){
+                                console.log(`${catList_User[i].id}右下边超出`);
+                            }else {
+                                move(-100,0,3000,0,catList_User[i])
+                                console.log(`${catList_User[i].id}右边超出`);
+                            }
+
+                        } else if(catList_User[i].runy <= top ){
+                            if (catList_User[i].runx <= left ) {
+                                console.log(`${imglist[i].id}左上边超出`);
+                            }else if(catList_User[i].runx >= right){
+                                console.log(`${catList_User[i].id}右上边超出`);
+                            }else {
+                                move(0,100,3000,0,catList_User[i])
+                                console.log(`${catList_User[i].id}上边超出`);
+                            }
+
+                        }else if(catList_User[i].runy >= bottom){
+                            if (catList_User[i].runx <= left ) {
+                                console.log(`${catList_User[i].id}左下边超出`);
+                            }else if(catList_User[i].runx >= right){
+                                console.log(`${catList_User[i].id}右下边超出`);
+                            }else {
+                                move(0,-100,3000,1,catList_User[i])
+                                console.log(`${catList_User[i].id}下边超出`);
+                            }
+                        }
+
+
+
+                    }
+                }
+
+
+
+                frameIndex++;
+
+                frameIndex %=4; //取余，重复0-3这四幅图像
+
+
+            },200);  // 1帧图像/100s
+        }
+
+        //场景函数加载
+        setTimeout(function () {
+            this.sence(100,100)
+
+        },2000)
+
+        canvas.width = document.body.clientWidth;
+
+        canvas.height = document.body.clientHeight;
+
+
+
+        //实例化猫
+
+
+
+
+        //移动函数
+        function move(x,y,time,index,cc){
+
+
+            cc.fram_count=time/100;
+            cc.delt_x=x/ cc.fram_count;
+            cc.delt_y=y/ cc.fram_count;
+            cc.direction = index;
+        }
+
+
+        //获取坐标地点
+        function getEventPosition(ev){
+            //ev = 获取的点
+            var x, y;
+            if (ev.layerX || ev.layerX == 0) {
+                x = ev.layerX;
+                y = ev.layerY;
+            } else if (ev.offsetX || ev.offsetX == 0) { // Opera
+                x = ev.offsetX;
+                y = ev.offsetY;
+            }
+            return {x: x, y: y};
+        }
+
+        //为 canvas 增加点击事件记录每个精灵坐标并响应时间喂养
+
+        canvas.addEventListener('click', function(e){
+            p = getEventPosition(e);
+            if ( p.x >=  220  && p.x< 450 &&  p.y < document.body.clientHeight -200 && p.y >= document.body.clientHeight -400){
+                app.feed_show = true
+            }
+            if ( p.x >=  70  && p.x< 220 && p.y < document.body.clientHeight -200 && p.y >= document.body.clientHeight -400){
+
+                app.adopt_show = true
+            }
+            if ( p.x >=  450  && p.x< 600 && p.y < document.body.clientHeight -200 && p.y >= document.body.clientHeight -400){
+
+                app.info = true
+            }
+            for (let a = 0;a<catList_User.length;a++){
+                // if (p.x = i[a].runx,p.y = i[a].runy) {
+                //     console.log(`${i[a]}个人物`)
+                // }
+                console.log(p);
+
+                if (p.x < catList_User[a].runx + parseInt(catList_User[a].crop_width) && p.x >=catList_User[a].runx && p.y < catList_User[a].runy+parseInt(catList_User[a].crop_height) && p.y >=catList_User[a].runy ) {
+                    catList_User[a].feeds()
+                    console.log('点击猫');
+                }
+
+                // if (p.x <catList_User[a].runx +  catList_User[a].crop_width) {
+                //     console.log('点击猫');
+                // }
+
+
+                //     console.log(p.x >=  document.body.clientWidth - 100);
+
+
+            }
+        }, false);
+
+
+        //随机生成数
+
+        //cat自动位移函数
+
+        function AImove() {
+
+
+            setInterval(function () {
+
+                // console.log(index(),"方向")
+                // console.log(x,"x的值")
+                // console.log(y,"y的值")
+                for(let a = 0; a<catList_User.length;a++){
+                    let x = randomNum(-300,300)
+                    let y = randomNum(-300,300)
+                    let index  = function(){
+                        if (x>0 && y ==0 ){
+                            return 1
+                        } else if (x<0 && y ==0 ) {
+                            return 0
+                        }else if (x==0 && y>0 ) {
+                            return 1
+                        } else if (x==0 && y<0) {
+                            return 0
+                        }else if (x>0 && y<0){
+                            return 1
+                        } else if (x<0 && y>0){
+                            return 0
+                        }else if (x>0 && y>0){
+                            return 1
+                        } else if (x<0 && y<0){
+                            return 0
+                        }
+                    }
+                    move(x,y,3000,index(),catList_User[a])
+                    if (catList_User[a].feed_state!="我好饿"){
+
+                    } else {
+
+                    }
+
+
+
+                }
+
+
+            },2000)
+
+        }
+        //调用自动位移函数
+        if (catList_User == undefined ){} else{
+            AImove();
+        }
+
+    };
+
+    function cat (data,runx,runy) {
+
+
+        // this.id= data.id,
+        //     this.feedList = data.feedlist
+        // this.feed = data.feed
+        // this.image  = new Image();
+        // this.image.src = data.img
+        // this.runx  = runx;
+        // this.runy = runy;
+        // this.lastFeedTime= data.lastFeedTime;
+        // this.delt_x=0;
+        // this.delt_y=0;
+        // this.fram_count=0;
+        // this.temp_count=0;
+        // this.frameIndex = 0;
+        // this.direction = 0;
+        // this.crop_width=360;
+        // this.crop_height=306.5;
+        // this.feed_state = '',
+        this.feed_interval = 0;
+        this.interval = data.interval//喂养间隔
+        this.cat_satge = false;
+        this.ageid= data.age_id //年龄
+        this.ctime = data.ctime
+        this.cat_satge = false;
+        this.user_cat_id = data.user_cat_id
+        this.id= data.cat_id, //猫id
+            this.feed_num = data.feed_num
+        this.feed = data.feed_num  // 该阶段喂养次数
+        this.image  = new Image();
+        this.image.src = data.img// 猫的帧动画
+        this.runx  = runx; // 猫在ctx 的x
+        this.runy = runy; //猫在ctx 的y
+        this.lastFeedTime= data.last_feed_time; //上次喂养时间
+        this.delt_x=0; //每次到达的坐标x
+        this.delt_y=0;  //每次的y
+        this.fram_count=0;
+        this.temp_count=0;
+        this.frameIndex = 0; // 动画帧
+        this.direction = 0;
+        this.crop_width=data.width; //长
+        this.crop_height=data.height; //宽
+        this.feed_state = '', //提醒用户cat 状态
+            //是否可以喂食
+            this.needFeed = function(){
+                // console.log(this.interval);
+                // console.log(Math.round(new Date() / 1000) - this.lastFeedTime);
+
+                if( Math.round(new Date() / 1000) - this.lastFeedTime < this.interval ){
+
+                    this.feed_interval = this.interval  - ( Math.round(new Date() / 1000) - this.lastFeedTime)
+                    this.feed_state =  `还需等待${this.feed_interval}秒`
+                    // console.log(`${this.id}需要等待${(feedCD - ((new Date()).getTime()-this.lastFeedTime))/1000}秒`)
+                    return   false;
+                }else{
+
+                    this.feed_state = '我好饿'
+                    return true;
+                }
+                // }else {
+                //     // console.log(`${this.id}喂养成功`)
+                //     this.feed_state = "已进入下个阶段"
+                //     this.cat_satge = true
+                //     //todo::这时候会跟后台要一组数据来替换img 跟喂养次数 喂养间隔
+                //     // let data = {
+                //     //     img:'cat.png',
+                //     //     crop_width:this.crop_width*1.2,
+                //     //     crop_height:this.crop_height*1.2
+                //     // }
+                //     // this.image.src = data.img
+                //     // this.feed = 3
+                //     // this.crop_width = data.crop_width
+                //     // this.crop_height = data.crop_height
+                // }
+
+            }
+        //喂食
+        this.feeds = function(){
+
+            if(this.needFeed(this.interval) == true){
+                console.log("成功喂养")
+
+
+                axios.get('https://migou.justmetu.top//api/shop/cat/feed_cat',
+                    {
+                        params:{
+                            user_id:userid,
+                            user_cat_id:this.user_cat_id
+                        }
+                    })
+                    .then( (response)=> {
+                        console.log(response.data,"喂养返回");
+
+                        console.log(response.data.data);
+
+                        console.log(this.lastFeedTime);
+                        // if (response.data.data.age_id == 3 || this.ageid == 3 ){
+                        //
+                        // } else {
+                        switch (response.data.data.code) {
+                            case 0:
+                                Toast(`${response.data.msg}`,1000)
+                                break;
+                            case 1:
+                                if (this.ageid == response.data.data.age_id ){
+                                    this.interval = response.data.data.interval
+                                    this.lastFeedTime=response.data.data.last_feed_time;
+
+                                }else {
+                                    Toast(`您的小猫成长了`,1000)
+                                    console.log(catList_User);
+                                    userArr.feed = response.data.data.feed
+                                    this.feed_state =  `还需等待${this.feed_interval}秒`
+                                    this.ageid = response.data.data.age_id
+                                    this.interval = response.data.data.interval
+                                    this.lastFeedTime=response.data.data.last_feed_time;
+                                    this.image.src = response.data.data.img
+
+                                }
+                                break;
+                            case 2:
+                                Toast(`${response.data.msg}`,1000);
+
+                                break;
+                            case 3:
+                                Toast(`${response.data.msg}`,1000)
+                        }
+
+                        // }
+
+
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+
+
+
+            }
+
+
+            // console.log(`${this.id}还剩${this.feed}`)
+            //todo
+
+        }
+
+
+    }
+    let data = {
+        id:0,
+        feedList:1,
+        feed :2,
+        img:'cat.png',
+        runx :400,
+        runy:200
+    }
+    let datas = {
+        id:2,
+        feedList:1,
+        feed :2,
+        img:'cat.png',
+        runx :400,
+        runy:500
+    }
+    let bigcat = new cat(data,300,400)
+    let ncat = new cat(datas,500,300)
+
+    let i = [
+        bigcat,ncat
+    ]
+
+
+
+    sencnL();
+</script>
+<style>
+
+
+</style>
+</head>
