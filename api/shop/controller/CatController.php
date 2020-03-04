@@ -33,6 +33,19 @@ class CatController extends RestBaseController
     }
 
     /**
+    获取饲料余量
+     */
+    public function get_user_feed(){
+        $user_id= input('user_id');
+        $all_feed =Db::name('user_cat_info')->where('user_id',$user_id)->value('feed');
+        if($all_feed){
+            $this->success('请求成功',$all_feed);
+        }else{
+            $this->error('查询失败','');
+        }
+    }
+
+    /**
     领养猫咪
      * 可以同时喂养5只猫
      */
@@ -153,6 +166,7 @@ class CatController extends RestBaseController
         if($ins&&$upd){
             $new = Db::name('user_cat')->where('user_cat_id',$user_cat_id)->find();
             $cat_age=Db::name('cat_age')->where(['cat_id'=>$new['cat_id'],'age_id'=>$new['age_id']])->find();
+            Db::name('user_cat_info')->where('user_id',$user_id)->setDec('feed',$cat_age['feed_num']);
             $new['feed_num']=$cat_age['feed_num'];
             $new['feed_times']=$cat_age['feed_times'];
             $new['width']=$cat_age['width'];

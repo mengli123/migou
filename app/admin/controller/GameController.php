@@ -16,6 +16,7 @@ class GameController extends AdminBaseController
         return $this->fetch();
 	}
 
+
 	/**
 	添加/修改猫咪列表
      */
