@@ -202,6 +202,7 @@ class CatController extends RestBaseController
             $new['img']=$cat_age['img'];
             $new['is_full']=$is_full;
             $new['code']=1;
+            $new['feed']=$feed-$feed_num;
             $this->success('喂猫成功',$new);
         }else{
             $this->error('喂猫失败',[]);
