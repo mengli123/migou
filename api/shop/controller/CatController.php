@@ -20,6 +20,11 @@ class CatController extends RestBaseController
         header('Access-Control-Allow-Headers:origin,x-requested-with,content-type');
 
     }
+    function get_time() {
+        list($s1, $s2) = explode(' ', microtime());
+        return (float)sprintf('%.0f', (floatval($s1) + floatval($s2)) * 1000);
+    }
+
     /**
     猫咪列表
      */
@@ -48,8 +53,13 @@ class CatController extends RestBaseController
     增加饲料
      */
     public function add_user_feed(){
+        $first_send=100;
         $user_id=input('user_id');
         $feed_add_num = input('feed_add_num');
+        $sel=Db::name('user_cat_info')->where('user_id',$user_id)->select()->all();
+        if(count($sel)<1){
+            $create = Db::name('user_cat_info')->insert(['user_id'=>$user_id,'feed'=>$first_send]);
+        }
         $res=Db::name('user_cat_info')->where('user_id',$user_id)->setInc('feed',$feed_add_num);
         if($res){
             $this->success('增加饲料成功',$res);
@@ -119,7 +129,7 @@ class CatController extends RestBaseController
             $sel[$k]['width']=$cat_age['width'];
             $sel[$k]['interval']=$cat_age['interval'];
             $sel[$k]['height']=$cat_age['height'];
-            $sel[$k]['img']='/upload/'.$cat_age['img'];
+            $sel[$k]['img']=$cat_age['img'];
         }
 //        dump($sel);
 //        exit;

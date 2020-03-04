@@ -158,4 +158,24 @@ class GameController extends AdminBaseController
         }
     }
 
+    /**
+    猫咪用户信息列表
+     */
+    public function info_list(){
+        $cat = Db::name('user_cat_info')->select()->all();
+        foreach($cat as $k=>$v){
+            $cat[$k]['user_name'] =Db::name('user')->where('id',$v['user_id'])->value('user_nickname');
+        }
+        $this->assign("info",$cat);
+        return $this->fetch();
+    }
+
+    /**
+    修改保存的用户饲料
+     */
+    public function save_feed_change(){
+
+    }
+
+
 }
