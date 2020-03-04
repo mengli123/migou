@@ -44,6 +44,19 @@ class CatController extends RestBaseController
             $this->error('查询失败','');
         }
     }
+    /**
+    增加饲料
+     */
+    public function add_user_feed(){
+        $user_id=input('user_id');
+        $feed_add_num = input('feed_add_num');
+        $res=Db::name('user_cat_info')->where('user_id',$user_id)->setInc('feed',$feed_add_num);
+        if($res){
+            $this->success('增加饲料成功',$res);
+        }else{
+            $this->error('增加饲料失败','');
+        }
+    }
 
     /**
     领养猫咪
@@ -104,6 +117,7 @@ class CatController extends RestBaseController
             $sel[$k]['feed_num']=$cat_age['feed_num'];
             $sel[$k]['feed_times']=$cat_age['feed_times'];
             $sel[$k]['width']=$cat_age['width'];
+            $sel[$k]['interval']=$cat_age['interval'];
             $sel[$k]['height']=$cat_age['height'];
             $sel[$k]['img']='/upload/'.$cat_age['img'];
         }
