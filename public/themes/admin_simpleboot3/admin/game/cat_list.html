@@ -4,7 +4,7 @@
 	<div class="wrap js-check-wrap">
 		<ul class="nav nav-tabs">
 			<li class="active"><a href="{:url('game/cat_list')}">猫咪列表</a></li>
-			<li><a href="{:url('cat/add')}">添加猫咪</a></li>
+			<li><a href="{:url('game/cat_add')}">添加猫咪</a></li>
 		</ul>
 
 		<table class="table table-hover table-bordered">
@@ -15,7 +15,7 @@
 					<th style="text-align:center;"><span class="form-required">*</span>猫咪名称</th>
 					<th style="text-align:center;">描述</th>
 					<th style="text-align:center;">缩略图</th>
-					<th style="text-align:center;">阶段</th>
+					<th style="text-align:center;">管理各阶段</th>
 					<th width="160" style="text-align:center;">参数</th>
 				</tr>
 			</thead>
@@ -32,12 +32,12 @@
 						<a class="btn btn-xs btn-primary" href="{:url('game/cat_age',['cat_id'=>$vo['cat_id'],'age_id'=>3])}"><button class="btn  btn-primary">成年</button></a>
 					</td>
 					<td align="center">
-					<a href="edit/id/{$vo.cat_id}">
+					<a href="cat_add/cat_id/{$vo.cat_id}">
 						<button class="btn btn-primary">
 							{:lang('EDIT')}
 						</button>
 					</a>
-					<a class="js-ajax-delete" href="delete/id/{$vo.cat_id}">
+					<a class="js-ajax-delete" href="del_cat/cat_id/{$vo.cat_id}">
 						<button class="btn btn-danger">
 							{:lang('DELETE')}
 						</button>
