@@ -68,7 +68,7 @@ class CatController extends RestBaseController
         }
     }
 
-    public function test(){
+    public function tests(){
         $user_id=11;
         $sel= Db::name('user_cat_info')->where('user_id',$user_id)->select();
         if(count($sel)<1){
