@@ -587,6 +587,7 @@
                 if (p.x < catList_User[a].runx + parseInt(catList_User[a].crop_width) && p.x >=catList_User[a].runx && p.y < catList_User[a].runy+parseInt(catList_User[a].crop_height) && p.y >=catList_User[a].runy ) {
                     catList_User[a].feeds()
                     console.log('点击猫');
+                    return
                 }
 
                 // if (p.x <catList_User[a].runx +  catList_User[a].crop_width) {

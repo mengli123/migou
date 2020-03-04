@@ -68,6 +68,10 @@ class CatController extends RestBaseController
         }
     }
 
+    public function test(){
+
+    }
+
     /**
     领养猫咪
      * 可以同时喂养5只猫
@@ -75,6 +79,12 @@ class CatController extends RestBaseController
     public function buy_cat(){
         $user_id =input('user_id');
         $cat_id = input('cat_id');
+
+        $sel= Db::name('user_cat_info')->where('user_id',$user_id)->select();
+        if(count($sel)<1){
+            $user_cat_info = Db::name('user_cat_info')->insert(['user_id'=>$user_id]);
+        }
+
         if(!$user_id){
             $this->error('请传入user_id');
         }
