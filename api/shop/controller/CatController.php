@@ -180,7 +180,7 @@ class CatController extends RestBaseController
             'user_cat_id'=>$user_cat_id
         ];
         $ins=Db::name('user_cat_log')->insert($data);
-        $age_feed_num =Db::name('user_cat_log')->where('user_cat_id',$user_cat_id)->count();
+        $age_feed_num =Db::name('user_cat_log')->where(['user_cat_id'=>$user_cat_id,'age_id'=>$age_id])->count();
         $up_data=['last_feed_time'=>time()];
         if($age_feed_num==$feed_times){
             $up_data['age_id']=$age_id+1;
