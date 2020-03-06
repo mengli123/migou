@@ -33,7 +33,11 @@ class CatController extends RestBaseController
     获取商品兑换列表
      */
     public function get_cat_prize(){
-        $list=Db::name('cat_prize')->all();
+        $list=Db::name('cat_prize')
+            ->alias('cp')
+            ->join('goods g','g.goods_id=cp.goods_id')
+            ->join('goods_specs gs','gs.specs_id=cp.specs_id')
+            ->all();
         dump($list);
     }
 
@@ -172,14 +176,14 @@ class CatController extends RestBaseController
                     ]);
             }
 
-            $sel[$k]['interval']=$interval;
+            $sel[$k]['interval']=$interval*1;
             $sel[$k]['feed_num']=$cat_age['feed_num'];
             $sel[$k]['feed_times']=$cat_age['feed_times'];
             $sel[$k]['width']=$cat_age['width'];
             $sel[$k]['height']=$cat_age['height'];
             $sel[$k]['img']=$cat_age['img'];
         }
-//        dump($sel);
+        dump($sel);
 //        exit;
         $user_cat_info=Db::name('user_cat_info')->where('user_id',$user_id)->find();
         if($sel&&$user_cat_info){
