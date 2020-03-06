@@ -221,9 +221,10 @@ class CatController extends RestBaseController
         }
         $res=Db::name('user_cat_info')->where('user_id',$user_id)->setInc('feed',$feed_add_num);
         if($res){
-            echo $score;
+            //echo $score;
             Db::name('user')->where('id',$user_id)->setDec('score',$score);
-            $this->success('增加饲料成功',$feed_add_num);
+            $now_feed=Db::name('user_cat_info')->where('user_id',$user_id)->value('feed');
+            $this->success('增加饲料成功',$now_feed);
         }else{
             $this->error('增加饲料失败','');
         }
@@ -366,8 +367,9 @@ class CatController extends RestBaseController
                 ];
                 Db::name('user_cat_prize_log')
                     ->insert($prize_log_data);
+                $prize_log[]=$prize_log_data;
             }
-            $prize_log[]=$prize_log_data;
+
             $sel[$k]['interval']=$interval*1;
             $sel[$k]['feed_num']=$cat_age['feed_num'];
             $sel[$k]['feed_times']=$cat_age['feed_times'];
