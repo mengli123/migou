@@ -353,7 +353,6 @@ class CatController extends RestBaseController
                 $is_play=0;
                 Db::name('user_cat')->where('user_cat_id',$v['user_cat_id'])->update(['is_play'=>0]);
                 $sel[$k]['is_play']=$is_play;
-
                 $prize_array=Db::name('cat_prize')->column('id');
                 $rand_id=array_rand($prize_array,1);
                 $prize_id=$prize_array[$rand_id];
@@ -372,11 +371,11 @@ class CatController extends RestBaseController
                     'ctime'=>time(),
                     'prize_id'=>$prize_id
                 ];
-               //s dump($prize_log_data);
+               // dump($prize_log_data);
 
                 Db::name('user_cat_prize_log')
                     ->insert($prize_log_data);
-                $prize_log[]=$prize_log_data;
+                $prize_log[]=Db::name('cat_prize')->where('id',$prize_id)->value('prize');
             }
 
             $sel[$k]['interval']=$interval*1;
