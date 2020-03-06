@@ -36,6 +36,7 @@ class CatController extends RestBaseController
         $list=Db::name('user_cat_prize')
             ->alias('ucp')
             ->join('cat_prize cp','ucp.prize_id=cp.id')
+            ->field('ucp.*,cp.prize')
             ->where('user_id',$user_id)
             ->all();
         if($list){
