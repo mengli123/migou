@@ -28,6 +28,24 @@ class CatController extends RestBaseController
         list($s1, $s2) = explode(' ', microtime());
         return (float)sprintf('%.0f', (floatval($s1) + floatval($s2)) * 1000);
     }
+    /**
+     * 获取钱包碎片余额
+     */
+    public function user_prize_num(){
+        $user_id=input('user_id');
+        $list=Db::name('user_cat_prize')
+            ->alias('ucp')
+            ->join('cat_prize cp','ucp.prize_id=cp.id')
+            ->where('user_id',$user_id)
+            ->all();
+        if($list){
+            $this->success('获取成功',$list);
+        }else{
+            $this->error('获取失败',[]);
+        }
+    }
+
+
 
     /**
     获取商品兑换列表
