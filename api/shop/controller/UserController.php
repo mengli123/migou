@@ -67,7 +67,6 @@ class UserController extends RestBaseController
         }else{
             $this->error('请求失败');
         }
-
     }
     /**
     用户购物车列表

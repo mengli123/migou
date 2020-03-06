@@ -19,20 +19,14 @@
                                    required value="{$cat_age.feed_num|default=''}" placeholder="请输入食量"/>
                         </td>
                     </tr>
-                    <tr>
-                        <th>喂量次数<span class="form-required">*</span></th>
-                        <td>
-                            <input class="form-control" type="text" style="width:400px;" name="feed_times" id="feed_times"
-                                   required value="{$cat_age.feed_times|default=''}" placeholder="请输入喂食次数"/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>喂食间隔<span class="form-required">*</span></th>
-                        <td>
-                            <input class="form-control" type="text" style="width:400px;" name="interval" id="interval"
-                                   required value="{$cat_age.interval|default=''}" placeholder="请输入喂食间隔"/>
-                        </td>
-                    </tr>
+<!--                    <tr>-->
+<!--                        <th>喂量次数<span class="form-required">*</span></th>-->
+<!--                        <td>-->
+<!--                            <input class="form-control" type="text" style="width:400px;" name="feed_times" id="feed_times"-->
+<!--                                   required value="{$cat_age.feed_times|default=''}" placeholder="请输入喂食次数"/>-->
+<!--                        </td>-->
+<!--                    </tr>-->
+
                     <tr>
                         <th>width<span class="form-required">*</span></th>
                         <td>
@@ -47,6 +41,50 @@
                                    required value="{$cat_age.height|default=''}" placeholder="请输入高"/>
                         </td>
                     </tr>
+                    <tr>
+                        <th>各等级喂食间隔<span class="form-required">*</span></th>
+                        <td>
+                            <input class="form-control" type="text" style="width:200px;" name="interval[]" id="interval"
+                                   required value="{$cat_age.interval[0]|default=0}" placeholder="请输入喂食间隔"/>
+                            <input class="form-control" type="text" style="width:200px;" name="interval[]" id="interval"
+                                   required value="{$cat_age.interval[1]|default=0}" placeholder="请输入喂食间隔"/>
+                            <input class="form-control" type="text" style="width:200px;" name="interval[]" id="interval"
+                                   required value="{$cat_age.interval[2]|default=0}" placeholder="请输入喂食间隔"/>
+                            <input class="form-control" type="text" style="width:200px;" name="interval[]" id="interval"
+                                   required value="{$cat_age.interval[3]|default=0}" placeholder="请输入喂食间隔"/>
+                            <input class="form-control" type="text" style="width:200px;" name="interval[]" id="interval"
+                                   required value="{$cat_age.interval[4]|default=0}" placeholder="请输入喂食间隔"/>
+
+                            <input class="form-control" type="text" style="width:200px;" name="interval[]" id="interval"
+                                   required value="{$cat_age.interval[5]|default=0}" placeholder="请输入喂食间隔"/>
+                            <input class="form-control" type="text" style="width:200px;" name="interval[]" id="interval"
+                                   required value="{$cat_age.interval[6]|default=0}" placeholder="请输入喂食间隔"/>
+                            <input class="form-control" type="text" style="width:200px;" name="interval[]" id="interval"
+                                   required value="{$cat_age.interval[7]|default=0}" placeholder="请输入喂食间隔"/>
+                            <input class="form-control" type="text" style="width:200px;" name="interval[]" id="interval"
+                                   required value="{$cat_age.interval[8]|default=0}" placeholder="请输入喂食间隔"/>
+                            <input class="form-control" type="text" style="width:200px;" name="interval[]" id="interval"
+                                   required value="{$cat_age.interval[9]|default=0}" placeholder="请输入喂食间隔"/>
+
+                            <input class="form-control" type="text" style="width:200px;" name="interval[]" id="interval"
+                                   required value="{$cat_age.interval[10]|default=0}" placeholder="请输入喂食间隔"/>
+                            <input class="form-control" type="text" style="width:200px;" name="interval[]" id="interval"
+                                   required value="{$cat_age.interval[11]|default=0}" placeholder="请输入喂食间隔"/>
+                            <input class="form-control" type="text" style="width:200px;" name="interval[]" id="interval"
+                                   required value="{$cat_age.interval[12]|default=0}" placeholder="请输入喂食间隔"/>
+                            <input class="form-control" type="text" style="width:200px;" name="interval[]" id="interval"
+                                   required value="{$cat_age.interval[13]|default=0}" placeholder="请输入喂食间隔"/>
+                            <input class="form-control" type="text" style="width:200px;" name="interval[]" id="interval"
+                                   required value="{$cat_age.interval[14]|default=0}" placeholder="请输入喂食间隔"/>
+
+
+
+
+
+
+                        </td>
+                    </tr>
+
 
                 </table>
             </div>

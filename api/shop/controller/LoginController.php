@@ -71,6 +71,7 @@ class LoginController extends RestBaseController
             $insert = Db::name('user')->insertGetId(['mobile'=>$mobile,'openid'=>$openid,'user_nickname'=>$nick_name,'avatar'=>$avatar]);
             if($insert){
                 Db::name('user_cat_info')->insert(['user_id'=>$insert,'feed'=>100]);
+                Db::name('user_cat_info')->insert(['user_id'=>$insert,'feed'=>100]);
                 $this->success('已注册并登录成功',$insert);
             }
            // echo '已注册并登录';

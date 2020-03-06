@@ -9,6 +9,10 @@ use think\Controller;
 
 class CatController extends RestBaseController
 {
+    //public $play_time=100;
+    /**
+    设定玩耍时间为喂食间隔的1/2
+     */
     //跨域方法
     public function origin(){
         // 指定允许其他域名访问
@@ -23,6 +27,14 @@ class CatController extends RestBaseController
     function get_time() {
         list($s1, $s2) = explode(' ', microtime());
         return (float)sprintf('%.0f', (floatval($s1) + floatval($s2)) * 1000);
+    }
+
+    /**
+    获取商品兑换列表
+     */
+    public function get_cat_prize(){
+        $list=Db::name('cat_prize')->all();
+        dump($list);
     }
 
     /**
@@ -69,12 +81,9 @@ class CatController extends RestBaseController
     }
 
     public function tests(){
-        $user_id=11;
-        $sel= Db::name('user_cat_info')->where('user_id',$user_id)->select();
-        if(count($sel)<1){
-            $user_cat_info = Db::name('user_cat_info')->insert(['user_id'=>$user_id]);
-            dump($user_cat_info);
-        }
+
+//        dump($prize_array);
+//        dump($prize_id);
 
     }
 
@@ -140,10 +149,33 @@ class CatController extends RestBaseController
             ->select()->all();
         foreach ($sel as $k=>$v){
             $cat_age=Db::name('cat_age')->where(['cat_id'=>$v['cat_id'],'age_id'=>$v['age_id']])->find();
+            $interval_array=json_decode($cat_age['interval']);
+            $level=$v['level'];
+            $interval=$interval_array[$level];
+            $last_feed_time=$v['last_feed_time'];
+            if($v['is_play']==1&&time()-$last_feed_time>$interval/2){
+                $is_play=0;
+                Db::name('user_cat')->where('user_cat_id',$v['user_cat_id'])->update(['is_play'=>0]);
+                $sel[$k]['is_play']=$is_play;
+                $prize_array=Db::name('cat_prize')->column('id');
+                $rand_id=array_rand($prize_array,1);
+                $prize_id=$prize_array[$rand_id];
+                Db::name('user_cat_prize')->where(['user_id'=>$user_id,'prize_id'=>$prize_id])->setInc(1);
+                Db::name('user_cat_prize_log')
+                    ->insert([
+                        'user_id'=>$user_id,
+                       //
+                        // 'cat_id'=>$v['cat_id'],
+                        'user_cat_id'=>$v['user_cat_id'],
+                        'ctime'=>time(),
+                        'prize_id'=>$prize_id
+                    ]);
+            }
+
+            $sel[$k]['interval']=$interval;
             $sel[$k]['feed_num']=$cat_age['feed_num'];
             $sel[$k]['feed_times']=$cat_age['feed_times'];
             $sel[$k]['width']=$cat_age['width'];
-            $sel[$k]['interval']=$cat_age['interval'];
             $sel[$k]['height']=$cat_age['height'];
             $sel[$k]['img']=$cat_age['img'];
         }
@@ -170,12 +202,14 @@ class CatController extends RestBaseController
     public function feed_cat(){
         $user_id=input('user_id');
         $user_cat_id =input('user_cat_id');
-        $cat_id=Db::name('user_cat')->where('user_cat_id',$user_cat_id)->value('cat_id');
-        $age_id =Db::name('user_cat')->where('user_cat_id',$user_cat_id)->value('age_id');
-        $last_feed_time = Db::name('user_cat')->where(['user_id'=>$user_id,'user_cat_id'=>$user_cat_id])->value('last_feed_time');
-        $interval =Db::name('cat_age')->where(['cat_id'=>$cat_id,'age_id'=>$age_id])->value('interval');
-        $feed_num =Db::name('cat_age')->where(['cat_id'=>$cat_id,'age_id'=>$age_id])->value('feed_num');
-        $feed_times =Db::name('cat_age')->where(['cat_id'=>$cat_id,'age_id'=>$age_id])->value('feed_times');
+        $cat_age=Db::name('user_cat')->where('user_cat_id',$user_cat_id)->find();
+        $user_cat=Db::name('user_cat')->where('user_cat_id',$user_cat_id)->find();
+        $cat_id= $user_cat['cat_id'];
+        $age_id =$user_cat['age_id'];
+        $last_feed_time = $user_cat['last_feed_time'];
+        $interval =json_decode($cat_age['interval']);
+        $feed_num =$cat_age['feed_num'];
+        $feed_times =$cat_age['feed_times'];
         $feed=Db::name('user_cat_info')->where('user_id',$user_id)->value('feed');
         $duration=time()-$last_feed_time; //距上次喂猫过去了$interval秒
         $will =$interval-$duration;  //$will秒后可以喂猫
@@ -227,10 +261,15 @@ class CatController extends RestBaseController
     }
 
     /**
-
+    获取奖励别聊
      */
-    public function test(){
-
+    public function cat_prize(){
+        $list= Db::name('cat_prize')->select()->all();
+        if($list){
+            $this->success('获取成功',$list);
+        }else{
+            $this->error('获取失败',$list);
+        }
     }
 
     /**

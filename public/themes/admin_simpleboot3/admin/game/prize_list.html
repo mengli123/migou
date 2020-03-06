@@ -1,0 +1,52 @@
+<include file="public@header" />
+</head>
+<body>
+	<div class="wrap js-check-wrap">
+		<ul class="nav nav-tabs">
+			<li class="active"><a href="{:url('game/info_list')}">溜达奖励列表</a></li>
+<!--			<li><a href="{:url('game/info_add')}">添加猫咪</a></li>-->
+		</ul>
+
+		<table class="table table-hover table-bordered">
+			<thead>
+				<tr>
+					<th width="30" style="text-align:center;">ID</th>
+					
+					<th style="text-align:center;"><span class="form-required">*</span>奖励名称</th>
+					<th style="text-align:center;">可兑换商品</th>
+					<th style="text-align:center;">商品规格</th>
+					<th style="text-align:center;">需要数目</th>
+<!--					<th style="text-align:center;">饲养中</th>-->
+					<th width="160" style="text-align:center;">操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				<foreach name="info" item="vo">
+				<tr>
+					<td align="center">{$vo.id}</td>
+					<td align="center">{$vo.prize}</td>
+					<td align="center">[{$vo.goods_id}]{$vo.goods_name}</td>
+					<td align="center">[{$vo.specs_id}]{$vo.size}</td>
+					<td align="center">{$vo.num}</td>
+					<td align="center">
+
+						<a href="prize_add/id/{$vo.id}">
+							<button class="btn btn-primary">
+								{:lang('EDIT')}
+							</button>
+						</a>
+						<a class="js-ajax-delete" href="del_prize/id/{$vo.id}">
+							<button class="btn btn-danger">
+								{:lang('DELETE')}
+							</button>
+					</td>
+				</tr>
+				</foreach>
+			</tbody>
+		</table>
+	</div>
+	<script src="__STATIC__/js/jquery.js"></script>
+	<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>
+

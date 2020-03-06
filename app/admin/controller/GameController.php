@@ -86,6 +86,7 @@ class GameController extends AdminBaseController
 	    $cat_id=input('cat_id');
 	    $age_id=input('age_id');
 	    $cat_age=Db::name('cat_age')->where(['cat_id'=>$cat_id,'age_id'=>$age_id])->find();
+	    $cat_age['interval']=json_decode($cat_age['interval']);
 	    $this->assign('cat_id',$cat_id);
 	    $this->assign('age_id',$age_id);
 	    $this->assign('cat_age',$cat_age);
@@ -101,10 +102,12 @@ class GameController extends AdminBaseController
         $age_id = $request->param('age_id');
         $feed_num = $request->param('feed_num');
         $interval = $request->param('interval');
+        //dump($interval);exit;
         $img = $request->param('img');
         $width = $request->param('width');
         $height = $request->param('height');
-        $feed_times = $request->param('feed_times');
+        //$feed_times = $request->param('feed_times');
+        $feed_times = count($interval);
         if(!$cat_id){
             $this->error('请传入cat_id');
         }
@@ -132,7 +135,7 @@ class GameController extends AdminBaseController
         $data['cat_id'] = $cat_id;
         $data['age_id'] = $age_id;
         $data['feed_num'] = $feed_num;
-        $data['interval'] = $interval;
+        $data['interval'] = json_encode($interval);
         $data['img'] = $img;
         $data['feed_times'] = $feed_times;
         $data['width'] = $width;
@@ -176,6 +179,20 @@ class GameController extends AdminBaseController
     public function save_feed_change(){
 
     }
+    /**
+    猫咪用户信息列表
+     */
+    public function prize_list(){
+        $cat = Db::name('cat_prize')
+            ->alias('cp')
+            ->join('goods g','g.goods_id=cp.goods_id')
+            ->join('goods_specs gs','gs.specs_id=cp.specs_id')
+            ->select()->all();
+
+        $this->assign("info",$cat);
+        return $this->fetch();
+    }
+
 
 
 }
