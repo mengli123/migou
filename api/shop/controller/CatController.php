@@ -201,6 +201,8 @@ class CatController extends RestBaseController
         $user_id =input('user_id');
         $cat_id = input('cat_id');
         $sel= Db::name('user_cat_info')->where('user_id',$user_id)->select();
+        $cat=Db::name('cat')->where('cat_id',$cat_id)->find();
+        $score =Db::name('user')->where('id',$user_id)->value('score');
         if(count($sel)<1){
             $user_cat_info = Db::name('user_cat_info')->insert(['user_id'=>$user_id]);
         }
@@ -209,6 +211,9 @@ class CatController extends RestBaseController
         }
         if(!$cat_id){
             $this->error('请传入cat_id');
+        }
+        if($score<$cat['buy_price']){
+            $this->error('金币不足');
         }
         $sel = Db::name('user_cat')
             ->where(['user_id'=>$user_id,'status'=>0])
@@ -225,7 +230,7 @@ class CatController extends RestBaseController
         ];
         $ins = Db::name('user_cat')->insertGetId($data);
         if($ins){
-            $cat=Db::name('cat')->where('cat_id',$cat_id)->find();
+            Db::name('user')->where('id',$user_id)->setDec('score',$cat['buy_price']);
             $new = Db::name('user_cat')->where('user_cat_id',$ins)->find();
             $cat_age=Db::name('cat_age')->where(['cat_id'=>$new['cat_id'],'age_id'=>$new['age_id']])->find();
             $new['feed_num']=$cat_age['feed_num'];
@@ -252,7 +257,7 @@ class CatController extends RestBaseController
      */
     public function sale_cat(){
         $user_id =input('user_id');
-        $user_cat_id = input('user_cat_id',0);
+        $user_cat_id = input('user_cat_id');
         if(!$user_id){
             $this->error('参数错误',0);
         }
@@ -260,15 +265,21 @@ class CatController extends RestBaseController
             $this->error('请选择要卖的猫',0);
         }
         $find =Db::name('user_cat')->where('user_cat_id',$user_cat_id)->find();
+        if($find['status']!=0){
+            $this->error('该猫已卖出');
+        }
+        //dump($find);
         if($find['age_id']<3){
             $this->error('未到卖猫阶段',0);
         }
         $sale=Db::name('user_cat')->where('user_cat_id',$user_cat_id)->update(['status'=>1]);
         if($sale){
-            Db::name('user')->where('id',$user_id)->
-            $this->success('领养成功',$sale);
+            $cat_id=Db::name('user_cat')->where('user_cat_id',$user_cat_id)->value('cat_id');
+            $price=Db::name('cat')->where('cat_id',$cat_id)->value('sale_price');
+            Db::name('user')->where('id',$user_id)->setInc('score',$price);
+            $this->success('卖猫成功',$sale);
         }else{
-            $this->error('领养失败',0);
+            $this->error('卖猫失败',0);
         }
 
     }
@@ -387,7 +398,12 @@ class CatController extends RestBaseController
             $new['feed_num']=$cat_age['feed_num'];
             $new['feed_times']=$cat_age['feed_times'];
             $new['width']=$cat_age['width'];
-            $new['interval']=$cat_age['interval'];
+            $interval_array=json_decode($cat_age['interval']);
+            $level=$new['level'];
+            $interval=$interval_array[$level];
+            $last_feed_time=$new['last_feed_time'];
+            $new['interval']=$interval;
+            $new['last_feed_time']=$last_feed_time;
             $new['height']=$cat_age['height'];
             $new['img']=$cat_age['img'];
             $new['is_full']=$is_full;
