@@ -341,6 +341,7 @@ class CatController extends RestBaseController
             ->join('cat c','c.cat_id=uc.cat_id')
             ->where(['user_id'=>$user_id])
             ->select()->all();
+        $prize_log=[];
         foreach ($sel as $k=>$v){
             $cat_age=Db::name('cat_age')->where(['cat_id'=>$v['cat_id'],'age_id'=>$v['age_id']])->find();
             $interval_array=json_decode($cat_age['interval']);
@@ -355,17 +356,18 @@ class CatController extends RestBaseController
                 $rand_id=array_rand($prize_array,1);
                 $prize_id=$prize_array[$rand_id];
                 Db::name('user_cat_prize')->where(['user_id'=>$user_id,'prize_id'=>$prize_id])->setInc(1);
+                $prize_log_data=[
+                    'user_id'=>$user_id,
+                    //
+                    // 'cat_id'=>$v['cat_id'],
+                    'user_cat_id'=>$v['user_cat_id'],
+                    'ctime'=>time(),
+                    'prize_id'=>$prize_id
+                ];
                 Db::name('user_cat_prize_log')
-                    ->insert([
-                        'user_id'=>$user_id,
-                       //
-                        // 'cat_id'=>$v['cat_id'],
-                        'user_cat_id'=>$v['user_cat_id'],
-                        'ctime'=>time(),
-                        'prize_id'=>$prize_id
-                    ]);
+                    ->insert($prize_log_data);
             }
-
+            $prize_log[]=$prize_log_data;
             $sel[$k]['interval']=$interval*1;
             $sel[$k]['feed_num']=$cat_age['feed_num'];
             $sel[$k]['feed_times']=$cat_age['feed_times'];
@@ -379,7 +381,8 @@ class CatController extends RestBaseController
         if($sel&&$user_cat_info){
             $data=[
                 'info'=>$user_cat_info,
-                'game'=>$sel
+                'game'=>$sel,
+                'prize_log'=>$prize_log
             ];
            // dump($data);
             $this->success('查询成功',$data);

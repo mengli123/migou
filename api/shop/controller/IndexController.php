@@ -185,10 +185,9 @@ class IndexController extends RestBaseController
                 $res=Db::name('group_open_log')
                     ->where('specs_id',$v['specs_id'])
                     ->alias('agl')
-                    ->join('user u')
+                    ->join('user u','agl.user_id=u.id')
                     ->select()
-                    ->all()
-                ;
+                    ->all();
             }
         }
         //dump($detail);
