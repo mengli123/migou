@@ -200,12 +200,10 @@ class CatController extends RestBaseController
     public function buy_cat(){
         $user_id =input('user_id');
         $cat_id = input('cat_id');
-
         $sel= Db::name('user_cat_info')->where('user_id',$user_id)->select();
         if(count($sel)<1){
             $user_cat_info = Db::name('user_cat_info')->insert(['user_id'=>$user_id]);
         }
-
         if(!$user_id){
             $this->error('请传入user_id');
         }
@@ -227,18 +225,52 @@ class CatController extends RestBaseController
         ];
         $ins = Db::name('user_cat')->insertGetId($data);
         if($ins){
+            $cat=Db::name('cat')->where('cat_id',$cat_id)->find();
             $new = Db::name('user_cat')->where('user_cat_id',$ins)->find();
             $cat_age=Db::name('cat_age')->where(['cat_id'=>$new['cat_id'],'age_id'=>$new['age_id']])->find();
             $new['feed_num']=$cat_age['feed_num'];
             $new['feed_times']=$cat_age['feed_times'];
             $new['width']=$cat_age['width'];
-            $new['interval']=$cat_age['interval'];
+            $interval_array=json_decode($cat_age['interval']);
+            $level=$new['level'];
+            $interval=$interval_array[$level];
+            $last_feed_time=$new['last_feed_time'];
+            $new['interval']=$interval;
+            $new['last_feed_time']=$last_feed_time;
             $new['height']=$cat_age['height'];
             $new['img']=$cat_age['img'];
+            $new['logo']=$cat['logo'];
+            $new['cat']=$cat['cat'];
+            $new['desc']=$cat['desc'];
             $this->success('领养成功',$new);
         }else{
             $this->error('领养失败',[]);
         }
+    }
+    /**
+     * 卖猫
+     */
+    public function sale_cat(){
+        $user_id =input('user_id');
+        $user_cat_id = input('user_cat_id',0);
+        if(!$user_id){
+            $this->error('参数错误',0);
+        }
+        if(!$user_cat_id){
+            $this->error('请选择要卖的猫',0);
+        }
+        $find =Db::name('user_cat')->where('user_cat_id',$user_cat_id)->find();
+        if($find['age_id']<3){
+            $this->error('未到卖猫阶段',0);
+        }
+        $sale=Db::name('user_cat')->where('user_cat_id',$user_cat_id)->update(['status'=>1]);
+        if($sale){
+            Db::name('user')->where('id',$user_id)->
+            $this->success('领养成功',$sale);
+        }else{
+            $this->error('领养失败',0);
+        }
+
     }
 
     /**
