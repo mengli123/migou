@@ -353,10 +353,17 @@ class CatController extends RestBaseController
                 $is_play=0;
                 Db::name('user_cat')->where('user_cat_id',$v['user_cat_id'])->update(['is_play'=>0]);
                 $sel[$k]['is_play']=$is_play;
+
                 $prize_array=Db::name('cat_prize')->column('id');
                 $rand_id=array_rand($prize_array,1);
                 $prize_id=$prize_array[$rand_id];
-                Db::name('user_cat_prize')->where(['user_id'=>$user_id,'prize_id'=>$prize_id])->setInc(1);
+                $res=Db::name('user_cat_prize')->where(['user_id'=>$user_id,'prize_id'=>$prize_id])->select();
+                if(count($res)<1){
+                    Db::name('user_cat_prize')->insert(['user_id'=>$user_id,'prize_id'=>$prize_id,'num'=>1]);
+                }else{
+                    Db::name('user_cat_prize')->where(['user_id'=>$user_id,'prize_id'=>$prize_id])->setInc('num',1);
+
+                }
                 $prize_log_data=[
                     'user_id'=>$user_id,
                     //
@@ -365,6 +372,8 @@ class CatController extends RestBaseController
                     'ctime'=>time(),
                     'prize_id'=>$prize_id
                 ];
+               //s dump($prize_log_data);
+
                 Db::name('user_cat_prize_log')
                     ->insert($prize_log_data);
                 $prize_log[]=$prize_log_data;
