@@ -38,8 +38,22 @@ class CatController extends RestBaseController
             ->join('goods g','g.goods_id=cp.goods_id')
             ->join('goods_specs gs','gs.specs_id=cp.specs_id')
             ->all();
-        dump($list);
+        if($list){
+            $this->success('获取成功',$list);
+        }else{
+            $this->error('获取失败',[]);
+        }
+        // dump($list);
     }
+
+    /**
+    兑换商品
+     */
+    public function convert_goods(){
+        $user_id=input('user_id');
+        $prize_id=input('prize_id');
+    }
+
 
     /**
     猫咪列表
