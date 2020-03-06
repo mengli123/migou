@@ -55,7 +55,6 @@ class CatController extends RestBaseController
     }
 
 
-
     /**
     获取商品兑换列表
      */
@@ -74,11 +73,73 @@ class CatController extends RestBaseController
     }
 
     /**
-    兑换商品
+    碎片兑换商品
      */
     public function convert_goods(){
         $user_id=input('user_id');
         $prize_id=input('prize_id');
+        $name=input('name');
+        $mobile=input('mobile');
+        $address=input('address');
+        if(!$user_id){
+            $this->error('参数错误',[]);
+        }
+        if(!$prize_id){
+            $this->error('请传入兑换碎片id',[]);
+        }
+        if(!$name){
+            $this->error('请传入收件人姓名',[]);
+        }
+        if(!$mobile){
+            $this->error('请传入手机号',[]);
+        }
+        if(!$address){
+            $this->error('请传入收件地址',[]);
+        }
+        $cat_prize=Db::name('cat_prize')->where('id',$prize_id)->field('goods_id,num,specs_id')->find();
+        $need_num=$cat_prize['num'];
+        $user_num=Db::name('user_cat_prize')->where(['user_id'=>$user_id,'prize_id'=>$prize_id])->value('num');
+        if($user_num<$need_num){
+            $this->error('碎片不足',[]);
+        }
+        $num= $user_num-$need_num;
+        $goods_id=$cat_prize['goods_id'];
+        $specs_id=$cat_prize['specs_id'];
+
+        $goods_specs=Db::name('goods_specs')->where('specs_id',$specs_id)->find();
+        $goods=Db::name('goods')->where('goods_id',$goods_id)->find();
+        //dump($goods);
+        if($goods_specs['all_current_count']<0){
+            $this->error('当前规格没有库存了');
+        }
+        $data['order_no']=date('YmdHis').mt_rand(111111,999999);
+        $data['ctime']=time();
+        $data['user_id']=$user_id;
+        $data['specs_id']=$specs_id;
+        $data['goods_id']=$goods_id;
+        $data['goods_specs']=$goods_specs['size'];
+        $data['total_price']=0;
+        $data['price']=$goods_specs['price'];
+        $data['goods_name']=$goods['goods_name'];
+        $data['goods_area']=$goods['goods_area'];
+        $data['supplier']=$goods['supplier'];
+        $data['num'] = 1;
+        $data['name']=$name;
+        $data['mobile']=$mobile;
+        $data['address']=$address;
+        $data['status']=1;
+        $data['pay_type']='碎片兑换';
+        //dump($data);exit;
+        $insert = Db::name('order')->insert($data);
+        if($insert){
+            Db::name('user_cat_prize')->where('user_id',$user_id)->update(['num'=>$num]);
+            $this->success('兑换成功');
+        }else{
+            $this->error('兑换失败');
+        }
+
+        echo $need_num;
+        dump($user_num);
     }
 
 
@@ -190,6 +251,8 @@ class CatController extends RestBaseController
             $this->error('请传入user_id');
         }
         $sel = Db::name('user_cat')
+            ->alias('uc')
+            ->join('cat c','c.cat_id=uc.cat_id')
             ->where(['user_id'=>$user_id])
             ->select()->all();
         foreach ($sel as $k=>$v){
@@ -224,7 +287,7 @@ class CatController extends RestBaseController
             $sel[$k]['height']=$cat_age['height'];
             $sel[$k]['img']=$cat_age['img'];
         }
-       // dump($sel);
+       dump($sel);
 //        exit;
         $user_cat_info=Db::name('user_cat_info')->where('user_id',$user_id)->find();
         if($sel&&$user_cat_info){
