@@ -353,8 +353,8 @@ class CatController extends RestBaseController
     public function feed_cat(){
         $user_id=input('user_id');
         $user_cat_id =input('user_cat_id');
-        $cat_age=Db::name('user_cat')->where('user_cat_id',$user_cat_id)->find();
         $user_cat=Db::name('user_cat')->where('user_cat_id',$user_cat_id)->find();
+        $cat_age=Db::name('cat_age')->where(['cat_id'=>$user_cat['cat_id'],'age_id'=>$user_cat['age_id']])->find();
         $cat_id= $user_cat['cat_id'];
         $age_id =$user_cat['age_id'];
         $last_feed_time = $user_cat['last_feed_time'];
@@ -363,6 +363,7 @@ class CatController extends RestBaseController
         $feed_times =$cat_age['feed_times'];
         $feed=Db::name('user_cat_info')->where('user_id',$user_id)->value('feed');
         $level=$user_cat['level'];
+
         $interval=$interval_array[$level];
         $duration=time()-$last_feed_time; //距上次喂猫过去了$interval秒
         $will =$interval-$duration;  //$will秒后可以喂猫
@@ -381,15 +382,16 @@ class CatController extends RestBaseController
             'age_id'=>$age_id,
             'ctime'=>time(),
             'user_cat_id'=>$user_cat_id,
-            'level'=>$level+1
         ];
         $ins=Db::name('user_cat_log')->insert($data);
         $age_feed_num =Db::name('user_cat_log')->where(['user_cat_id'=>$user_cat_id,'age_id'=>$age_id])->count();
         $up_data=['last_feed_time'=>time()];
         if($age_feed_num==$feed_times){
             $up_data['age_id']=$age_id+1;
+            $up_data['level']=$level+1;
             $is_full=true;
         }else{
+            $up_data['level']=$level+1;
             $is_full=false;
         }
         //dump($up_data);
