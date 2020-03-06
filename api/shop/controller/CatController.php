@@ -358,10 +358,12 @@ class CatController extends RestBaseController
         $cat_id= $user_cat['cat_id'];
         $age_id =$user_cat['age_id'];
         $last_feed_time = $user_cat['last_feed_time'];
-        $interval =json_decode($cat_age['interval']);
+        $interval_array =json_decode($cat_age['interval']);
         $feed_num =$cat_age['feed_num'];
         $feed_times =$cat_age['feed_times'];
         $feed=Db::name('user_cat_info')->where('user_id',$user_id)->value('feed');
+        $level=$user_cat['level'];
+        $interval=$interval_array[$level];
         $duration=time()-$last_feed_time; //距上次喂猫过去了$interval秒
         $will =$interval-$duration;  //$will秒后可以喂猫
         if($age_id>2){
@@ -378,7 +380,8 @@ class CatController extends RestBaseController
             'cat_id'=>$cat_id,
             'age_id'=>$age_id,
             'ctime'=>time(),
-            'user_cat_id'=>$user_cat_id
+            'user_cat_id'=>$user_cat_id,
+            'level'=>$level+1
         ];
         $ins=Db::name('user_cat_log')->insert($data);
         $age_feed_num =Db::name('user_cat_log')->where(['user_cat_id'=>$user_cat_id,'age_id'=>$age_id])->count();
