@@ -183,7 +183,7 @@ class CatController extends RestBaseController
             $sel[$k]['height']=$cat_age['height'];
             $sel[$k]['img']=$cat_age['img'];
         }
-        dump($sel);
+       // dump($sel);
 //        exit;
         $user_cat_info=Db::name('user_cat_info')->where('user_id',$user_id)->find();
         if($sel&&$user_cat_info){
