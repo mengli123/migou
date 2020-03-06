@@ -64,6 +64,7 @@ class CatController extends RestBaseController
             ->join('goods g','g.goods_id=cp.goods_id')
             ->join('goods_specs gs','gs.specs_id=cp.specs_id')
             ->all();
+
         if($list){
             $this->success('获取成功',$list);
         }else{
@@ -71,6 +72,29 @@ class CatController extends RestBaseController
         }
         // dump($list);
     }
+
+/**
+判断碎片是否可以兑换
+ */
+    public function judge_prize_num(){
+        $user_id=input('user_id');
+        $prize_id=input('prize_id');
+        if(!$user_id){
+            $this->error('参数错误',[]);
+        }
+        if(!$prize_id){
+            $this->error('请传入兑换碎片id',[]);
+        }
+        $cat_prize=Db::name('cat_prize')->where('id',$prize_id)->field('goods_id,num,specs_id')->find();
+        $need_num=$cat_prize['num'];
+        $user_num=Db::name('user_cat_prize')->where(['user_id'=>$user_id,'prize_id'=>$prize_id])->value('num');
+        if($user_num<$need_num){
+            $this->error('碎片不足',0);
+        }else{
+            $this->success('可以兑换',1);
+        }
+    }
+
 
     /**
     碎片兑换商品
