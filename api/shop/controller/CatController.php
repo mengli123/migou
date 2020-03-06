@@ -213,11 +213,17 @@ class CatController extends RestBaseController
         if(count($sel)<1){
             $create = Db::name('user_cat_info')->insert(['user_id'=>$user_id,'feed'=>$first_send]);
         }
+        $rate=0.2;
+        $score=$feed_add_num*$rate;
+        $user_score=Db::name('user')->where('id',$user_id)->value('score');
+        if($user_score<$score){
+            $this->error('积分不足');
+        }
         $res=Db::name('user_cat_info')->where('user_id',$user_id)->setInc('feed',$feed_add_num);
         if($res){
-            $score=$feed_add_num*$this->get_feed_rate();
+            echo $score;
             Db::name('user')->where('id',$user_id)->setDec('score',$score);
-            $this->success('增加饲料成功',$res);
+            $this->success('增加饲料成功',$feed_add_num);
         }else{
             $this->error('增加饲料失败','');
         }
