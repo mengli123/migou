@@ -33,12 +33,20 @@ class CatController extends RestBaseController
      */
     public function user_prize_num(){
         $user_id=input('user_id');
-        $list=Db::name('user_cat_prize')
-            ->alias('ucp')
-            ->join('cat_prize cp','ucp.prize_id=cp.id')
-            ->field('ucp.*,cp.prize')
-            ->where('user_id',$user_id)
-            ->all();
+        $list=Db::name('cat_prize')->field('id,img,prize')->select()->all();
+        //dump($list);
+        foreach ($list as $k=>$v){
+            $num=Db::name('user_cat_prize')->where(['user_id'=>$user_id,'prize_id'=>$v['id']])->value('num');
+            if($num==null){
+                $num=0;
+            }
+            $list[$k]['num']=$num;
+        }
+//            ->alias('cp')
+//            ->join('user_cat_prize ucp','ucp.prize_id=cp.id')
+//            ->field('ucp.*,cp.prize')
+//            ->where('user_id',$user_id)
+
         if($list){
             $this->success('获取成功',$list);
         }else{
