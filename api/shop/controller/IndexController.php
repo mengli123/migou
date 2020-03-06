@@ -180,6 +180,17 @@ class IndexController extends RestBaseController
         $goods_id = input('goods_id');
         $detail = $goods_model->where('goods_id',$goods_id)->with('specs')->find();
         $detail['goods_pics']=json_decode($detail['goods_pics']);
+        foreach($detail['specs'] as $k=>$v){
+            if($v['is_group_buying']==1){
+                $res=Db::name('group_open_log')
+                    ->where('specs_id',$v['specs_id'])
+                    ->alias('agl')
+                    ->join('user u')
+                    ->select()
+                    ->all()
+                ;
+            }
+        }
         //dump($detail);
         if($detail){
             $this->success('请求成功!', $detail);

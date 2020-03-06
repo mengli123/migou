@@ -162,8 +162,8 @@ class CatController extends RestBaseController
             $this->error('兑换失败');
         }
 
-        echo $need_num;
-        dump($user_num);
+//        echo $need_num;
+//        dump($user_num);
     }
 
 
@@ -192,10 +192,21 @@ class CatController extends RestBaseController
         }
     }
     /**
+    获取饲料兑换比例
+     */
+    public function get_feed_rate(){
+        $score=1;
+        $feed=5;
+        $rate=$score/$feed;
+        $this->success('请求成功',$rate);
+    }
+
+
+    /**
     增加饲料
      */
     public function add_user_feed(){
-        $first_send=100;
+        $first_send=100;  //初始送100饲料
         $user_id=input('user_id');
         $feed_add_num = input('feed_add_num');
         $sel=Db::name('user_cat_info')->where('user_id',$user_id)->select()->all();
@@ -204,6 +215,8 @@ class CatController extends RestBaseController
         }
         $res=Db::name('user_cat_info')->where('user_id',$user_id)->setInc('feed',$feed_add_num);
         if($res){
+            $score=$feed_add_num*$this->get_feed_rate();
+            Db::name('user')->where('id',$user_id)->setDec('score',$score);
             $this->success('增加饲料成功',$res);
         }else{
             $this->error('增加饲料失败','');
@@ -413,9 +426,11 @@ class CatController extends RestBaseController
         if($age_feed_num==$feed_times){
             $up_data['age_id']=$age_id+1;
             $up_data['level']=$level+1;
+            $up_data['is_play']=1;
             $is_full=true;
         }else{
             $up_data['level']=$level+1;
+            $up_data['is_play']=1;
             $is_full=false;
         }
         //dump($up_data);
@@ -458,7 +473,7 @@ class CatController extends RestBaseController
     }
 
     /**
-
+    玩耍奖励素片
      */
     public function test1(){
 
