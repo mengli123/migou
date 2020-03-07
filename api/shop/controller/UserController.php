@@ -297,7 +297,7 @@ class UserController extends RestBaseController
         if(!$user_id){
             $this->error('请传入用户id');
         }
-        $is_up_group=input('is_group_buying');
+        $is_up_group=input('is_up_group');
         //$is_join_group=input('is_join_group');
         $group_id=input('group_id');
 
@@ -332,7 +332,7 @@ class UserController extends RestBaseController
 //                $data['price']=$goods_specs['price'];
 //            }
 
-            if($is_up_group==true){
+            if($is_up_group==1){
                 /** 开团*/
                 if($goods_specs['group_max_count']<$goods_specs['group_current_count']+1){
                     $this->error('当前数量超过库存团购余量');
@@ -365,7 +365,7 @@ class UserController extends RestBaseController
                     $partner=[$user_id];
                 }else{
                     $partner=json_decode($partner_str);
-                    if(count($partner)==$goods_specs['min_count']){
+                    if(count($partner)==$goods_specs['min_count']-1){
                         $group_status=1;
                         Db::name('group_open_log')->where('group_id',$group_id)->update(['status'=>$group_status]);
                     }

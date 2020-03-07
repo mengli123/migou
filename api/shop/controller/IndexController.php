@@ -172,6 +172,24 @@ class IndexController extends RestBaseController
         }
     }
 
+    public function test(){
+        $res=Db::name('group_open_log')
+            ->where('good_id',1)
+            ->select()
+            ->all();
+        $partner=json_decode($res['partner']);
+        $partner_data=[];
+        foreach ($partner as $k=>$v){
+
+        }
+        dump($res);
+    }
+    public function make_data(){
+        $array=[1,2,3];
+        $str=json_encode($array);
+        Db::name('group_open_log')->where('group_id',1)->update(['partner'=>$str]);
+    }
+
     /**
      商品详情查询
      */
@@ -180,16 +198,10 @@ class IndexController extends RestBaseController
         $goods_id = input('goods_id');
         $detail = $goods_model->where('goods_id',$goods_id)->with('specs')->find();
         $detail['goods_pics']=json_decode($detail['goods_pics']);
-        foreach($detail['specs'] as $k=>$v){
-            if($v['is_group_buying']==1){
-                $res=Db::name('group_open_log')
-                    ->where('specs_id',$v['specs_id'])
-                    ->alias('agl')
-                    ->join('user u','agl.user_id=u.id')
-                    ->select()
-                    ->all();
-            }
-        }
+        $res=Db::name('group_open_log')
+            ->where('good_id',$goods_id)
+            ->select()
+            ->all();
         //dump($detail);
         if($detail){
             $this->success('请求成功!', $detail);
