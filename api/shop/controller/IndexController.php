@@ -219,7 +219,7 @@ class IndexController extends RestBaseController
             ->all();
         if(count($res)>1){
             //echo 1;
-            
+
             foreach ($res as $ke=>$va){
                 $partner=json_decode($va['partner']);
                 $group_data=[];

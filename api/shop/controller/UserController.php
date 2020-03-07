@@ -318,19 +318,6 @@ class UserController extends RestBaseController
             $data['specs_id']=$v[0];
             $data['goods_id']=$goods_specs['goods_id'];
             $data['goods_specs']=$goods_specs['size'];
-//            if($goods_specs['is_group_buying']==1){
-//                /** 团购中*/
-//                if($goods_specs['group_max_count']<$goods_specs['group_current_count']+1){
-//                    $this->error('当前数量超过库存团购余量');
-//                }
-//
-//                $data['total_price']=$goods_specs['group_price']*$v[1];
-//                $data['price']=$goods_specs['group_price'];
-//            }else{
-//                /** 未在团购*/
-//                $data['total_price']=$goods_specs['price']*$v[1];
-//                $data['price']=$goods_specs['price'];
-//            }
 
             if($is_up_group==1){
                 /** 开团*/

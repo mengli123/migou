@@ -135,7 +135,7 @@ class GoodsController extends AdminBaseController
         $id = $request->param('id');
         $goods = Db::name('goods')->where('goods_id',$id)->find();
         $goods['goods_pics']=json_decode($goods['goods_pics']);
-        dump($goods['goods_pics']);
+       // dump($goods['goods_pics']);
         $cat=Db::name('goods_type')->select();
         $type=Db::name("goods_and_type")->where('goods_id',$id)->column('type_id');
         $this->assign("type",$type);
@@ -260,6 +260,8 @@ class GoodsController extends AdminBaseController
         $group_max_count= $request->param('group_max_count');
         $group_current_count= $request->param('group_current_count');
         $group_price = $request->param('group_price');
+        $min_count = $request->param('min_count');
+        $return_rate = $request->param('return_rate');
 //        if(strlen($size)>30){
 //            $this->error('产品规格超过限制长度30');
 //        }
@@ -287,6 +289,12 @@ class GoodsController extends AdminBaseController
         if ($group_price<0) {
             $this->error('团购价格不能低于0');exit;
         }
+        if ($min_count<2) {
+            $this->error('团购价格不能低于2人');exit;
+        }
+        if (!$return_rate>0.5) {
+            $this->error('团长反利率不能大于50%');exit;
+        }
 
         //判断是否存在该规格
         $is_size = Db::name('goods_specs')->where(['size'=>$size,'goods_id'=>$goods_id])->find();
@@ -306,6 +314,8 @@ class GoodsController extends AdminBaseController
         $data['group_max_count']=$group_max_count;
         $data['group_current_count']=$group_current_count;
         $data['group_price']=$group_price;
+        $data['min_count']=$min_count;
+        $data['return_rate']=$return_rate;
 
         if (Db::name('goods_specs')->insert($data)) {
             $this->success('新增商品规格成功', 'goods/goods_specs?goods_id='.$goods_id);
@@ -336,6 +346,8 @@ class GoodsController extends AdminBaseController
         $group_max_count= $request->param('group_max_count');
         $group_current_count= $request->param('group_current_count');
         $group_price = $request->param('group_price');
+        $min_count = $request->param('min_count');
+        $return_rate = $request->param('return_rate');
         if(strlen($size)>30){
             $this->error('产品规格超过限制长度30');
         }
@@ -363,6 +375,12 @@ class GoodsController extends AdminBaseController
         if ($group_price<0) {
             $this->error('团购价格不能低于0');exit;
         }
+        if ($min_count<2) {
+            $this->error('团购价格不能低于2人');exit;
+        }
+        if (!$return_rate>0.5) {
+            $this->error('团长反利率不能大于50%');exit;
+        }
 
         //判断是否存在该规格
 //        $is_size = Db::name('goods_specs')->where(['size'=>$size,'goods_id'=>$goods_id])->find();
@@ -382,6 +400,8 @@ class GoodsController extends AdminBaseController
         $data['group_max_count']=$group_max_count;
         $data['group_current_count']=$group_current_count;
         $data['group_price']=$group_price;
+        $data['min_count']=$min_count;
+        $data['return_rate']=$return_rate;
 
         if (Db::name('goods_specs')->where('specs_id',$specs_id)->update($data)) {
             $this->success('修改商品规格成功', 'goods/goods_specs?goods_id='.$goods_id);
