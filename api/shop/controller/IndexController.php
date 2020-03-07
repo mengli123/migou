@@ -223,6 +223,7 @@ class IndexController extends RestBaseController
             foreach ($res as $ke=>$va){
                 $partner=json_decode($va['partner']);
                 $group_data=[];
+                $group_data['group_id']=$va['group_id'];
                 $group_data['opener']=Db::name('user')->where('id',$va['user_id'])->field('id,user_nickname,avatar')->find();
                 foreach ($partner as $k=>$v){
                     $group_data['partner'][]=Db::name('user')->where('id',$v)->field('id,user_nickname,avatar')->find();
