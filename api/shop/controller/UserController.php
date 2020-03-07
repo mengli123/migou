@@ -298,8 +298,8 @@ class UserController extends RestBaseController
             $this->error('请传入用户id');
         }
         $is_up_group=input('is_group_buying');
-        $is_join_group=input('is_join_group');
-
+        //$is_join_group=input('is_join_group');
+        $group_id=input('group_id');
 
         $address_data = Db::name('user_address')->where('id',$address_id)->find();
 
@@ -331,6 +331,60 @@ class UserController extends RestBaseController
 //                $data['total_price']=$goods_specs['price']*$v[1];
 //                $data['price']=$goods_specs['price'];
 //            }
+
+            if($is_up_group==true){
+                /** 开团*/
+                if($goods_specs['group_max_count']<$goods_specs['group_current_count']+1){
+                    $this->error('当前数量超过库存团购余量');
+                }
+                $data['total_price']=$goods_specs['group_price']*$v[1];
+                $data['price']=$goods_specs['group_price'];
+
+                $group_data=[
+                    'user_id'=>$user_id,
+                    'goods_id'=>$goods_specs['goods_id'],
+                    'specs_id'=>$v[0],
+                    'ctime'=>time(),
+                    'status'=>0,
+                    'group_price'=>$goods_specs['group_price'],
+                    'min_count'=>$goods_specs['min_count'],
+                    'return_money'=>$goods_specs['group_price']*$goods_specs['return_rate']
+                ];
+                Db::name('group_open_log')->insert($group_data);
+
+            }elseif($group_id){
+                $group_status=Db::name('group_open_log')->where('group_id',$group_id)->value('status');
+                if($group_status==1){
+                    $this->error('此团人数已满，请参加其他或重新开团');
+                }
+                if($group_status==-1){
+                    $this->error('此团已过期或解散');
+                }
+                $partner_str=Db::name('group_open_log')->where('group_id',$group_id)->value('partner');
+                if($partner_str==''){
+                    $partner=[$user_id];
+                }else{
+                    $partner=json_decode($partner_str);
+                    if(count($partner)==$goods_specs['min_count']){
+                        $group_status=1;
+                        Db::name('group_open_log')->where('group_id',$group_id)->update(['status'=>$group_status]);
+                    }
+                    $partner[]=$user_id;
+                }
+
+                /** 参团*/
+                $data['total_price']=$goods_specs['group_price']*$v[1];
+                $data['price']=$goods_specs['group_price'];
+                $partner_str=json_decode($partner);
+                Db::name('group_open_log')->where('group_id',$group_id)->update(['partner'=>$partner_str]);
+            }else{
+                /** 普通购买*/
+                $data['total_price']=$goods_specs['price']*$v[1];
+                $data['price']=$goods_specs['price'];
+            }
+
+
+
             $data['total_price']=$goods_specs['price']*$v[1];
             $data['price']=$goods_specs['price'];
             $data['goods_name']=$goods['goods_name'];
