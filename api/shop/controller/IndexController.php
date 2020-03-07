@@ -177,16 +177,20 @@ class IndexController extends RestBaseController
             ->where('goods_id',1)
             ->select()
             ->all();
-        if(count($res)<1){
-            $partner=json_decode($res['partner']);
-            $partner_data=[];
-            foreach ($partner as $k=>$v){
-                $partner_data=Db::name('group_open_log')->where('id',$v)->select()->all();
+        if(count($res)>1){
+            echo 1;
+            foreach ($res as $ke=>$va){
+                $partner=json_decode($va['partner']);
+                $group_data=[];
+                $group_data['opener']=Db::name('user')->where('id',$va['user_id'])->field('id,user_nickname,avatar')->find();
+                foreach ($partner as $k=>$v){
+                    $group_data['partner'][]=Db::name('user')->where('id',$v)->field('id,user_nickname,avatar')->find();
+                }
             }
-            dump($res);
         }else{
-            $partner=[];
+            $group_data=[];
         }
+        dump($group_data);
 
     }
     public function make_data(){
@@ -208,7 +212,26 @@ class IndexController extends RestBaseController
 //            ->select()
 //            ->all();
         //dump($detail);
+
+        $res=Db::name('group_open_log')
+            ->where('goods_id',1)
+            ->select()
+            ->all();
+        if(count($res)>1){
+            echo 1;
+            foreach ($res as $ke=>$va){
+                $partner=json_decode($va['partner']);
+                $group_data=[];
+                $group_data['opener']=Db::name('user')->where('id',$va['user_id'])->field('id,user_nickname,avatar')->find();
+                foreach ($partner as $k=>$v){
+                    $group_data['partner'][]=Db::name('user')->where('id',$v)->field('id,user_nickname,avatar')->find();
+                }
+            }
+        }else{
+            $group_data=[];
+        }
         if($detail){
+            $detail['group_data']=$group_data;
             $this->success('请求成功!', $detail);
         }else{
             $this->error('请求失败');
