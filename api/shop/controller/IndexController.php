@@ -234,8 +234,9 @@ class IndexController extends RestBaseController
                                 $group_data[$ke]['partner'][] = Db::name('user')->where('id', $v)->field('id,user_nickname,avatar')->find();
                             }
                         }
+                    }else{
+                        $group_data[$ke]['partner']=[];
                     }
-
                 }
             }
         }else{
