@@ -282,11 +282,23 @@ class UserController extends RestBaseController
         if(!$specs){
             $this->error('请传入商品规格和数量字符串');
         }
+        $user_id= input('user_id');
+        if(!$user_id){
+            $this->error('请传入用户id');
+        }
         if($specs==-100){
             $count=input('count');
-            $data['total_price']=$count;
-            $data['ctime']=time();
-
+            $dataa=[];
+            $dataa['total_price']=$count;
+            $dataa['ctime']=time();
+            $data['order_no']=date('YmdHis').mt_rand(111111,999999);
+            $dataa['user_id']=$user_id;
+            $insert = Db::name('order')->insert($dataa);
+            if($insert){
+                $this->success('胜场充值订单成功',$data['order_no']);
+            }else{
+                $this->error('生成充值订单失败');
+            }
         }
         $array = explode(';',$specs);
         $specs=[];
@@ -300,10 +312,7 @@ class UserController extends RestBaseController
         if(!$address_id){
             $this->error('请选择地址');
         }
-        $user_id= input('user_id');
-        if(!$user_id){
-            $this->error('请传入用户id');
-        }
+
         $is_up_group=input('is_up_group');
         //$is_join_group=input('is_join_group');
         $group_id=input('group_id');
@@ -344,7 +353,8 @@ class UserController extends RestBaseController
                     'min_count'=>$goods_specs['min_count'],
                     'return_money'=>$goods_specs['group_price']*$goods_specs['return_rate']
                 ];
-                Db::name('group_open_log')->insert($group_data);
+                $group_id=Db::name('group_open_log')->insert($group_data);
+                $data['group_id']=$group_id;
 
             }elseif($group_id){
                 $group_status=Db::name('group_open_log')->where('group_id',$group_id)->value('status');
@@ -365,6 +375,7 @@ class UserController extends RestBaseController
                     }
                     $partner[]=$user_id;
                 }
+                $data['group_id']=$group_id;
 
                 /** 参团*/
                 $data['total_price']=$goods_specs['group_price']*$v[1];

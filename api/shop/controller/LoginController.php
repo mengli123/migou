@@ -58,7 +58,7 @@ class LoginController extends RestBaseController
             $nick_name='咪购用户'.$mobile;
         }
         if(!$avatar){
-            $avatar='1';
+            $avatar='https://s2.ax1x.com/2020/03/07/3j5oHf.jpg';
         }
 
         if($code!=cache($mobile)){

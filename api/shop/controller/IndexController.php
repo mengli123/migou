@@ -214,7 +214,7 @@ class IndexController extends RestBaseController
         //dump($detail);
 
         $res=Db::name('group_open_log')
-            ->where('goods_id',1)
+            ->where('goods_id',$goods_id)
             ->select()
             ->all();
         if(count($res)>1){
@@ -222,11 +222,20 @@ class IndexController extends RestBaseController
             $group_data=[];
             foreach ($res as $ke=>$va){
                 $partner=json_decode($va['partner']);
+                $order_status=Db::name('order')->where(['group_id'=>$va['group_id'],'user_id'=>$va['user_id']])->value('status');
+                if($order_status==1){
+                    //dump($va);
+                    $group_data[$ke]['group_id']=$va['group_id'];
+                    $group_data[$ke]['opener']=Db::name('user')->where('id',$va['user_id'])->field('id,user_nickname,avatar')->find();
+                    if($partner){
+                        foreach ($partner as $k=>$v){
+                            $order_status=Db::name('order')->where(['group_id'=>$va['group_id'],'user_id'=>$v])->value('status');
+                            if($order_status==1) {
+                                $group_data[$ke]['partner'][] = Db::name('user')->where('id', $v)->field('id,user_nickname,avatar')->find();
+                            }
+                        }
+                    }
 
-                $group_data[$ke]['group_id']=$va['group_id'];
-                $group_data[$ke]['opener']=Db::name('user')->where('id',$va['user_id'])->field('id,user_nickname,avatar')->find();
-                foreach ($partner as $k=>$v){
-                    $group_data[$ke]['partner'][]=Db::name('user')->where('id',$v)->field('id,user_nickname,avatar')->find();
                 }
             }
         }else{
