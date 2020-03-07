@@ -495,9 +495,9 @@ class GoodsController extends AdminBaseController
     {
         $request = request();
         $id = $request->param('id');
-        $cat = Db::name('goods_category')->where('cat_id',$id)->find();
-        $cat['img']=json_decode($cat['img']);
-        $this->assign("game",$cat);
+        $cat = Db::name('goods_type')->where('id',$id)->find();
+        //$cat['url']=json_decode($cat['url']);
+        $this->assign("cat",$cat);
         return $this->fetch();
     }
 
@@ -505,64 +505,40 @@ class GoodsController extends AdminBaseController
     {
         $request = request();
         //提取数据
-        $cat_name = $request->param('cat_name');
-        $sort = $request->param('sort');
-        $is_show = $request->param('is_show');
+        $id=$request->param('id');
+        $cat_name = $request->param('type_name');
+        //$sort = $request->param('sort');
+        $is_show = $request->param('status');
         $img = $request->file('img');
-        $img2 = $request->file('img2');
-        $id = $request->param('id');
-        if ($id=="") {
-             $this->error('无法操作');exit;
+        //$img2 = $request->file('img2');
+        if (!$id) {
+             $this->error('系统错误');
         }
-        if ($cat_name=="") {
-             $this->error('请填写分类名');exit;
-        }
-       
-        if ($sort<0) {
-             $this->error('请填写排序');exit;
+        if (!$cat_name) {
+            $this->error('请填写分类名');
         }
 
-        $cat=Db::name("goods_category")->where("cat_id",$id)->find();
-        if ($cat['cat_name']!=$cat_name) {
-            $list=Db::name("goods_category")->where(array("cat_name"=>$cat_name))->find();
-            if (!empty($list)) {
-                $this->error("分类名已存在");
-            }
-        }
-        $data=[];
-        $data['img']=json_decode($cat['img']);
-        //如果头像存在
+
+        //如果头像不存在
         if($img){
             $info=$img->move(ROOT_PATH.'public'.DS.'uploads'.DS.'img');
             $path=$info->getSavename();
-            $data['img'][0]='\uploads\img'.DS.$path;
-        }
-        //如果头像存在
-        if($img2){
-            $info=$img2->move(ROOT_PATH.'public'.DS.'uploads'.DS.'img');
-            $path=$info->getSavename();
-            $data['img'][1]='\uploads\img'.DS.$path;
-        }
-        $data['img']=json_encode($data['img']);
-        if ($cat_name) {
-           $data['cat_name'] = $cat_name;
-        }
-        if ($sort) {
-           $data['sort'] = $sort;
+            $data['url']='\uploads\img'.DS.$path;
         }
 
-        $data['is_show'] = $is_show;
-        
-        //封装数据
-        Db::name('goods_category')->where("cat_id",$id)->update($data);
+        $data['type_name'] = $cat_name;
+        $data['status'] = $is_show;
+
+        if (Db::name('goods_type')->where("id",$id)->update($data)) {
         $this->success('编辑分类成功', 'goods/goods_category');
-        
-            
+        }else{
+            $this->error('未修改');
+        }
     }
 
-    public function delete_cat(){
+    public function delete_type(){
         $id = $this->request->param('id', 0, 'intval');
-        $res=Db::name('goods_category')->where('cat_id',$id)->delete();
+        $res=Db::name('goods_type')->where('id',$id)->delete();
         if($res !== false){
             $this->success("删除成功！");
         }else{
