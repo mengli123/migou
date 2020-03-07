@@ -232,11 +232,11 @@ class IndexController extends RestBaseController
                         foreach ($partner as $k=>$v){
                             $order_status=Db::name('order')->where(['group_id'=>$va['group_id'],'user_id'=>$v])->value('status');
                             $group_data[$ke]['partner'][] = Db::name('user')->where('id', $v)->field('id,user_nickname,avatar')->find();
-                            if($order_status==1) {
-                                $group_data[$ke]['partner']['partner_is_pay']=1;
-                            }else{
-                                $group_data[$ke]['partner']['partner_is_pay']=0;
-                            }
+//                            if($order_status==1) {
+//                                $group_data[$ke]['partner']['partner_is_pay']=1;
+//                            }else{
+//                                $group_data[$ke]['partner']['partner_is_pay']=0;
+//                            }
                         }
                     }else{
                         $group_data[$ke]['partner']=[];
