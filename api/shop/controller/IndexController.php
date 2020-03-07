@@ -174,15 +174,20 @@ class IndexController extends RestBaseController
 
     public function test(){
         $res=Db::name('group_open_log')
-            ->where('good_id',1)
+            ->where('goods_id',1)
             ->select()
             ->all();
-        $partner=json_decode($res['partner']);
-        $partner_data=[];
-        foreach ($partner as $k=>$v){
-
+        if(count($res)<1){
+            $partner=json_decode($res['partner']);
+            $partner_data=[];
+            foreach ($partner as $k=>$v){
+                $partner_data=Db::name('group_open_log')->where('id',$v)->select()->all();
+            }
+            dump($res);
+        }else{
+            $partner=[];
         }
-        dump($res);
+
     }
     public function make_data(){
         $array=[1,2,3];
@@ -198,10 +203,10 @@ class IndexController extends RestBaseController
         $goods_id = input('goods_id');
         $detail = $goods_model->where('goods_id',$goods_id)->with('specs')->find();
         $detail['goods_pics']=json_decode($detail['goods_pics']);
-        $res=Db::name('group_open_log')
-            ->where('good_id',$goods_id)
-            ->select()
-            ->all();
+//        $res=Db::name('group_open_log')
+//            ->where('good_id',$goods_id)
+//            ->select()
+//            ->all();
         //dump($detail);
         if($detail){
             $this->success('请求成功!', $detail);
