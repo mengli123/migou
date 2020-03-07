@@ -9,26 +9,122 @@
 <!--<canvas id="canvas1" style="width: 100%;height: 100%">-->
 
 <!--</canvas>-->
+<div  class="maskinit" id="init">
+    <div class='base'>
+        <div class='cube'></div>
+        <div class='cube'></div>
+        <div class='cube'></div>
+        <div class='cube'></div>
+        <div class='cube'></div>
+        <div class='cube'></div>
+        <div class='cube'></div>
+        <div class='cube'></div>
+        <div class='cube'></div>
+    </div>
+    <div class="base_text">正在载入~~</div>
+</div>
 <div id="app">
+    <div class="masks" :class="{'maskpop':shopshow}" @click="shop_Change()">
+
+    </div>
     <div id="container">
 
         <canvas id="cavsImage" style="position: absolute;z-index: 99">
             您的浏览器不支持canvas,请升级浏览器
         </canvas>
+        <div class="masks" :class="{'maskpop':shopshow}" @click="shop_Change()"></div>
+        <div v-if="shopshow == true" class="shopBox">
+            <div class="adopt_title">请填写收货地址</div>
+            <input type="text" v-model="froms.mobile" placeholder="请输入您的联系电话" class="input">
+            <input type="text" v-model="froms.name" placeholder="请输入您的姓名" class="input">
+            <textarea rows="5"  v-model="froms.address" class="input"placeholder="请输入您的收货地址" ></textarea>
+            <div @click="place()" class="place">
+                确定
+            </div>
+        </div>
+        <div v-if="priceList.length > 0 " class="play_box">
+            <div class="adopt_title">猫咪寻宝归来~~~获取以下碎片~~~</div>
+            <div class="adopt_box">
+                <div class="adopt_item" v-for="(item,index) in priceList" >
+                    <!--<img :src="'https://migou.justmetu.top/upload/'+item.logo" alt="" class="img">-->
+                    <div class="adopt_text"> 获取{{item}}</div>
+                </div>
+            </div>
+        </div>
 
         <div class="mask" :class="{'maskpop':adopt_show}" @click="adopt_Change()"></div>
         <div class="content" :class="{'trans':adopt_show}"  >
+
             <div class="adopt_title">当前猫舍容量5只</div>
             <div class="adopt_box">
                 <div class="adopt_item" v-for="(item,index) in catList" >
                     <img :src="'https://migou.justmetu.top/upload/'+item.logo" alt="" class="img">
                     <div class="adopt_text">{{item.cat}}</div>
                     <div class="adopt_text">{{item.desc}}</div>
+                    <div class="adopt_text">需要积分：{{item.buy_price}}</div>
                     <div class="pay" @click="pay(item,index)">购买</div>
                 </div>
             </div>
 
         </div>
+        <div class="mask" :class="{'maskpop':pay_show}" @click="pay_Change()"></div>
+        <div class="content" :class="{'trans':pay_show}"  >
+            <div class="barbox">
+                <div v-for="(barItem,index) in barList" :key="index" class="bar" :class="{'isActive':barActive==index}" @click="BarChange(index)">{{barItem.title}}</div>
+            </div>
+            <div class="adopt_box" v-show="barActive==0">
+
+                <div class="adopt_item" v-for="(item,index) in catdetailList" >
+                    <img :src="'https://migou.justmetu.top/upload/'+item.logo" alt="" class="img">
+                    <div class="adopt_text">{{item.cat}}</div>
+                    <div class="adopt_text">{{item.desc}}</div>
+                    <div class="adopt_text">当前等级:{{l(item.ageid - 1)}}</div>
+                    <div class="adopt_text" v-if="item.is_play == 0">当前状态:{{item.feed_state}}</div>
+                    <div class="adopt_text" v-else>当前状态:正在玩耍</div>
+                    <!--<div class="pay" @click="pay(item,index)">购买</div>-->
+                </div>
+            </div>
+            <div class="adopt_box" v-show="barActive==1">
+                <div v-if="catpayList.length == 0">
+                    <div class="adopt_title">暂无可出手的猫咪！</div>
+                </div>
+                <div class="adopt_item" v-for="(item,index) in catpayList" v-if="catpayList.length > 0 ">
+                    <img :src="'https://migou.justmetu.top/upload/'+item.logo" alt="" class="img">
+
+                    <div class="adopt_text">可兑换{{item.sale_price}}积分</div>
+                    <div class="adopt_text">当前等级:{{l(item.ageid - 1)}}</div>
+                    <div class="pay" @click="conve(item,index)">兑换积分</div>
+                </div>
+
+            </div>
+            <div class="shop_box" v-show="barActive==2">
+                <div class="num_box">
+                    <div class="adopt_item" v-for="(item,index) in payShopList.usernum" >
+                        <img :src="item.img" alt="" class="img">
+                        <div class="adopt_text">{{item.prize}}× {{item.num}}</div>
+                    </div>
+                </div>
+              <div class="shopItem_box">
+                  <div class="shopItem" v-for="(item,index) in payShopList.shopList" >
+                    <div style="flex: 1">
+                        <img :src="item.img" alt="" class="shop_img">
+                    </div>
+                      <div style="flex: 2">
+                          <div class="shopItem_text">{{item.goods_name}}</div>
+                          <div style="display: flex;align-items: baseline;">
+                              <div class="shop_pay">需要{{item.prize}}× {{item.num}}</div>
+                              <div class="pay" @click="shoppay(item,index)">兑换积分</div>
+                          </div>
+
+                      </div>
+
+                  </div>
+              </div>
+
+            </div>
+
+        </div>
+
 
         <div class="mask" :class="{'maskpop':info}" @click="info_Change()"></div>
         <div class="content" :class="{'trans':info}"  >
@@ -38,10 +134,12 @@
 
         <div class="mask" :class="{'maskpop':feed_show}" @click="feed_Change()"></div>
         <div class="content" :class="{'trans':feed_show}"  >
-            <div class="adopt_title">可领取以下任务</div>
-            <div class="adopt_box">
-                <div class="adopt_item" v-for="(item,index) in itemlist" >
-                    {{index}}
+            <div class="adopt_title">兑换比例1点米购积分=5点饲料</div>
+            <div style="width: 100%">
+                <div class="liang" v-for="(item,index) in liang" >
+                    <img src="img/liang.png" alt="" style="width: 10rem">
+                    <div class="adopt_text">{{item}}g</div>
+                    <div class="pay_norml" @click="feed_add(item,index)">兑换粮食</div>
                 </div>
             </div>
 
@@ -57,11 +155,7 @@
     </div>
 </div>
 
-</div>
 
-
-
-</div>
 
 
 <!--<script src="scene.js"></script>-->
@@ -70,6 +164,161 @@
 </html>
 
 <style>
+    .base {
+        height: 9em;
+        left: 50%;
+        margin: -7.5em;
+        padding: 3em;
+        position: absolute;
+        top: 50%;
+        width: 9em;
+        transform: rotateX(45deg) rotateZ(45deg);
+        transform-style: preserve-3d;
+    }
+
+    .cube,
+    .cube:after,
+    .cube:before {
+        content: '';
+        float: left;
+        height: 3em;
+        position: absolute;
+        width: 3em;
+    }
+
+    /* Top */
+    .cube {
+        background-color: #05afd1;
+        position: relative;
+        transform: translateZ(3em);
+        transform-style: preserve-3d;
+        transition: .25s;
+        box-shadow: 13em 13em 1.5em rgba(0, 0, 0, 0.1);
+        animation: anim 1s infinite;
+    }
+    .cube:after {
+        background-color: #049dbc;
+        transform: rotateX(-90deg) translateY(3em);
+        transform-origin: 100% 100%;
+    }
+    .cube:before {
+        background-color: #048ca7;
+        transform: rotateY(90deg) translateX(3em);
+        transform-origin: 100% 0;
+    }
+    .cube:nth-child(1) {animation-delay: 0.05s;}
+    .cube:nth-child(2) {animation-delay: 0.1s;}
+    .cube:nth-child(3) {animation-delay: 0.15s;}
+    .cube:nth-child(4) {animation-delay: 0.2s;}
+    .cube:nth-child(5) {animation-delay: 0.25s;}
+    .cube:nth-child(6) {
+        animation-delay: 0.3s;}
+    .cube:nth-child(7) {animation-delay: 0.35s;
+    }
+    .cube:nth-child(8) {animation-delay: 0.4s;}
+    .cube:nth-child(9) {animation-delay: 0.45s;}
+
+    @keyframes anim {
+        50% {
+            transform: translateZ(0.5em);
+        }
+    }
+    .liang{
+        padding: 2rem 1rem;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        align-content: center;
+        background: white;
+        margin: 2rem auto;
+        width: 80%;
+    }
+    .base_text{
+
+        left: 40%;
+        position: absolute;
+        top: 65%;
+        font-size: 3rem;
+    }
+.play_box{
+    text-align: center;
+    background: #fff4e6;
+    font-size: 1.89rem;
+    width: 90%;
+    z-index: 1001;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 50%;
+    border-radius: 20px 20px 0 0;
+    overflow: auto;
+    margin: 0 auto;
+    box-shadow: 22px 6px 2px 12px #d47048;
+}
+    .shopBox{
+        text-align: center;
+        background: #fff4e6;
+        font-size: 1.89rem;
+        width: 80%;
+        z-index: 1001;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 50%;
+        border-radius: 20px 20px 0 0;
+        overflow: auto;
+        margin: 0 auto;
+        box-shadow: 22px 6px 2px 12px #d47048;
+    }
+    .barbox{
+        display: flex;
+
+        justify-content: center;
+        width: 90%;
+        margin: 3rem auto;
+
+    }
+    .shopItem{
+        display: flex;
+        justify-content: space-between;
+        width: 90%;
+        margin: 2rem auto;
+        border-radius: 20px;
+        background: white;
+    }
+    .shop_img{
+        width: 12rem;
+        border-radius: 50%;
+        border: 0.8rem dotted #ff8554;
+    }
+    .shopItem_text{
+        font-size: 1.98rem;
+        color: #333;
+        font-family: "Palatino Linotype";
+        font-weight: 600;
+        text-align: left;
+        margin-bottom: 0.4rem;
+    }
+    .shop_pay{
+        font-size: 2.78rem;
+        color: #84694e;
+        font-family: "Palatino Linotype";
+        font-weight: 600;
+        text-align: left;
+        margin-bottom: 0.4rem;
+        margin-top: 3rem;
+    }
+    .bar{
+        flex: 1;
+        text-align: center;
+        font-size: 2.87rem;
+    }
+    .isActive{
+        border: 1px solid #84694e ;
+        background: #e4be92;
+        border-radius: 25px;
+        color:#84694e;
+    }
     .friend-item{
         margin: 0.777rem  1.333rem;
         text-align: center;
@@ -92,6 +341,7 @@
 
 
     }
+
     .flow-right::-webkit-scrollbar {
         display: none;
     }
@@ -115,17 +365,57 @@
     .adopt_box{
         width: 100%;
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
+        overflow-x: scroll;
+        white-space: nowrap;
+
     }
 
+    .shop_box{
+        width: 100%;
+
+    }
+    .num_box{
+        width: 100%;
+        display: flex;
+        overflow-x: scroll;
+        white-space: nowrap;
+    }
+    .shopItem_box{
+        width: 100%;
+        height: 80%;
+        overflow-y: scroll;
+
+    }
     .adopt_title{
+
         font-size: 2.56rem;
         color: #84694e;
         font-family: "Palatino Linotype";
         font-weight: 600;
         margin: 5rem auto;
         text-align: center;
+    }
+    .maskinit{
+        background-color:white;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        top: 0;
+        right: 0;
+        z-index: 9999;
+    }
+    .masks{
+        background-color: rgba(0, 0, 0, 0.5);
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        top: 0;
+        right: 0;
+        opacity: 0;
+        will-change: opacity;
+        transition: all 0.5s;
+        visibility: hidden;
+        z-index: 1000;
     }
     .mask {
         background-color: rgba(0, 0, 0, 0.5);
@@ -166,7 +456,7 @@
 
     .adopt_item{
         font-size: 2.56rem;
-        flex: 1;
+        flex: 2;
         background: #fff;
         text-align: center;
         margin: 1.4rem;
@@ -175,6 +465,40 @@
         border-radius: 1.888rem;
 
     }
+    .input{
+        width: 80%;
+        height: 7rem;
+        font-size: 2.56rem;
+        line-height: 7rem;
+        margin: 1rem auto;
+        border: 1px solid #84694e;
+    }
+    textarea{
+        border: 0;
+        outline: none;
+        background-color: rgba(0, 0, 0, 0);// 透明背景
+
+    }
+    input {
+
+        border: 0;
+    outline: none;
+    background-color: rgba(0, 0, 0, 0);// 透明背景
+
+    }
+    .place{
+        width: 80%;
+        height: 6rem;
+        text-align: center;
+        line-height: 6rem;
+        background: #fd723b;
+        color: white;
+        border-radius: 25px;
+        margin: 1.5rem auto;
+        font-size: 2.56rem;
+        font-weight: 600;
+    }
+
     .img{
         width: 10rem;
         height: 10rem;
@@ -196,26 +520,64 @@
 
 
     }
+    .pay_norml{
+        width: 12rem;
+        height: 4rem;
+        line-height: 4rem;
+        text-align: center;
+        font-size: 2.56rem;
+        color: #fff;
+        background: #ff8554;
+        padding: 0.4rem;
+        border-radius: 0.8rem;
+    }
 
 </style>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="js/vue.min.js"></script>
+<script src="js/prefixfree.min.js"></script>
 
 
 <script>
     var app = new Vue({
         el: '#app',
         data: {
+            liang:[
+                '50',
+                '100',
+                '200',
+            ],
+            itemid:'',
+            froms:{
+                address:'',
+                name:'',
+                mobile:'',
+            },
+            shopshow:false,
+            catdetailList:[],
+            catpayList:[],
+
+            payShopList:{
+                usernum:[],
+                shopList:[],
+            },
+            priceList:[],
+            isplay:false,
+            barList:[
+                {title:"我的小猫"},
+                {title:"售卖猫咪"},
+                {title:"积分兑换"},
+            ],
+            initshow:false,
+            barActive:0,
             catList:[],
+            pay_show:false,
             info:false,
             adopt_show:false,
             feed_show:false,
             message: 'Hello Vue!',
             lyshow:false,
             itemlist:[
-                {img:'https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=1422507097,3247872807&fm=26&gp=0.jpg',name:'小花猫2',detail:'是一种性格古怪的小猫',feed:"10次可以售出"},
-                {img:'https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=1422507097,3247872807&fm=26&gp=0.jpg',name:'小花猫2',detail:'是一种性格古怪的小猫',feed:"10次可以售出"},
-                {img:'https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=1422507097,3247872807&fm=26&gp=0.jpg',name:'小花猫2',detail:'是一种性格古怪的小猫',feed:"10次可以售出"},
 
             ],
             friend:[
@@ -234,10 +596,73 @@
             ],
 
         },
+        mounted(){
+
+
+        },
         methods:{
+
+            l(index){
+                let data = [
+                    '幼年期',
+                    '青年期',
+                    '成熟期',
+                ]
+                return data[index]
+            },
+            shoppay(item,index){
+                console.log(item);
+                axios.get('https://migou.justmetu.top/api/shop/cat/judge_prize_num',{
+                        params:{
+                            user_id:userid,
+                            prize_id:item.id
+                        }
+                    })
+                        .then(function (response) {
+                            console.log(response.data,"商城兑换");
+                            Toast(`${response.data.msg}`,1000)
+                            if (response.data.code == 1){
+                                app.shopshow = true
+                                app.itemid = item.id
+                            }
+                        })
+            },
+            place(){
+                console.log(app.froms.name);
+                console.log(app.froms.name);
+                console.log(app.froms.name);
+                if (app.froms.name.length > 2 && app.froms.mobile >10 && app.froms.address> 5) {
+                    axios.get('https://migou.justmetu.top/api/shop/cat/convert_goods',{
+                        params:{
+                            user_id:userid,
+                            prize_id:app.itemid,
+                            name:app.froms.name,
+                            mobile:app.froms.mobile,
+                            address:app.froms.address
+                        }
+                    })
+                        .then(function (response) {
+                            console.log(response.data,"兑换");
+                            Toast(`${response.data.msg}`,1000)
+                            if (response.data.code==1){
+                                app.shopshow = false
+                                app.froms.name =''
+                                app.froms.mobile =''
+                                app.froms.address =''
+                            }
+
+                        })
+                }else {
+                    Toast('请仔细检查您填写的收货地址',1000)
+                }
+
+            },
             adopt_Change(){
 
                 app.adopt_show  = false
+            },
+            shop_Change(){
+                app.shopshow = false
             },
             feed_Change(){
                 app.feed_show  = false
@@ -250,6 +675,69 @@
                 app.lyshow = false
 
             },
+            //兑换积分
+            conve(item,index){
+                console.log(item);
+                axios.get('https://migou.justmetu.top/api/shop/cat/sale_cat',{
+                    params:{
+                       user_id:userid,
+                        user_cat_id:item.user_cat_id
+                    }
+                })
+                    .then(function (response) {
+                        console.log(response);
+                        Toast(`${response.data.msg}`,1000)
+                        if(response.data.code == 1){
+                            Toast(`${response.data.msg}获得${item.sale_price}积分`,1000)
+                            app.catpayList.splice(index,1)
+                            catList_User.splice(catList_User.findIndex(val => val.user_cat_id === item.user_cat_id),1)
+                        }
+
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            feed_add(item,index){
+                console.log(item);
+                axios.get('https://migou.justmetu.top/api/shop/cat/add_user_feed',{
+                    params:{
+                        user_id:userid,
+                        feed_add_num:item
+                    }
+                })
+
+                    .then(function (response) {
+                        console.log( userArr.feed );
+                        console.log(response.data.data );
+                        Toast(`${response.data.msg}`,1000)
+                        userArr.feed =response.data.data
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+
+            },
+            BarChange(index){
+                    console.log(index);
+                    app.barActive = index
+
+                if(index==1){
+                    app.catpayList = []
+                    app.catdetailList.forEach(val=>{
+                        if(val.ageid == 3){
+
+                            app.catpayList.push(val)
+                        }
+                    })
+                console.log( app.catpayList)
+                }
+
+            },
+            pay_Change(){
+                app.pay_show = false
+            },
+
             pay(item,index){
                 console.log(item,index);
 
@@ -261,9 +749,16 @@
                     }
                 })
                     .then(function (response) {
-                        console.log(response.data.data);
-                        catList_User.push(new cat(response.data.data,randomNum(150,400),randomNum(600,document.body.clientHeight - 600)))
-                        console.log(catList_User,"小猫");
+                        if (response.data.code == 1 ){
+                            Toast(`${response.data.msg}`,1000)
+                            console.log(response.data.data);
+                            catList_User.push(new cat(response.data.data,randomNum(150,400),randomNum(600,document.body.clientHeight - 600)))
+                            console.log(catList_User,"小猫");
+                        } if (response.data.code == 0) {
+                            Toast(`${response.data.msg}`,1000)
+                        }
+
+
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -271,6 +766,13 @@
             }
         }
     })
+
+    setTimeout(()=>{
+        document.getElementById("init").style.display="none";
+    },4000)
+
+
+    // document.getElementById("init").style.display="inline";
     function getQueryVariable(variable)
     {
         var query = window.location.search.substring(1);
@@ -303,6 +805,34 @@
         axios.get('https://migou.justmetu.top/api/shop/cat/get_cat_list')
             .then(function (response) {
                 app.catList = response.data.data
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        axios.get('https://migou.justmetu.top/api/shop/cat/get_feed_rate')
+            .then(function (response) {
+                console.log(response.data,"饲料比例");
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        axios.get('https://migou.justmetu.top/api/shop/cat/get_cat_prize')
+            .then(function (response) {
+                console.log(response.data,"商城兑换");
+                app.payShopList.shopList = response.data.data
+
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+            axios.get('https://migou.justmetu.top/api/shop/cat/user_prize_num',{
+                params:{
+                    user_id:userid
+                }
+            })
+            .then(function (response) {
+                console.log(response.data,"用户鱼额");
+                app.payShopList.usernum = response.data.data
             })
             .catch(function (error) {
                 console.log(error);
@@ -347,8 +877,9 @@
 
                 catList_User = list
                 console.log(list);
-                console.log(  app.catUserList,"访问");
 
+                app.catdetailList = catList_User
+                app.priceList  =  response.data.data.prize_log
             })
             .catch(function (error) {
                 console.log(error);
@@ -389,6 +920,7 @@
 
         let information = new Image();
         information.src = 'img/dongtai.png'
+
 
         //场景加载函数
 
@@ -578,6 +1110,11 @@
 
                 app.info = true
             }
+            console.log(p)
+            if ( p.x >=  10  && p.x< 280 && p.y < 750 && p.y >= 170){
+
+                app.pay_show = true
+            }
             for (let a = 0;a<catList_User.length;a++){
                 // if (p.x = i[a].runx,p.y = i[a].runy) {
                 //     console.log(`${i[a]}个人物`)
@@ -659,26 +1196,13 @@
     };
 
     function cat (data,runx,runy) {
-
-
-        // this.id= data.id,
-        //     this.feedList = data.feedlist
-        // this.feed = data.feed
-        // this.image  = new Image();
-        // this.image.src = data.img
-        // this.runx  = runx;
-        // this.runy = runy;
-        // this.lastFeedTime= data.lastFeedTime;
-        // this.delt_x=0;
-        // this.delt_y=0;
-        // this.fram_count=0;
-        // this.temp_count=0;
-        // this.frameIndex = 0;
-        // this.direction = 0;
-        // this.crop_width=360;
-        // this.crop_height=306.5;
-        // this.feed_state = '',
-        this.feed_interval = 0;
+        this.is_play = data.is_play
+        this.buy_price = data.buy_price //购买价格
+        this.sale_price = data.sale_price //出售价格
+        this.desc =  data.desc
+        this.cat =  data.cat
+        this.logo =  data.logo
+        this.feed_interval = 0
         this.interval = data.interval//喂养间隔
         this.cat_satge = false;
         this.ageid= data.age_id //年龄
@@ -763,10 +1287,11 @@
                                 Toast(`${response.data.msg}`,1000)
                                 break;
                             case 1:
+                                Toast(`${response.data.msg}`,1000)
                                 if (this.ageid == response.data.data.age_id ){
                                     this.interval = response.data.data.interval
                                     this.lastFeedTime=response.data.data.last_feed_time;
-
+                                    this.is_play = response.data.data.is_play
                                 }else {
                                     Toast(`您的小猫成长了`,1000)
                                     console.log(catList_User);
