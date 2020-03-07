@@ -219,19 +219,20 @@ class IndexController extends RestBaseController
             ->all();
         if(count($res)>1){
             //echo 1;
-
+            $group_data=[];
             foreach ($res as $ke=>$va){
                 $partner=json_decode($va['partner']);
-                $group_data=[];
-                $group_data['group_id']=$va['group_id'];
-                $group_data['opener']=Db::name('user')->where('id',$va['user_id'])->field('id,user_nickname,avatar')->find();
+
+                $group_data[$ke]['group_id']=$va['group_id'];
+                $group_data[$ke]['opener']=Db::name('user')->where('id',$va['user_id'])->field('id,user_nickname,avatar')->find();
                 foreach ($partner as $k=>$v){
-                    $group_data['partner'][]=Db::name('user')->where('id',$v)->field('id,user_nickname,avatar')->find();
+                    $group_data[$ke]['partner'][]=Db::name('user')->where('id',$v)->field('id,user_nickname,avatar')->find();
                 }
             }
         }else{
             $group_data=[];
         }
+        //dump($group_data);
         if($detail){
             $detail['group_data']=$group_data;
             $this->success('请求成功!', $detail);

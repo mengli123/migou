@@ -282,11 +282,18 @@ class UserController extends RestBaseController
         if(!$specs){
             $this->error('请传入商品规格和数量字符串');
         }
+        if($specs==-100){
+            $count=input('count');
+            $data['total_price']=$count;
+            $data['ctime']=time();
+
+        }
         $array = explode(';',$specs);
         $specs=[];
         foreach ($array as $k=>$v){
             $specs[]=explode(',',$v);
         }
+
         // $this->success('下单成功',$specs);
         //$specs=json_decode($specs);
         $address_id=input('address_id');
