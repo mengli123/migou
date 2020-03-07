@@ -353,7 +353,7 @@ class UserController extends RestBaseController
                     'min_count'=>$goods_specs['min_count'],
                     'return_money'=>$goods_specs['group_price']*$goods_specs['return_rate']
                 ];
-                $group_id=Db::name('group_open_log')->insert($group_data);
+                $group_id=Db::name('group_open_log')->insertGetId($group_data);
                 $data['group_id']=$group_id;
 
             }elseif($group_id){
