@@ -220,24 +220,46 @@ class IndexController extends RestBaseController
         if(count($res)>1){
             //echo 1;
             $group_data=[];
+//            foreach ($res as $ke=>$va){
+//                $partner=json_decode($va['partner']);
+//                $order_status=Db::name('order')->where(['group_id'=>$va['group_id'],'user_id'=>$va['user_id']])->value('status');
+//                if($order_status==1){
+//                    //dump($va);
+//                    $group_data[$ke]['group_id']=$va['group_id'];
+//                    $group_data[$ke]['opener']=Db::name('user')->where('id',$va['user_id'])->field('id,user_nickname,avatar')->find();
+//                    if($partner){
+//                        foreach ($partner as $k=>$v){
+//                            $order_status=Db::name('order')->where(['group_id'=>$va['group_id'],'user_id'=>$v])->value('status');
+//                            if($order_status==1) {
+//                                $group_data[$ke]['partner'][] = Db::name('user')->where('id', $v)->field('id,user_nickname,avatar')->find();
+//                            }
+//                        }
+//                    }else{
+//                        $group_data[$ke]['partner']=[];
+//                    }
+//                }
+//            }
             foreach ($res as $ke=>$va){
                 $partner=json_decode($va['partner']);
                 $order_status=Db::name('order')->where(['group_id'=>$va['group_id'],'user_id'=>$va['user_id']])->value('status');
+                $a=[];
                 if($order_status==1){
                     //dump($va);
-                    $group_data[$ke]['group_id']=$va['group_id'];
-                    $group_data[$ke]['opener']=Db::name('user')->where('id',$va['user_id'])->field('id,user_nickname,avatar')->find();
+
+                    $a['group_id']=$va['group_id'];
+                    $a['opener']=Db::name('user')->where('id',$va['user_id'])->field('id,user_nickname,avatar')->find();
                     if($partner){
                         foreach ($partner as $k=>$v){
                             $order_status=Db::name('order')->where(['group_id'=>$va['group_id'],'user_id'=>$v])->value('status');
                             if($order_status==1) {
-                                $group_data[$ke]['partner'][] = Db::name('user')->where('id', $v)->field('id,user_nickname,avatar')->find();
+                                $a['partner'][] = Db::name('user')->where('id', $v)->field('id,user_nickname,avatar')->find();
                             }
                         }
                     }else{
-                        $group_data[$ke]['partner']=[];
+                        $a['partner']=[];
                     }
                 }
+                $group_data[]=$a;
             }
         }else{
             $group_data=[];
