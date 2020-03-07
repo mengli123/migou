@@ -20,7 +20,7 @@
 	<div class="wrap">
 		<ul class="nav nav-tabs">
 			<li><a href="{:url('goods/goods_list')}">产品</a></li>
-			<li class="active"><a href="{:url('goods/edit',['id'=>$goods_id])}">修改产品</a></li>
+			<li class="active"><a href="{:url('goods/edit',['goods_id'=>$goods_id])}">修改产品</a></li>
 		</ul>
 		<form method="post" class="form-horizontal js-ajax-form margin-top-20" action="{:url('goods/editpost')}" enctype="multipart/form-data">
 			<input name="goods_id" value="{$goods_id}" type="hidden">

@@ -80,9 +80,9 @@ class GoodsController extends AdminBaseController
         $status = $request->param('status');
         $recommend_id = $request->param('recommend_id');
 
-        if(strlen($goods_name)>50){
-            $this->error('产品超过限制长度50');
-        }
+//        if(strlen($goods_name)>50){
+//            $this->error('产品超过限制长度50');
+//        }
         if (empty($goods_name)) {
             $this->error('请填写产品名');exit;
         }
@@ -144,70 +144,73 @@ class GoodsController extends AdminBaseController
     public function editPost()
     {
         $request = request();
+        $goods_id =$request->param('goods_id');
         //提取数据
-        $id = $request->param('id');
-        if (empty($id)) {
+        $goods_name = $request->param('goods_name');
+        $goods_dsc = $request->param('goods_dsc');
+        $goods_pics=$request->param('goods_pics');
+        $type_id=$request->param('type_id');
+        $supplier = $request->param('supplier');
+        $goods_area = $request->param('goods_area');
+        $status = $request->param('status');
+        $recommend_id = $request->param('recommend_id');
+
+        if(!$goods_id){
             $this->error('系统错误');
         }
-        $goods_name = $request->param('goods_name');
-        $price = $request->param('price');
-        $cat_id = $request->param('cat_id');
-        $commission = $request->param('commission');
-        $ulen = strlen($goods_name);
-        $data=array();
-        if($ulen>100){
-            $this->error('产品超过限制长度100');
-        }
 
+//        if(strlen($goods_name)>50){
+//            $this->error('产品超过限制长度50');
+//        }
         if (empty($goods_name)) {
             $this->error('请填写产品名');exit;
         }
-//        if ($price<0) {
-//             $this->error('价格不能低于0');exit;
+        if(strlen($goods_dsc)>200){
+            $this->error('产品详情超过限制长度200');
+        }
+        if (!$goods_pics) {
+            $this->error('请至少上传一张图片');exit;
+        }
+        if (count($type_id)<1) {
+            $this->error('请至少选择一个分类');exit;
+        }
+        if (empty($supplier)) {
+            $this->error('请填写供货商');exit;
+        }
+        if (empty($goods_area)) {
+            $this->error('请填写发货地');exit;
+        }
+
+        //判断是否存在该用户名和手机号
+//        $is_name = Db::name('goods')->where('goods_name',$goods_name)->find();
+//        if($is_name){
+//            $this->error('该产品名已存在');exit;
 //        }
-        if ($commission<0) {
-             $this->error('车夫提成不能低于0');exit;
-        }
-//        if (empty($price)) {
-//            $this->error('请填写价格');exit;
-//        }
-        $goods= Db::name('goods')->where('goods_id',$id)->find();
-        if ($goods['goods_name']!=$goods_name) {
-            //判断是否存在该用户名和手机号
-            $is_name = Db::name('goods')->where('goods_name',$goods_name)->find();
-            if($is_name){
-                $this->error('该产品名已存在');exit;
-            }
-        }
-        
-
-        if ($goods_name) {
-            $data['goods_name'] = $goods_name;
-        }
-
-        if ($price) {
-            $data['price'] = 0;
-            //$data['price'] = $price;
-        }
-        if ($commission) {
-            $data['commission'] = $commission;
-        }
-
-        $data['cat_id']=$cat_id;
-       
         //封装数据
-        if (!empty($data)) {
-            Db::name('goods')->where("goods_id",$id)->update($data);
+        $data['goods_name'] = $goods_name;
+        $data['goods_dsc'] = $goods_dsc;
+        $data['goods_area'] = $goods_area;
+        $data['create_time'] = time();
+        $data['supplier'] = $supplier;
+        $data['status'] = $status;
+        $data['recommend_id'] = $recommend_id;
+        if(count($goods_pics)>0){
+            $data['goods_pics'] = json_encode($goods_pics);
 
-             //写入系统日志
-             $log['log_time']=time();
-             $log['user_id']=session("ADMIN_ID");//操作人ID
-             $log['name']=session("name");//操作人
-             $log['info']="管理员".session("name")."于".date("Y-m-d H:i:s")."编辑了产品".$goods_name;
-             Db::name('system_log')->insert($log);
-            $this->success('编辑产品成功', 'goods/goods_list');
+        }
+        $update = Db::name('goods')->where('goods_id',$goods_id)->update($data);
+        if ($update) {
+            if(count($type_id)>0){
+                Db::name('goods_and_type')->where('goods_id',$goods_id)->delete();
+                //写入商品分类表
+                foreach ($type_id as $k=>$v){
+                    Db::name('goods_and_type')->insert(['goods_id'=>$goods_id,'type_id'=>$v]);
+                }
+            }
+
+            $this->success('修改产品成功', 'goods/goods_list');
         }else{
-             $this->error('暂无修改', 'goods/goods_list');
+            $this->error('修改产品失败');
         }
             
     }
