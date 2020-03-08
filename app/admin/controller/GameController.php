@@ -262,9 +262,9 @@ class GameController extends AdminBaseController
     删除猫咪奖品
      */
     public function del_prize(){
-        $id = $this->request->param('prize_id', 0, 'intval');
+        $id = $this->request->param('id', 0, 'intval');
         $res=Db::name('cat_prize')->where('id',$id)->delete();
-        if($res !== false){
+        if($res){
             $this->success("删除成功！");
         }else{
             $this->error("删除失败！");
