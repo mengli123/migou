@@ -1,0 +1,79 @@
+<include file="public@header"/>
+</head>
+<body>
+<div class="wrap js-check-wrap">
+    <ul class="nav nav-tabs">
+        <li><a href="{:url('game/prize_list')}">猫咪玩耍奖励列表</a></li>
+        <li class="active"><a href="javascript:;">添加/修改奖励</a></li>
+    </ul>
+    <form action="{:url('game/save_prize')}" method="post" class="form-horizontal js-ajax-form margin-top-20">
+        <input type="hidden" name="id" value="{$id|default=''}">
+        <div class="row">
+            <div class="col-md-9">
+                <table class="table table-bordered">
+                    <tr>
+                        <th>奖励名称<span class="form-required">*</span></th>
+                        <td>
+                            <input class="form-control" type="text" style="width:400px;" name="prize" id="prize"
+                                   required value="{$prize.prize|default=''}" placeholder="请输入奖励名称"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>兑换商品所需碎片数目<span class="form-required">*</span></th>
+                        <td>
+                            <input class="form-control" type="text" style="width:400px;" name="num" id="num"
+                                   required value="{$prize.num|default=''}" placeholder="请输入数目"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>兑换商品ID<span class="form-required">*</span></th>
+                        <td>
+                            <input class="form-control" type="number" style="width:400px;" name="goods_id" id="goods_id"
+                                   required value="{$prize.goods_id|default=''}" placeholder="请输入兑换目标商品规格id"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>兑换规格ID<span class="form-required">*</span></th>
+                        <td>
+                            <input class="form-control" type="number" style="width:400px;" name="specs_id" id="specs_id"
+                                   required value="{$prize.specs_id|default=''}" placeholder="请输入兑换目标商品规格id"/>
+                        </td>
+                    </tr>
+
+
+                </table>
+            </div>
+            <div class="col-md-3">
+                <table class="table table-bordered">
+                    <tr>
+                        <th><b>缩略图</b></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div style="text-align: center;">
+                                <input type="hidden" name="img" id="thumb" value="{$prize.img|default=''}">
+                                <a href="javascript:uploadOneImage('图片上传','#thumb');">
+                                    <img src="/upload/{$prize.img|default='__TMPL__/public/assets/images/default-thumbnail.png'}" id="thumb-preview"
+                                         width="135" style="cursor: hand"/>
+                                </a>
+                                <input type="button" class="btn btn-sm"
+                                       onclick="$('#thumb-preview').attr('src','__TMPL__/public/assets/images/default-thumbnail.png');$('#thumb').val('');return false;"
+                                       value="取消图片">
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+
+                <button type="submit" class="btn btn-primary js-ajax-submit">{:lang('ADD')}</button>
+                <a class="btn btn-default" href="{:url('game/cat_list')}">{:lang('BACK')}</a>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript" src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

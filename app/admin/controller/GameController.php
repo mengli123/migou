@@ -180,7 +180,7 @@ class GameController extends AdminBaseController
 
     }
     /**
-    猫咪用户信息列表
+    猫咪奖品列表
      */
     public function prize_list(){
         $cat = Db::name('cat_prize')
@@ -193,6 +193,82 @@ class GameController extends AdminBaseController
         return $this->fetch();
     }
 
-
+    /**
+    增加/修改猫咪奖品页面
+     */
+    public function prize_add(){
+        $id=input('id');
+        if($id!=''){
+            /**修改猫咪*/
+            $prize =Db::name('cat_prize')->where('id',$id)->find();
+            $this->assign('id',$id);
+            $this->assign('prize',$prize);
+        }
+        return $this->fetch();
+    }
+    /**
+    保存猫咪奖品
+     */
+    public function save_prize(){
+        $id=input('id');
+        $prize=input('prize');
+        $img=input('img');
+        $num=input('num');
+        $specs_id=input('specs_id');
+        $goods_id=input('goods_id');
+//        if(!$id){
+//            $this->error('系统错误');
+//        }
+        if(!$prize){
+            $this->error('请输入奖励名称');
+        }
+        if(!$img){
+            $this->error('请上传奖励图片');
+        }
+        if(!$num){
+            $this->error('请填写碎片数目');
+        }
+        if(!$goods_id){
+            $this->error('请填写商品id');
+        }
+        $sel=Db::name('goods')->where('goods_id',$goods_id)->select();
+        if(count($sel)<1){
+            $this->error('请填写存在的商品id');
+        }
+        if(!$specs_id){
+            $this->error('请填写规格ID');
+        }
+        $data=[
+            'prize'=>$prize,
+            'img'=>$img,
+            'num'=>$num,
+            'goods_id'=>$goods_id,
+            'specs_id'=>$specs_id,
+        ];
+        if($id==''){
+            /**添加*/
+            $res=Db::name('cat_prize')->insert($data);
+        }else{
+            /**修改*/
+            $res=Db::name('cat_prize')->where('id',$id)->update($data);
+        }
+        if($res){
+            $this->success('保存成功','game/prize_list');
+        }else{
+            $this->error('保存失败','game/prize_list');
+        }
+    }
+    /**
+    删除猫咪奖品
+     */
+    public function del_prize(){
+        $id = $this->request->param('prize_id', 0, 'intval');
+        $res=Db::name('cat_prize')->where('id',$id)->delete();
+        if($res !== false){
+            $this->success("删除成功！");
+        }else{
+            $this->error("删除失败！");
+        }
+    }
 
 }
