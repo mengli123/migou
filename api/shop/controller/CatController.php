@@ -375,7 +375,7 @@ class CatController extends RestBaseController
 
                 Db::name('user_cat_prize_log')
                     ->insert($prize_log_data);
-                $prize_log[]=Db::name('cat_prize')->where('id',$prize_id)->value('prize');
+                $prize_log[]=Db::name('cat_prize')->where('id',$prize_id)->field('prize,img')->find();
             }
 
             $sel[$k]['interval']=$interval*1;

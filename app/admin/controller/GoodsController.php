@@ -234,7 +234,8 @@ class GoodsController extends AdminBaseController
 
 	public function goods_specs(){
         $goods_id      = $this->request->param('goods_id', 0, 'intval');
-        $result  = Db::name('goods_specs')->where('goods_id', $goods_id)->select();
+        $result  = Db::name('goods_specs')->where('goods_id', $goods_id)->select()->all();
+        //dump($result);
         $this->assign('goods_id', $goods_id);
         $this->assign('result', $result);
         $this->assign('status', ['否','是']);

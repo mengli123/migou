@@ -7,13 +7,13 @@
         <li class="active"><a href="{:url('goods/goods_specs',['goods_id'=>$goods_id])}">规格列表</a></li>
         <li><a href="{:url('goods/add_specs',['goods_id'=>$goods_id])}">添加规格页面</a></li>
     </ul>
-    <form method="post" class="js-ajax-form margin-top-20" action="{:url('SlideItem/listOrder')}">
+<!--    <form method="post" class="js-ajax-form margin-top-20" action="{:url('SlideItem/listOrder')}">-->
 
         <table class="table table-hover table-bordered">
             <thead>
             <tr>
                 <th width="50">ID</th>
-                <th>规格大小</th>
+                <th width="100" height="50" >规格大小</th>
                 <th>图片</th>
                 <th>价格</th>
                 <th>当前总存量</th>
@@ -28,7 +28,7 @@
             </tr>
             </thead>
             <tbody>
-            <foreach name="result" item="vo">
+            <foreach name="result" id="vo">
                 <tr>
 
                     <td>{$vo.specs_id}</td>
@@ -56,19 +56,12 @@
                         <a class="btn btn-xs btn-primary" href="{:url('goods/edit_specs',array('specs_id'=>$vo['specs_id']))}">{:lang('EDIT')}</a>
                         <a href="{:url('goods/del_specs',array('specs_id'=>$vo['specs_id']))}"
                            class="btn btn-xs btn-danger js-ajax-delete">{:lang('DELETE')}</a>
-                        <if condition="empty($vo['status']) eq 1">
-<!--                            <a href="{:url('SlideItem/cancelban',array('id'=>$vo['specs_id']))}" class="btn btn-xs btn-warning js-ajax-dialog-btn"-->
-<!--                               data-msg="确定显示此幻灯片吗？">{:lang('DISPLAY')}</a>-->
-<!--                            <else/>-->
-<!--                            <a href="{:url('SlideItem/ban',array('id'=>$vo['specs_id']))}" class="btn btn-xs btn-warning js-ajax-dialog-btn"-->
-<!--                               data-msg="确定隐藏此幻灯片吗？">{:lang('HIDE')}</a>-->
-                        </if>
                     </td>
                 </tr>
             </foreach>
             </tbody>
         </table>
-    </form>
+<!--    </form>-->
 
 </div>
 
