@@ -13,6 +13,7 @@
 					<th width="30" style="text-align:center;">ID</th>
 					
 					<th style="text-align:center;"><span class="form-required">*</span>奖励名称</th>
+					<th style="text-align:center;">logo</th>
 					<th style="text-align:center;">可兑换商品</th>
 					<th style="text-align:center;">商品规格</th>
 					<th style="text-align:center;">需要数目</th>
@@ -25,6 +26,8 @@
 				<tr>
 					<td align="center">{$vo.id}</td>
 					<td align="center">{$vo.prize}</td>
+					<td align="center"><img style="height: 100px;width: 100px" src="/upload/{$vo.img}"/> </td>
+
 					<td align="center">[{$vo.goods_id}]{$vo.goods_name}</td>
 					<td align="center">[{$vo.specs_id}]{$vo.size}</td>
 					<td align="center">{$vo.num}</td>
