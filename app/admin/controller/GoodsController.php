@@ -25,35 +25,25 @@ class GoodsController extends AdminBaseController
             /**搜索条件**/
             $keyword = trim($request->param('keyword'));
             if ($keyword) {
-                 $where['goods_name|price'] =  ['like', '%' . $keyword . '%'];
+                 $where[] =  ['goods_name|goods_area|supplier','like', '%' . $keyword . '%'];
+            }else{
+                $where='';
             }
-            $start=$request->param('start_time');
-            $end=$request->param('end_time');
-            if ($start&&$end) {
-                if ($start>=$end) {
-                    $this->error("开始时间不能大于或等于结束时间");exit();
-                }
-                $where['create_time'] = array(array('gt',strtotime($start)),array('lt',strtotime($end)));
-            }else if($start&&!$end){
-                $where['create_time'] = array('gt',strtotime($start));
-            }else if(!$start&&$end){
-                $where['create_time'] = array('lt',strtotime($end));
-            }
-            if (empty($where)) {
-                $where=1;
-            }
+
         }else{
-            $where=1;
+            $where='';
         }
+        //dump($where);
         $goods = Db::name('goods')
-            ->alias("g")
+       //     ->alias("g")
 //            ->join("goods_and_type gt","g.goods_id=gt.goods_id")
 //            ->join("goods_type t","t.goods_id=gt.goods_id")
             //->field("g.*,c.cat_name")
             ->where($where)
             ->order("goods_id DESC")
             ->paginate(10);
-		//dump($goods);exit;
+		//dump($goods);
+		//exit;
         $this->assign("goods",$goods);
         $goods->appends($request->param());
         $this->assign('page', $goods->render());
