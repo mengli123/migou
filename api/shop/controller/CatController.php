@@ -340,7 +340,7 @@ class CatController extends RestBaseController
         $sel = Db::name('user_cat')
             ->alias('uc')
             ->join('cat c','c.cat_id=uc.cat_id')
-            ->where(['user_id'=>$user_id])
+            ->where(['user_id'=>$user_id,'status'=>0])
             ->select()->all();
         $prize_log=[];
         foreach ($sel as $k=>$v){
