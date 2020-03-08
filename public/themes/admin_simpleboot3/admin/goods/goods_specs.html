@@ -33,10 +33,10 @@
 
                     <td>{$vo.specs_id}</td>
                     <td>{$vo.size}</td>
-                    <td>
+                    <td width="50" height="50" >
                         <if condition="!empty($vo['pic'])">
                             <a href="javascript:imagePreviewDialog('{:cmf_get_image_preview_url($vo.pic)}');">
-                               <img src="/upload/{$vo.pic}">
+                               <img style="height: 100px;width:100px" src="/upload/{$vo.pic}">
                             </a>
 
                         </if>
