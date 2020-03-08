@@ -1,0 +1,51 @@
+<include file="public@header"/>
+</head>
+<body>
+<div class="wrap js-check-wrap">
+<!--    <ul class="nav nav-tabs">-->
+<!--        <li><a href="{:url('goods/goods_list')}">商品列表</a></li>-->
+<!--        <li class="active"><a href="javascript:;">商品详情</a></li>-->
+<!--    </ul>-->
+
+        <div class="row">
+            <div class="col-md-9">
+                <table class="table table-bordered">
+                    <tr>
+                        <th>商品名称<span class="form-required">*</span></th>
+                        <td>
+                          {$detail.goods_name}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>商品简介<span class="form-required">*</span></th>
+                        <td>
+                            {$detail.goods_dsc}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+
+    <div class="col-md-3">
+        <!--                <table class="table table-bordered">-->
+        <tr>
+            <th><b>商品图片</b></th>
+        </tr>
+        <foreach name="$detail.goods_pics" id="vo">
+            <tr>
+                <td>
+                    <div style="text-align: center;">
+                        <img src="/upload/{$vo}" id="thumb-preview" style="cursor: hand"/>
+
+                </td>
+            </tr>
+        </foreach>
+        </table>
+    </div>
+
+</div>
+<script type="text/javascript" src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

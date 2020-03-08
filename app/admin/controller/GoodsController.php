@@ -232,6 +232,19 @@ class GoodsController extends AdminBaseController
 		}
 	}
 
+	/**
+	查看商品详情
+     */
+	public function goods_detail(){
+        $id = $this->request->param('goods_id', 0, 'intval');
+        $detail=Db::name('goods')->where('goods_id',$id)->find();
+        //dump($detail);
+        $detail['goods_pics']=json_decode($detail['goods_pics']);
+
+        $this->assign('detail',$detail);
+        return $this->fetch();
+    }
+
 	public function goods_specs(){
         $goods_id      = $this->request->param('goods_id', 0, 'intval');
         $result  = Db::name('goods_specs')->where('goods_id', $goods_id)->select()->all();

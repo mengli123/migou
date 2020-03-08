@@ -47,7 +47,12 @@
 				<foreach name="goods" item="vo">
 				<tr>
 					<td align="center">{$vo.goods_id}</td>
-					<td align="center">{$vo.goods_name}</td>
+					<td align="center">
+						<a href="javascript:parent.openIframeLayer('{:url('Goods/goods_detail',array('goods_id'=>$vo['goods_id']))}','查看 {$vo.goods_name} 详情',{});">
+							{$vo.goods_name}
+<!--							<button class="btn  btn-primary">{$vo.goods_name}</button>-->
+						</a>
+					</td>
 					<td align="center">{$vo.goods_id|get_type}</td>
 					<td align="center"><img src="/upload/{$vo.goods_pics|get_first_pic}" width="60" height="50"></td>
 					<td align="center">{$vo.goods_id|get_specs}</td>

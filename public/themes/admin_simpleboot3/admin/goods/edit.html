@@ -47,10 +47,10 @@
 					   class="btn btn-default btn-sm">选择图片</a>
 					<foreach name="goods.goods_pics" id="vo" key="i">
 						<li id="saved-image{$i}">
-							<input id="photo-{$goods_id}-{$i}" type="hidden" name="goods_pics[]" value="{filepath}">
+							<input id="photo-{$goods_id}-{$i}" type="hidden" name="goods_pics[]" value="{$vo}">
 							<input class="form-control" id="photo-{$goods_id}-{$i}-name" type="text" name="photo_names[]" value="{$vo}"
 								   style="width: 200px;" title="图片名称">
-							<img id="photo-{$goods_id}-{$i}-preview" src="{$vo}" style="height:36px;width: 36px;"
+							<img id="photo-{$goods_id}-{$i}-preview" src="/upload/{$vo}" style="height:36px;width: 36px;"
 								 onclick="imagePreviewDialog(this.src);">
 							<a href="javascript:uploadOneImage('图片上传','#photo-{$goods_id}-{$i}');">替换</a>
 							<a href="javascript:(function(){$('#saved-image{$i}').remove();})();">移除</a>
