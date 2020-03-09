@@ -10,27 +10,25 @@
 		<table class="table table-hover table-bordered">
 			<thead>
 				<tr>
+					<th width="200" style="text-align:center;">类型</th>
 					<th width="30" style="text-align:center;">钱数（元）</th>
 					<th width="90" style="text-align:center;">兑换积分值</th>
 <!--					<th width="160" style="text-align:center;">操作</th>-->
 				</tr>
 			</thead>
 			<tbody>
-
+			<foreach name="rule" id="vo">
 				<tr>
 
-					<td align="center"><input data-id="{$rule.id}" class="change" name="money" value="{$rule.money}"/></td>
-					<td align="center">{$rule.point}</td>
+					<td align="center">{$vo.type}</td>
+					<td align="center"><input data-id="{$vo.id}" class="change" name="money" value="{$vo.money}"/></td>
+					<td align="center"><input data-id="{$vo.id}" class="save_change" name="point" value="{$vo.point}"/></td>
 					<td align="center">
-<!--					<a href="save_point_rule/id/{$rule.id}">-->
-<!--						<button class="btn btn-primary">-->
-<!--							保存修改-->
-<!--						</button>-->
-<!--					</a>-->
+
 
 					</td>
 				</tr>
-
+			</foreach>
 			</tbody>
 		</table>
 
@@ -48,6 +46,21 @@
 			type: "post",
 			url: "save_rule_change",
 			data:{"id":id,'money':money},
+			dataType: "json",
+			success: function(res) {
+				layer.msg(res.msg)
+				console.log(res)
+			}
+		});
+	})
+	$( '.save_change').blur( function(e){
+		console.log(e)
+		var id=e.target.dataset.id
+		var point =e.target.value
+		$.ajax({
+			type: "post",
+			url: "save_rule_point_change",
+			data:{"id":id,'point':point},
 			dataType: "json",
 			success: function(res) {
 				layer.msg(res.msg)

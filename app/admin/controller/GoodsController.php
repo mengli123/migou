@@ -428,12 +428,12 @@ class GoodsController extends AdminBaseController
     积分规则
      */
     public function point_rule(){
-        $rule =Db::name('point_rule')->find();
+        $rule =Db::name('point_rule')->select()->all();
         $this->assign('rule',$rule);
         return $this->fetch();
     }
     /**
-     保存积分修改规则
+     保存积分修改规则----钱数
     */
     public function save_rule_change(){
         $id=input('id');
@@ -442,6 +442,20 @@ class GoodsController extends AdminBaseController
         if($update){
         $this->success("已修改！");
     }else{
+            $this->error("未修改！");
+        }
+    }
+
+    /**
+    保存积分修改规则----积分
+     */
+    public function save_rule_point_change(){
+        $id=input('id');
+        $point= input('point');
+        $update= Db::name('point_rule')->where('id',$id)->update(['point'=>$point]);
+        if($update){
+            $this->success("已修改！");
+        }else{
             $this->error("未修改！");
         }
     }
