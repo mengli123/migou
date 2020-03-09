@@ -463,5 +463,90 @@ class UserController extends RestBaseController
         }
     }
 
+    /**
+    赠送积分接口
+     */
+    public function send_score(){
+        $point_rule=Db::name('point_rule')->where('id',2)->find();
+        $rate=$point_rule['point']/$point_rule['money'];
+        $sender=input('sender');
+        $score=input('score');
+        $receiver=input('receiver');
+        $status=0;
+        $money=$score*$rate;
+        $insert = Db::name('send_point_log')->insert([
+           'sender'=>$sender,
+            'score'=>$score,
+            'money'=>$money,
+            'receiver'=>$receiver,
+            'ctime'=>time(),
+            'status'=>$status
+        ]);
+        if($insert){
+            Db::name('user')->where('id',$sender)->setDec('score',$score);
+            $this->success('赠送已发出');
+        }else{
+            $this->error('赠送失败');
+        }
+    }
+
+    /**
+    接受积分
+     */
+    public function receive_score(){
+        $log_id =input('log_id');
+        $receiver = input('receiver');
+        $log = Db::name('send_point_log')->where('id',$log_id)->find();
+        if($receiver!=$log['receiver']){
+            $this->error('仅限本人领取赠送积分');
+        }
+        $balance=Db::name('user')->where('id',$log['receiver'])->value('balance');
+        if($balance<$log['money']){
+            $this->error('余额不足，请先充值');
+        }
+        $score=Db::name('user')->where('id',$log['receiver'])->setInc('score',$log['score']);
+        $update=Db::name('send_point_log')->where('id',$log_id)->update(['status'=>1]);
+        if($score&&$update){
+            Db::name('user')->where('id',$log['receiver'])->setDec('balance',$log['money']);
+            $this->success('赠送已接受');
+        }else{
+            $this->error('接受赠送失败');
+        }
+
+    }
+    /**
+    余额兑换积分
+     */
+    public function balance_to_score(){
+        $rule=Db::name('point_rule')->where('id',3)->find();
+        $rate = $rule['point']/$rule['money'];
+        $user_id=input('user_id');
+        $score =input('score');
+        $money=$score/$rate;
+        $balance=Db::name('user')->where('id',$user_id)->value('balance');
+        if($balance<$money){
+            $this->error('余额不足，请先充值');
+        }
+        $balance =Db::name('user')->where('id',$user_id)->setDec('balance',$money);
+        if($balance){
+            Db::name('user')->where('id',$user_id)->setInc('score',$score);
+            $this->success('余额充值积分成功');
+        }else{
+            $this->error('充值积分失败');
+        }
+
+    }
+    /**
+    查询增粉记录
+     */
+    public function get_receive_score(){
+        $receiver =input('receiver');
+        $log=Db::name('send_point_log')->where('receiver',$receiver)->select()->all();
+        if($log){
+            $this->success('查询成功',$log);
+        }else{
+            $this->error('查询失败',[]);
+        }
+    }
 
 }
