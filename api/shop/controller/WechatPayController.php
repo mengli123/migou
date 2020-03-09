@@ -219,13 +219,19 @@ class WechatPayController extends RestBaseController {
         //return json($d);
         if ($d['return_code'] == 'SUCCESS') {
             $order_no=$d['out_trade_no'];
-            $upd=Db::name('order')->where('order_no',$order_no)->update(['status'=>1]);
-            dump($upd);
-            if($upd){
-                $this->success('支付成功');
-            }else{
-                $this->error('支付成功修改订单状态失败');
+            $order=Db::name('order')->where('order_no',$order_no)->field('goods_id,user_id,total_price')->select();
+            foreach ($order as $k=>$v){
+                Db::name('order')->where('order_no',$order_no)->update(['status'=>1]);
+                if($v['goods_id']==-1){
+                    $score=$v['total_price'];
+                }else{
+                    $point_rule=Db::name('point_rule')->find();
+                    $rate=$point_rule['point']/$point_rule['money'];
+                    $score=$v['total_price']*$rate;
+                }
+                Db::name('user')->where('id',$v['user_id'])->setInc('score',$score);
             }
+            $this->success('支付成功');
         }else{
             $this->error('支付失败');
         }
@@ -237,5 +243,30 @@ class WechatPayController extends RestBaseController {
 //        $sign = $d['sign'];
 //        unset($d['sign']);
 //        return $sign == $this->sign($d);
+    }
+    public function test_notify(){
+        $d= [
+            'return_code'=>'SUCCESS',
+            'out_trade_no'=>input('order_no')
+        ];
+        //return json($d);
+        if ($d['return_code'] == 'SUCCESS') {
+            $order_no=$d['out_trade_no'];
+            $order=Db::name('order')->where('order_no',$order_no)->field('goods_id,user_id,total_price')->select();
+            foreach ($order as $k=>$v){
+                Db::name('order')->where('order_no',$order_no)->update(['status'=>1]);
+                if($v['goods_id']==-1){
+                    $score=$v['total_price'];
+                }else{
+                    $point_rule=Db::name('point_rule')->find();
+                    $rate=$point_rule['point']/$point_rule['money'];
+                    $score=$v['total_price']*$rate;
+                }
+                Db::name('user')->where('id',$v['user_id'])->setInc('score',$score);
+            }
+            $this->success('支付成功');
+        }else{
+            $this->error('支付失败');
+        }
     }
 }

@@ -273,12 +273,36 @@ class UserController extends RestBaseController
         }
     }
     /**
+    充值
+     */
+    public function recharge(){
+        $num=input('num');
+        $user_id=input('user_id');
+        $data=[];
+        $data['num']=$num;
+        $data['price']=1;
+        $data['goods_id']=-1;
+        $data['total_price']=$num*1;
+        $data['goods_name']='余额充值';
+        $data['ctime']=time();
+        $data['order_no']=date('YmdHis').mt_rand(111111,999999);
+        $data['user_id']=$user_id;
+        $insert = Db::name('order')->insert($data);
+        if($insert){
+            $this->success('生成充值订单成功',$data['order_no']);
+        }else{
+            $this->error('生成充值订单失败');
+        }
+    }
+
+    /**
     生成订单
      */
     public function create_order(){
         $request = request();
         $data=[];
         $specs =$request->param('specs_id');
+        //dump($specs);
         if(!$specs){
             $this->error('请传入商品规格和数量字符串');
         }
@@ -286,20 +310,9 @@ class UserController extends RestBaseController
         if(!$user_id){
             $this->error('请传入用户id');
         }
-        if($specs==-100){
-            $count=input('count');
-            $dataa=[];
-            $dataa['total_price']=$count;
-            $dataa['ctime']=time();
-            $data['order_no']=date('YmdHis').mt_rand(111111,999999);
-            $dataa['user_id']=$user_id;
-            $insert = Db::name('order')->insert($dataa);
-            if($insert){
-                $this->success('胜场充值订单成功',$data['order_no']);
-            }else{
-                $this->error('生成充值订单失败');
-            }
-        }
+//        if($specs==-100){
+//
+//        }
         $array = explode(';',$specs);
         $specs=[];
         foreach ($array as $k=>$v){
