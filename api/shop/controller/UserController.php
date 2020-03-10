@@ -276,13 +276,13 @@ class UserController extends RestBaseController
     充值
      */
     public function recharge(){
-        $num=input('num');
+        $total_price=input('total_price');
         $user_id=input('user_id');
         $data=[];
-        $data['num']=$num;
-        $data['price']=1;
+        $data['num']=1;
+        $data['price']=$total_price;
         $data['goods_id']=-1;
-        $data['total_price']=$num*1;
+        $data['total_price']=$total_price;
         $data['goods_name']='余额充值';
         $data['ctime']=time();
         $data['order_no']=date('YmdHis').mt_rand(111111,999999);

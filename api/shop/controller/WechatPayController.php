@@ -223,13 +223,16 @@ class WechatPayController extends RestBaseController {
             foreach ($order as $k=>$v){
                 Db::name('order')->where('order_no',$order_no)->update(['status'=>1]);
                 if($v['goods_id']==-1){
-                    $score=$v['total_price'];
+                    $balance=$v['total_price'];
+                    Db::name('user')->where('id',$v['user_id'])->setInc('balance',$balance);
+
                 }else{
                     $point_rule=Db::name('point_rule')->find();
                     $rate=$point_rule['point']/$point_rule['money'];
                     $score=$v['total_price']*$rate;
+                    Db::name('user')->where('id',$v['user_id'])->setInc('score',$score);
+
                 }
-                Db::name('user')->where('id',$v['user_id'])->setInc('score',$score);
             }
             $this->success('支付成功');
         }else{
@@ -256,13 +259,16 @@ class WechatPayController extends RestBaseController {
             foreach ($order as $k=>$v){
                 Db::name('order')->where('order_no',$order_no)->update(['status'=>1]);
                 if($v['goods_id']==-1){
-                    $score=$v['total_price'];
+                    $balance=$v['total_price'];
+                    Db::name('user')->where('id',$v['user_id'])->setInc('balance',$balance);
+
                 }else{
                     $point_rule=Db::name('point_rule')->find();
                     $rate=$point_rule['point']/$point_rule['money'];
                     $score=$v['total_price']*$rate;
+                    Db::name('user')->where('id',$v['user_id'])->setInc('score',$score);
+
                 }
-                Db::name('user')->where('id',$v['user_id'])->setInc('score',$score);
             }
             $this->success('支付成功');
         }else{
