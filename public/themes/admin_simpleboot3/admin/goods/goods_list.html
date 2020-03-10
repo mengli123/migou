@@ -54,7 +54,7 @@
 						</a>
 					</td>
 					<td align="center">{$vo.goods_id|get_type}</td>
-					<td align="center"><img src="/upload/{$vo.goods_pics|get_first_pic}" width="60" height="50"></td>
+					<td align="center"><img src="{$vo.goods_pics|get_first_pic|cmf_get_image_preview_url}" width="60" height="50"></td>
 					<td align="center">{$vo.goods_id|get_specs}</td>
 					<td align="center">{$vo.supplier}</td>
 					<td align="center">{$vo.goods_area}</td>
