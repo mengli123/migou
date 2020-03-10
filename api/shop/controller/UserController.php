@@ -468,7 +468,7 @@ class UserController extends RestBaseController
      */
     public function send_score(){
         $point_rule=Db::name('point_rule')->where('id',2)->find();
-        $rate=$point_rule['point']/$point_rule['money'];
+        $rate=$point_rule['money']/$point_rule['point'];
         $sender=input('sender');
         $score=input('score');
         $receiver=input('receiver');
@@ -483,7 +483,7 @@ class UserController extends RestBaseController
             'status'=>$status
         ]);
         if($insert){
-            Db::name('user')->where('id',$sender)->setDec('score',$score);
+           // Db::name('user')->where('id',$sender)->setDec('score',$score);
             $this->success('赠送已发出');
         }else{
             $this->error('赠送失败');
@@ -504,10 +504,11 @@ class UserController extends RestBaseController
         if($balance<$log['money']){
             $this->error('余额不足，请先充值');
         }
-        $score=Db::name('user')->where('id',$log['receiver'])->setInc('score',$log['score']);
+        $r_score=$log['score']-$log['money'];
+        $score=Db::name('user')->where('id',$log['receiver'])->setInc('score',$r_score);
         $update=Db::name('send_point_log')->where('id',$log_id)->update(['status'=>1]);
         if($score&&$update){
-            Db::name('user')->where('id',$log['receiver'])->setDec('balance',$log['money']);
+           // Db::name('user')->where('id',$log['receiver'])->setDec('balance',$log['money']);
             $this->success('赠送已接受');
         }else{
             $this->error('接受赠送失败');
