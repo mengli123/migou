@@ -234,7 +234,7 @@ class WechatPayController extends RestBaseController {
                     /**
                     判断有无分享者，若有则返利5%积分给分享者
                      */
-                    if($v['share_id']!=null){
+                    if($v['share_id']!=0){
                         $share_score = $score*0.05;
                         Db::name('user')->where('id',$v['share_id'])->setInc('score',$share_score);
                     }
