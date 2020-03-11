@@ -473,6 +473,11 @@ class UserController extends RestBaseController
         $rate=$point_rule['money']/$point_rule['point'];
         $sender=input('sender');
         $score=input('score');
+        $user_score =Db::name('user')->where('id',$sender)->value('score');
+        if($user_score<$score){
+            $this->error('积分不足以赠送');
+        }
+
         $receiver=input('receiver');
         $status=0;
         $money=$score*$rate;
@@ -499,13 +504,16 @@ class UserController extends RestBaseController
         $log_id =input('log_id');
         $receiver = input('receiver');
         $log = Db::name('send_point_log')->where('id',$log_id)->find();
+        if($log['status']!=1){
+            $this->error('不可操作');
+        }
         if($receiver!=$log['receiver']){
             $this->error('仅限本人领取赠送积分');
         }
-        $balance=Db::name('user')->where('id',$log['receiver'])->value('balance');
-        if($balance<$log['money']){
-            $this->error('余额不足，请先充值');
-        }
+//        $balance=Db::name('user')->where('id',$log['receiver'])->value('balance');
+//        if($balance<$log['money']){
+//            $this->error('余额不足，请先充值');
+//        }
         $r_score=$log['score']-$log['money'];
         $score=Db::name('user')->where('id',$log['receiver'])->setInc('score',$r_score);
         $update=Db::name('send_point_log')->where('id',$log_id)->update(['status'=>1]);
@@ -517,6 +525,30 @@ class UserController extends RestBaseController
         }
 
     }
+    /**
+    拒绝积分
+     */
+    public function refuse_score(){
+        $log_id =input('log_id');
+        $receiver = input('receiver');
+        $log = Db::name('send_point_log')->where('id',$log_id)->find();
+        if($log['status']!=1){
+            $this->error('不可操作');
+        }
+        if($receiver!=$log['receiver']){
+            $this->error('仅限本人操作');
+        }
+        $score=Db::name('user')->where('id',$log['sender'])->setInc('score',$log['score']);
+        $update=Db::name('send_point_log')->where('id',$log_id)->update(['status'=>-1]);
+        if($score&&$update){
+            // Db::name('user')->where('id',$log['receiver'])->setDec('balance',$log['money']);
+            $this->success('赠送已拒绝');
+        }else{
+            $this->error('拒绝赠送失败');
+        }
+    }
+
+
     /**
     余额兑换积分
      */

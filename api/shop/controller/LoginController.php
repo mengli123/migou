@@ -68,7 +68,7 @@ class LoginController extends RestBaseController
 
         if(!$user){
             /** 用户不存在，去注册*/
-            $insert = Db::name('user')->insertGetId(['mobile'=>$mobile,'openid'=>$openid,'user_nickname'=>$nick_name,'avatar'=>$avatar]);
+            $insert = Db::name('user')->insertGetId(['mobile'=>$mobile,'openid'=>$openid,'user_nickname'=>$nick_name,'avatar'=>$avatar,'user_type'=>2]);
             if($insert){
                 Db::name('user_cat_info')->insert(['user_id'=>$insert,'feed'=>100]);
                 Db::name('user_cat_info')->insert(['user_id'=>$insert,'feed'=>100]);
