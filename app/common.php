@@ -28,3 +28,27 @@ function get_specs($goods_id){
     }
     return $str;
 }
+/** 获取用户角色 */
+function get_user_role($user_id){
+
+    $user_role=Db::name('role_user')->where('user_id',$user_id)->select()->all();
+    $roles='';
+    foreach($user_role as $k=>$v){
+        $role=Db::name('role')->where('id',$v['role_id'])->value('name');
+        $roles.='['.$role.']';
+    }
+    return $roles;
+}
+/**
+获取上级代理ID
+ */
+function get_parent_agent($user_id){
+    $parent =Db::name('role_user')
+        ->alias('ru')
+        ->join('user u','ru.parent_id=u.id')
+        ->field('u.id,user_login')
+        ->where('user_id',$user_id)
+        ->find();
+    $str= '【'.$parent['id'].'】'.$parent['user_login'];
+    return $str;
+}

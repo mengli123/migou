@@ -4,7 +4,8 @@
 	<div class="wrap js-check-wrap">
 		<ul class="nav nav-tabs">
 			<li class="active"><a href="{:url('user/index')}">{:lang('ADMIN_USER_INDEX')}</a></li>
-			<li><a href="{:url('user/add')}">{:lang('ADMIN_USER_ADD')}</a></li>
+			<li><a href="{:url('users/add_agent')}">{:lang('ADMIN_USER_ADD')}</a></li>
+<!--			<li><a href="{:url('user/add')}">{:lang('ADMIN_USER_ADD')}</a></li>-->
 		</ul>
         <form class="well form-inline margin-top-20" method="get" action="{:url('User/index')}">
             用户名:
@@ -19,9 +20,13 @@
 				<tr>
 					<th width="50">ID</th>
 					<th>{:lang('USERNAME')}</th>
+
 					<th>{:lang('LAST_LOGIN_IP')}</th>
 					<th>{:lang('LAST_LOGIN_TIME')}</th>
+					<th>手机号</th>
 					<th>{:lang('EMAIL')}</th>
+					<th>角色</th>
+					<th>上级代理【ID】用户名</th>
 					<th>{:lang('STATUS')}</th>
 					<th width="140">{:lang('ACTIONS')}</th>
 				</tr>
@@ -32,6 +37,7 @@
 				<tr>
 					<td>{$vo.id}</td>
 					<td><if condition="$vo['user_url']"><a href="{$vo.user_url}" target="_blank" title="{$vo.signature}">{$vo.user_login}</a><else />{$vo.user_login}</if></td>
+
 					<td>{$vo.last_login_ip}</td>
 					<td>
 						<if condition="$vo['last_login_time'] eq 0">
@@ -40,7 +46,10 @@
 							{:date('Y-m-d H:i:s',$vo['last_login_time'])}
 						</if>
 					</td>
+					<td>{$vo.mobile}</td>
 					<td>{$vo.user_email}</td>
+					<td>{$vo.id|get_user_role}</td>
+					<td>{$vo.id|get_parent_agent}</td>
 					<td>
 						<switch name="vo.user_status">
 							<case value="0">
