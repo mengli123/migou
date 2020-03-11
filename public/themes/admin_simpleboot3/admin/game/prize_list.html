@@ -26,7 +26,7 @@
 				<tr>
 					<td align="center">{$vo.id}</td>
 					<td align="center">{$vo.prize}</td>
-					<td align="center"><img style="height: 100px;width: 100px" src="/upload/{$vo.img}"/> </td>
+					<td align="center"><img style="height: 100px;width: 100px" src="{$vo.img|cmf_get_image_preview_url}"/> </td>
 
 					<td align="center">[{$vo.goods_id}]{$vo.goods_name}</td>
 					<td align="center">[{$vo.specs_id}]{$vo.size}</td>

@@ -302,6 +302,7 @@ class UserController extends RestBaseController
         $request = request();
         $data=[];
         $specs =$request->param('specs_id');
+        $share_id =$request->param('share_id');
         //dump($specs);
         if(!$specs){
             $this->error('请传入商品规格和数量字符串');
@@ -335,6 +336,7 @@ class UserController extends RestBaseController
         $data['order_no']=date('YmdHis').mt_rand(111111,999999);
         $data['ctime']=time();
         $data['user_id']=$user_id;
+        $data['share_id']=$share_id;
 
        // $specs=[[6,3],[7,2]];
         foreach ($specs as $k=>$v){

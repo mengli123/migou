@@ -231,6 +231,13 @@ class WechatPayController extends RestBaseController {
                     $rate=$point_rule['point']/$point_rule['money'];
                     $score=$v['total_price']*$rate;
                     Db::name('user')->where('id',$v['user_id'])->setInc('score',$score);
+                    /**
+                    判断有无分享者，若有则返利5%积分给分享者
+                     */
+                    if($v['share_id']!=null){
+                        $share_score = $score*0.05;
+                        Db::name('user')->where('id',$v['share_id'])->setInc('score',$share_score);
+                    }
 
                 }
             }
@@ -267,6 +274,13 @@ class WechatPayController extends RestBaseController {
                     $rate=$point_rule['point']/$point_rule['money'];
                     $score=$v['total_price']*$rate;
                     Db::name('user')->where('id',$v['user_id'])->setInc('score',$score);
+                    /**
+                    判断有无分享者，若有则返利5%积分给分享者
+                     */
+                    if($v['share_id']!=null){
+                        $share_score = $score*0.05;
+                        Db::name('user')->where('id',$v['share_id'])->setInc('score',$share_score);
+                    }
 
                 }
             }
