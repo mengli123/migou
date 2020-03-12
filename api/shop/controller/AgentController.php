@@ -36,13 +36,14 @@ class AgentController extends RestBaseController
         }else{
             $user_login=Db::name('user')->where('id',$user['parent_id'])->value('user_login');
             if($parent['role_id']==3){
-                $result['msg']='已绑定上级是省级代理';
+                $result['msg']='已绑定上级,是市级代理';
                 $result['code']=3;
+
             }elseif($parent['role_id']==4){
-                $result['msg']='已绑定上级是市级代理';
+                $result['msg']='已绑定上级，是区级代理';
                 $result['code']=4;
             }elseif($parent['role_id']==5){
-                $result['msg']='已绑定上级是区级代理';
+                $result['msg']='已绑定上级，不是代理';
                 $result['code']=5;
             }
             $result['parent']=$user_login;

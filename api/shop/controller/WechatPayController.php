@@ -219,8 +219,9 @@ class WechatPayController extends RestBaseController {
         //return json($d);
         if ($d['return_code'] == 'SUCCESS') {
             $order_no=$d['out_trade_no'];
-            $order=Db::name('order')->where('order_no',$order_no)->field('goods_id,user_id,total_price')->select();
+            $order=Db::name('order')->where('order_no',$order_no)->field('goods_id,user_id,total_price,share_id')->select();
             foreach ($order as $k=>$v){
+                // dump($v);
                 Db::name('order')->where('order_no',$order_no)->update(['status'=>1]);
                 if($v['goods_id']==-1){
                     $balance=$v['total_price'];
@@ -234,9 +235,35 @@ class WechatPayController extends RestBaseController {
                     /**
                     判断有无分享者，若有则返利5%积分给分享者
                      */
-                    if($v['share_id']!=0){
+                    if($v['share_id']!=null){
                         $share_score = $score*0.05;
                         Db::name('user')->where('id',$v['share_id'])->setInc('score',$share_score);
+                    }
+                    /**
+                    在这里查找代理关系，返积分给上级代理
+                     */
+                    $parent_a =Db::name('user')->where('id',$v['user_id'])->value('parent_id');
+                    if($parent_a!=0){
+                        $rule_a=Db::name('point_rule')->where('id',4)->find();
+                        $a=$rule_a['money']/$rule_a['point'];
+                        $score_a =$score*$a;
+                        $score_aa=$score-$score_a;
+                        Db::name('user')->where('id',$v['user_id'])->setInc('score',$score_aa);
+                        Db::name('user')->where('id',$parent_a)->setInc('score',$score_a);
+                        $parent_b =Db::name('role_user')->where('user_id',$parent_a)->value('parent_id');
+                        if($parent_b){
+                            $rule_b=Db::name('point_rule')->where('id',5)->find();
+                            $b=$rule_b['money']/$rule_b['point'];
+                            $score_b =$score_a*$b;
+                            Db::name('user')->where('id',$parent_b)->setInc('score',$score_b);
+                            $parent_c =Db::name('role_user')->where('user_id',$parent_b)->value('parent_id');
+                            if($parent_c){
+                                $rule_c=Db::name('point_rule')->where('id',6)->find();
+                                $c=$rule_c['money']/$rule_c['point'];
+                                $score_c=$score_b*$c;
+                                Db::name('user')->where('id',$parent_c)->setInc('score',$score_c);
+                            }
+                        }
                     }
 
                 }
@@ -262,8 +289,9 @@ class WechatPayController extends RestBaseController {
         //return json($d);
         if ($d['return_code'] == 'SUCCESS') {
             $order_no=$d['out_trade_no'];
-            $order=Db::name('order')->where('order_no',$order_no)->field('goods_id,user_id,total_price')->select();
+            $order=Db::name('order')->where('order_no',$order_no)->field('goods_id,user_id,total_price,share_id')->select();
             foreach ($order as $k=>$v){
+               // dump($v);
                 Db::name('order')->where('order_no',$order_no)->update(['status'=>1]);
                 if($v['goods_id']==-1){
                     $balance=$v['total_price'];
@@ -280,6 +308,32 @@ class WechatPayController extends RestBaseController {
                     if($v['share_id']!=null){
                         $share_score = $score*0.05;
                         Db::name('user')->where('id',$v['share_id'])->setInc('score',$share_score);
+                    }
+                    /**
+                    在这里查找代理关系，返积分给上级代理
+                     */
+                    $parent_a =Db::name('user')->where('id',$v['user_id'])->value('parent_id');
+                    if($parent_a!=0){
+                        $rule_a=Db::name('point_rule')->where('id',4)->find();
+                        $a=$rule_a['money']/$rule_a['point'];
+                        $score_a =$score*$a;
+                        $score_aa=$score-$score_a;
+                        Db::name('user')->where('id',$v['user_id'])->setInc('score',$score_aa);
+                        Db::name('user')->where('id',$parent_a)->setInc('score',$score_a);
+                        $parent_b =Db::name('role_user')->where('user_id',$parent_a)->value('parent_id');
+                        if($parent_b){
+                            $rule_b=Db::name('point_rule')->where('id',5)->find();
+                            $b=$rule_b['money']/$rule_b['point'];
+                            $score_b =$score_a*$b;
+                            Db::name('user')->where('id',$parent_b)->setInc('score',$score_b);
+                            $parent_c =Db::name('role_user')->where('user_id',$parent_b)->value('parent_id');
+                            if($parent_c){
+                                $rule_c=Db::name('point_rule')->where('id',6)->find();
+                                $c=$rule_c['money']/$rule_c['point'];
+                                $score_c=$score_b*$c;
+                                Db::name('user')->where('id',$parent_c)->setInc('score',$score_c);
+                            }
+                        }
                     }
 
                 }
