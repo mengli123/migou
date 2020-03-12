@@ -8,8 +8,47 @@ use think\Request;
 class AgentController extends RestBaseController
 {
     /** 查询当前用户身份-若有上级代理查询上级代理，若有下级查询下级*/
-    public function sel_user_staus(){
+    /** 几种状态
+     *0：啥都未绑定
+     *1：已绑定，不是代理
+     *3:已绑定，是省级代理
+     *4:已绑定，是市级代理
+     *5：已绑定，是区级代理
+     */
+    public function sel_user_status(){
         $user_id=input('user_id');
+        $result=[];
+        $user = Db::name('user')->where('id',$user_id)->field('user_type,parent_id')->find();
+        $parent=Db::name('role_user')
+            ->where('user_id',$user['parent_id'])
+            ->find();
+        if($user['user_type']==2){
+            if($user['parent_id']==0){
+                $result['msg']='未绑定上级代理';
+                $result['code']=0;
+                $parent['parent']='';
+            }else{
+                $user_login=Db::name('user')->where('id',$user['parent_id'])->value('user_login');
+                $result['msg']='已绑定上级，不是代理';
+                $result['code']=1;
+                $parent['parent']=$user_login;
+            }
+        }else{
+            $user_login=Db::name('user')->where('id',$user['parent_id'])->value('user_login');
+            if($parent['role_id']==3){
+                $result['msg']='已绑定上级是省级代理';
+                $result['code']=3;
+            }elseif($parent['role_id']==4){
+                $result['msg']='已绑定上级是市级代理';
+                $result['code']=4;
+            }elseif($parent['role_id']==5){
+                $result['msg']='已绑定上级是区级代理';
+                $result['code']=5;
+            }
+            $result['parent']=$user_login;
+        }
+        $result['parent_id']=$user['parent_id'];
+        return json($result);
     }
 
 
