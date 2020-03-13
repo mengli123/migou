@@ -623,6 +623,29 @@ class UserController extends RestBaseController
             $this->error('获取评论失败',[]);
         }
     }
+    /** 添加评论*/
+    public function add_goods_comment(){
+        $goods_id =input('goods_id');
+        $user_id =input('user_id');
+        $comment=input('comment');
+        $star =input('star');
+        if($comment==''){
+            $this->error('评论内容不能为空');
+        }
+        $ins=Db::name('goods_comment')->insert([
+            'goods_id'=>$goods_id,
+            'user_id'=>$user_id,
+            'comment'=>$comment,
+            'ctime'=>time(),
+            'star'=>$star
+        ]);
+        if($ins){
+            $this->success('添加评论成功');
+        }else{
+            $this->error('添加评论失败');
+        }
+        
+    }
 
 
 }
