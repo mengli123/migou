@@ -12,6 +12,7 @@ namespace api\shop\controller;
 use cmf\controller\RestBaseController;
 use think\Db;
 use think\Request;
+use function Composer\Autoload\includeFile;
 
 class UserController extends RestBaseController
 {
@@ -581,6 +582,45 @@ class UserController extends RestBaseController
             $this->success('查询成功',$log);
         }else{
             $this->error('查询失败',[]);
+        }
+    }
+
+    /**
+    确认收货
+     */
+    public function confirm_receipt(){
+        $order_id = input('order_id');
+        $user_id = input('user_id');
+        $order = Db::name('order')->where('order_id',$order_id)->field('user_id,status')->find();
+        //dump($order);
+        if($order['status']!=2){
+            $this->error('只有发货中的状态才能确认收货');
+        }
+        if($user_id!=$order['user_id']){
+            $this->$this->error('请本人确认');
+        }
+        $up=Db::name('order')->where('order_id',$order_id)->update(['status'=>3]);
+        if($up){
+            $this->success('确认收货成功');
+        }else{
+            $this->error('确认收货失败');
+        }
+       // dump($order);
+    }
+    /** 查看评论*/
+    public function get_user_comment(){
+        $goods_id =input('goods_id');
+        $comment=Db::name('goods_comment')
+            ->alias('gc')
+            ->join('user u','u.id=gc.user_id')
+            ->field('gc.*,u.user_nickname,avatar')
+            ->where('goods_id',$goods_id)
+            ->select()
+        ->all();
+        if($comment){
+            $this->success('获取评论成功',$comment);
+        }else{
+            $this->error('获取评论失败',[]);
         }
     }
 
