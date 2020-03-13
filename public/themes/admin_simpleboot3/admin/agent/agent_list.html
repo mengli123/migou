@@ -1,0 +1,37 @@
+<include file="public@header"/>
+</head>
+<body>
+<div class="wrap">
+    <ul class="nav nav-tabs">
+        <li class="active"><a>代理下属用户</a></li>
+    </ul>
+
+        <table class="table table-hover table-bordered">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>{:lang('NICENAME')}</th>
+                <th>{:lang('AVATAR')}</th>
+                <th>累计已返积分</th>
+                <th>创建用户时间</th>
+                <th>最后登录时间</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <foreach name="list" item="vo">
+                <tr>
+                    <td>{$vo.id}</td>
+                    <td>{$vo['user_nickname']?$vo['user_nickname']:lang('NOT_FILLED')}</td>
+                    <td><img width="25" height="25" src="{:url('user/public/avatar',array('id'=>$vo['id']))}"/></td>
+                    <td>{$vo.return_score}</td>
+                    <td>{:date('Y-m-d H:i:s',$vo['create_time'])}</td>
+                    <td>{:date('Y-m-d H:i:s',$vo['last_login_time'])}</td>
+            </foreach>
+            </tbody>
+        </table>
+
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>
