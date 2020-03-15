@@ -7,6 +7,8 @@ use EasyWeChat\Factory;
 
 class CashController extends RestBaseController{
     public function tests(){
+        $path=dirname(realpath(APP_PATH)) . DIRECTORY_SEPARATOR;
+        dump($path);
 //        $str='工商银行,002.农业银行,1005.建设银行,1003.中国银行,1026. 交通银行,1020.招商银行,1001. 邮储银行,1066. 民生银行,1006. 平安银行,1010. 中信银行,1021. 浦发银行,1004.兴业银行,1009. 光大银行,1022. 广发银行,1027. 华夏银行,1025. 宁波银行,1056. 北京银行,4836. 上海银行,1024. 南京银行,1054. 长子县融汇村镇银行,4755.长沙银行,4216. 浙江泰隆商业银行,4051. 中原银行,4753. 企业银行（中国）,4761. 顺德农商银行,4036. 衡水银行,4752.长治银行,4756. 大同银行,4767.河南省农村信用社,4115. 宁夏黄河农村商业银行,4150. 山西省农村信用社,4156. 安徽省农村信用社,4166. 甘肃省农村信用社,4157. 天津农村商业银行,4153. 广西壮族自治区农村信用社,4113. 陕西省农村信用社,4108. 深圳农村商业银行,4076.宁波鄞州农村商业银行,4052. 浙江省农村信用社联合社,4764. 江苏省农村信用社联合社,4217. 江苏紫金农村商业银行股份有限公司,4072. 北京中关村银行股份有限公司,4769. 星展银行（中国）有限公司,4778. 枣庄银行股份有限公司,4766. 海口联合农村商业银行股份有限公司,4758. 南洋商业银行（中国）有限公司,4763';
 //        $arr=explode('.',$str);
 //        foreach ($arr as $k=>$v){
@@ -117,16 +119,17 @@ class CashController extends RestBaseController{
     }
 
     public function tixian($data){
+        $path=dirname(realpath(APP_PATH)) . DIRECTORY_SEPARATOR;
         $config = [
             // 必要配置
             'app_id'             => 'wxf5ebee3eedc05935',
             'mch_id'             => '1567722331',
             'key'                => 'qwer2020qwer2020qwer2020qwer2020',   // API 密钥
             // 如需使用敏感接口（如退款、发送红包等）需要配置 API 证书路径(登录商户平台下载 API 证书)
-            'cert_path'          => ROOT_PATH .'cert/apiclient_cert.pem', // XXX: 绝对路径！！！！
-            'key_path'           => ROOT_PATH .'cert/apiclient_key.pem',      // XXX: 绝对路径！！！！
+            'cert_path'          => $path .'cert/apiclient_cert.pem', // XXX: 绝对路径！！！！
+            'key_path'           => $path .'cert/apiclient_key.pem',      // XXX: 绝对路径！！！！
             // 将上面得到的公钥存放路径填写在这里
-            'rsa_public_key_path' =>ROOT_PATH .'cert/public-1488813712.pem', // <<<------------------------
+            'rsa_public_key_path' =>$path .'cert/public-1488813712.pem', // <<<------------------------
             'notify_url'         => 'https://migou.justmetu.top/api/shop/cash/query',     // 你也可以在下单时单独设置来想覆盖它
         ];
         $app = Factory::payment($config);
@@ -152,16 +155,17 @@ class CashController extends RestBaseController{
     }
 
     public function query($trade_no){
+        $path=dirname(realpath(APP_PATH)) . DIRECTORY_SEPARATOR;
         $config = [
-            // 必要配置
+            // 必要配置   
             'app_id'             => 'wxf5ebee3eedc05935',
             'mch_id'             => '1567722331',
             'key'                => 'qwer2020qwer2020qwer2020qwer2020',   // API 密钥
             // 如需使用敏感接口（如退款、发送红包等）需要配置 API 证书路径(登录商户平台下载 API 证书)
-            'cert_path'          => ROOT_PATH .'cert/apiclient_cert.pem', // XXX: 绝对路径！！！！
-            'key_path'           => ROOT_PATH .'cert/apiclient_key.pem',      // XXX: 绝对路径！！！！
+            'cert_path'          => $path .'cert/apiclient_cert.pem', // XXX: 绝对路径！！！！
+            'key_path'           => $path .'cert/apiclient_key.pem',      // XXX: 绝对路径！！！！
             // 将上面得到的公钥存放路径填写在这里
-            'rsa_public_key_path' =>ROOT_PATH .'cert/public-1488813712.pem', // <<<------------------------
+            'rsa_public_key_path' =>$path .'cert/public-1488813712.pem', // <<<------------------------
             'notify_url'         =>  'https://migou.justmetu.top/api/shop/cash/query',     // 你也可以在下单时单独设置来想覆盖它
         ];
         $app = Factory::payment($config);
