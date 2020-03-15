@@ -43,7 +43,9 @@ class CashController extends RestBaseController{
     }
     public function bank_list(){
         $list=Db::name('bank_list')->select()->all();
-        return json($list);
+        $this->success('查询成功',$list);
+
+        // return json($list);
     }
     public function user_bank(){
         $user_id =input('user_id');
@@ -106,7 +108,7 @@ class CashController extends RestBaseController{
             Db::name('user')->where('id',$user_id)->setDec('balance',$tx_money);
             $operator=session("admin.name");
             $logs=['user_id'=>$user_id,'ctime'=>time(),'money'=>$tx_money,'operator'=>$operator,'trade_no'=>$datas['trade_no'],'payment_no'=>$query['payment_no']];
-            $ins=Db::name('user_cash_log')->insert($logs);
+            Db::name('user_cash_log')->insert($logs);
             $msg='本次提现'.$tx_money.'已提交银行处理~';
             $this->success($msg);
         }else{
