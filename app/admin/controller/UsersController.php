@@ -67,6 +67,22 @@ class UsersController extends AdminBaseController
         }
     }
 
+    /** 充值积分*/
+    public function add_score(){
+        $num= input('num/d');
+        $user_id= input('user_id/d');
+        if($num<1){
+            $this->error('请输入积分数值');
+        }
+        $cz=Db::name('user')->where('id',$user_id)->setInc('score',$num);
+        if($cz){
+            $this->success('充值成功');
+        }else{
+            $this->error('充值失败');
+        }
+
+    }
+
 
 
 

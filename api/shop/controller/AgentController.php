@@ -71,25 +71,25 @@ class AgentController extends RestBaseController
             $this->error('已绑定过上级代理，不能重复绑定');
         }
         $data=[];
-        if($parent['role_id']==3){
-            /** 绑定省级上级，成为市级代理*/
-           $data['user_type']=1;
-            Db::name('RoleUser')->insert(["role_id" => 4, "user_id" => $user_id,'parent_id'=>$parent_id]);
-            $msg='成为市级代理';
-
-        }elseif($parent['role_id']==4){
-            /** 绑定市级上级，成为区级代理*/
-            $data['user_type']=1;
-            Db::name('RoleUser')->insert(["role_id" => 5, "user_id" => $user_id,'parent_id'=>$parent_id]);
-            $msg='成为区级代理';
-        }else{
-            /** 绑定区级上级*/
-            $msg='';
-        }
+//        if($parent['role_id']==3){
+//            /** 绑定省级上级，成为市级代理*/
+//           $data['user_type']=1;
+//            Db::name('RoleUser')->insert(["role_id" => 4, "user_id" => $user_id,'parent_id'=>$parent_id]);
+//            $msg='成为市级代理';
+//
+//        }elseif($parent['role_id']==4){
+//            /** 绑定市级上级，成为区级代理*/
+//            $data['user_type']=1;
+//            Db::name('RoleUser')->insert(["role_id" => 5, "user_id" => $user_id,'parent_id'=>$parent_id]);
+//            $msg='成为区级代理';
+//        }else{
+//            /** 绑定区级上级*/
+//            $msg='';
+//        }
         $data['parent_id']=$parent_id;
         $upd=Db::name('user')->where('id',$user_id)->update($data);
         if($upd){
-            $this->success('已绑定上级代理'.$msg);
+            $this->success('已绑定上级代理');
         }else{
             $this->error('绑定上级失败');
         }

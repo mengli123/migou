@@ -65,7 +65,7 @@
                         </switch>
                     </td>
                     <td>
-                        <a class="btn btn-xs btn-info">充值积分  </a>
+                        <a class="btn btn-xs btn-info chongzhi" data-id="{$vo.id}">充值积分  </a>
                         <neq name="vo.id" value="1">
                             <empty name="vo.user_status">
                                 <a class="btn btn-xs btn-success js-ajax-dialog-btn"
@@ -88,5 +88,23 @@
     </form>
 </div>
 <script src="__STATIC__/js/admin.js"></script>
+<script>
+    $(".chongzhi").on("click",function(e){
+        var id = e.target.dataset.id
+        console.log(id)
+        var word = prompt("请输入充值积分数目","");
+        if(word){
+            $.ajax({
+                url: "/admin/users/add_score",
+                data: {'num':word,'user_id':id}
+            }).done(function(e) {
+                console.log(e)
+                alert(e.msg)
+                $( this ).addClass( "done" );
+            });
+        }
+    });
+
+</script>
 </body>
 </html>

@@ -615,6 +615,7 @@ class UserController extends RestBaseController
             ->join('user u','u.id=gc.user_id')
             ->field('gc.*,u.user_nickname,avatar')
             ->where('goods_id',$goods_id)
+            ->order('id desc')
             ->select()
         ->all();
         if($comment){
