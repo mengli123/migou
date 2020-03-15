@@ -162,7 +162,7 @@ class CashController extends RestBaseController{
             'key_path'           => ROOT_PATH .'cert/apiclient_key.pem',      // XXX: 绝对路径！！！！
             // 将上面得到的公钥存放路径填写在这里
             'rsa_public_key_path' =>ROOT_PATH .'cert/public-1488813712.pem', // <<<------------------------
-            'notify_url'         =>  'https://linyi.sdulife.cn/admin/shop/query',     // 你也可以在下单时单独设置来想覆盖它
+            'notify_url'         =>  'https://migou.justmetu.top/api/shop/cash/query',     // 你也可以在下单时单独设置来想覆盖它
         ];
         $app = Factory::payment($config);
         $partnerTradeNo = $trade_no;
