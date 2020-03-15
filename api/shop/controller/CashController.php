@@ -43,9 +43,9 @@ class CashController extends RestBaseController{
     }
     public function bank_list(){
         $list=Db::name('bank_list')->select()->all();
-        //$this->success('查询成功',$list);
+        $this->success('查询成功',$list);
 
-         return json($list);
+        // return json($list);
     }
     public function user_bank(){
         $user_id =input('user_id');
@@ -53,7 +53,7 @@ class CashController extends RestBaseController{
         if($ub){
             $this->success('查询成功',$ub);
         }else{
-            $this->error('查询失败');
+            $this->error('查询失败',[]);
         }
     }
 
