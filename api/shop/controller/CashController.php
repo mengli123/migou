@@ -33,12 +33,33 @@ class CashController extends RestBaseController{
         $list=Db::name('bank_list')->select()->all();
         return json($list);
     }
+    public function user_bank(){
+        $user_id =input('user_id');
+        $ub=Db::name('user_bank')->where('user_id',$user_id)->find();
+        if($ub){
+            $this->success('查询成功',$ub);
+        }else{
+            $this->error('查询失败');
+        }
+    }
 
     public function band_bank(){
         $user_id=input('user_id');
         $bank_no=input('bank_no');
         $true_name=input('true_name');
         $bank_code=input('bank_code');
+        if(!$bank_code&&!$bank_no&&!$true_name){
+            $this->error('请确保信息完整');
+        }
+        $ins=Db::name('user_bank')->insert([
+            'user_id'=>$user_id,
+            'bank_no'=>$bank_no,
+            'bank_code'=>$bank_code,
+            'true_name'=>$true_name
+        ]);
+        if($ins){
+
+        }
     }
 
     // 给商户提现
