@@ -43,7 +43,7 @@ class CashController extends RestBaseController{
         }
     }
 
-    public function band_bank(){
+    public function bind_bank(){
         $user_id=input('user_id');
         $bank_no=input('bank_no');
         $true_name=input('true_name');
@@ -58,7 +58,9 @@ class CashController extends RestBaseController{
             'true_name'=>$true_name
         ]);
         if($ins){
-
+            $this->success('成功');
+        }else{
+            $this->error('失败');
         }
     }
 
