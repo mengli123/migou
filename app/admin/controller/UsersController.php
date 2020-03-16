@@ -83,6 +83,12 @@ class UsersController extends AdminBaseController
 
     }
 
+    /**获取余额明细 */
+    public function user_balance_log(){
+        $user_id=input('user_id');
+        $log=Db::name('user_balance_log')->where('user_id',$user_id)->select()->all();
+        $this->success('获取成功',$log);
+    }
 
 
 
