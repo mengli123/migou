@@ -219,7 +219,7 @@ class WechatPayController extends RestBaseController {
         //return json($d);
         if ($d['return_code'] == 'SUCCESS') {
             $order_no=$d['out_trade_no'];
-            $order=Db::name('order')->where('order_no',$order_no)->field('goods_id,user_id,total_price,share_id')->select();
+            $order=Db::name('order')->where('order_no',$order_no)->field('goods_id,user_id,total_price,share_id,status')->select();
             foreach ($order as $k=>$v){
                 // dump($v);
                 Db::name('order')->where('order_no',$order_no)->update(['status'=>1]);
