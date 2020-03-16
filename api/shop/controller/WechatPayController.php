@@ -224,8 +224,12 @@ class WechatPayController extends RestBaseController {
                 // dump($v);
                 Db::name('order')->where('order_no',$order_no)->update(['status'=>1]);
                 if($v['goods_id']==-1){
-                    $balance=$v['total_price'];
-                    Db::name('user')->where('id',$v['user_id'])->setInc('balance',$balance);
+                    if($v['status']==0){
+                        $balance = $v['total_price'];
+                        Db::name('user')->where('id', $v['user_id'])->setInc('balance', $balance);
+                    }else{
+                        $this->error('请不要重复支付');
+                    }
 
                 }else{
                     $point_rule=Db::name('point_rule')->find();
@@ -293,13 +297,18 @@ class WechatPayController extends RestBaseController {
         //return json($d);
         if ($d['return_code'] == 'SUCCESS') {
             $order_no = $d['out_trade_no'];
-            $order = Db::name('order')->where('order_no', $order_no)->field('goods_id,user_id,total_price,share_id')->select();
+            $order = Db::name('order')->where('order_no', $order_no)->field('goods_id,user_id,total_price,share_id,status')->select();
             foreach ($order as $k => $v) {
-                // dump($v);
+                 dump($v);
                 Db::name('order')->where('order_no', $order_no)->update(['status' => 1]);
                 if ($v['goods_id'] == -1) {
-                    $balance = $v['total_price'];
-                    Db::name('user')->where('id', $v['user_id'])->setInc('balance', $balance);
+                    if($v['status']==0){
+                        $balance = $v['total_price'];
+                        Db::name('user')->where('id', $v['user_id'])->setInc('balance', $balance);
+                    }else{
+                        $this->error('请不要重复支付');
+                    }
+
 
                 } else {
                     $point_rule = Db::name('point_rule')->find();

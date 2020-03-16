@@ -157,7 +157,7 @@ class CashController extends RestBaseController{
     public function query($trade_no){
         $path=dirname(realpath(APP_PATH)) . DIRECTORY_SEPARATOR;
         $config = [
-            // 必要配置   
+            // 必要配置
             'app_id'             => 'wxf5ebee3eedc05935',
             'mch_id'             => '1567722331',
             'key'                => 'qwer2020qwer2020qwer2020qwer2020',   // API 密钥
