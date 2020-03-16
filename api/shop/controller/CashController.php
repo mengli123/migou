@@ -6,6 +6,31 @@ use think\Db;
 use EasyWeChat\Factory;
 
 class CashController extends RestBaseController{
+
+    /**
+    转账到支付宝账户
+     */
+    public function cash_to_alipay(){
+        header('Content-type:text/html; Charset=utf-8');
+        $appid = '2021001104684852';  //https://open.alipay.com 账户中心->密钥管理->开放平台密钥，填写添加了电脑网站支付的应用的APPID
+        $outTradeNo = uniqid();     //商户转账唯一订单号
+        $payAmount = input('money');          //转账金额，单位：元 （金额必须大于等于0.1元)
+        $remark = '转账测试';    //转帐备注
+        $signType = 'RSA2';       //签名算法类型，支持RSA2和RSA，推荐使用RSA2
+//商户私钥，填写对应签名算法类型的私钥，如何生成密钥参考：https://docs.open.alipay.com/291/105971和https://docs.open.alipay.com/200/105310
+        $saPrivateKey='';
+        $account = input('account');      //收款方账户（支付宝登录号，支持邮箱和手机号格式。）
+        $realName = input('real_name');     //收款方真实姓名
+        $aliPay = new AlipayServiceController($appid,$saPrivateKey);
+        $result = $aliPay->doPay($payAmount,$outTradeNo,$account,$realName,$remark);
+        $result = $result['alipay_fund_trans_toaccount_transfer_response'];
+        if($result['code'] && $result['code']=='10000'){
+            echo '转账成功';
+        }else{
+            echo $result['msg'].' : '.$result['sub_msg'];
+        }
+    }
+
     public function tests(){
         $path=dirname(realpath(APP_PATH)) . DIRECTORY_SEPARATOR;
         dump($path);
@@ -243,4 +268,5 @@ class CashController extends RestBaseController{
         }
         return json($result);
     }
+
 }

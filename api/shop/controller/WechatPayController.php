@@ -227,6 +227,12 @@ class WechatPayController extends RestBaseController {
                     if($v['status']==0){
                         $balance = $v['total_price'];
                         Db::name('user')->where('id', $v['user_id'])->setInc('balance', $balance);
+                        Db::name('user_balance_log')->insert([
+                           'user_id'=>$v['user_id'],
+                            'create_time'=>time(),
+                            'change'=>'+'.$balance,
+                            'description'=>'充值'
+                        ]);
                     }else{
                         $this->error('请不要重复支付');
                     }
