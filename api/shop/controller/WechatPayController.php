@@ -233,11 +233,11 @@ class WechatPayController extends RestBaseController {
         $order_no=input('order_no');
         $order=Db::name('order')->where('order_no',$order_no)->field('goods_id,user_id,total_price,share_id,status')->find();
         if(!$order){
-            $this->error('查不到该订单号');
+            $this->error('查不到该订单号','');
         }
         $user_balance=Db::name('user')->where('id',$order['user_id'])->value('balance');
         if($user_balance<$total_fee){
-            $this->error('余额不足本次支付');
+            $this->error('余额不足本次支付','');
         }
         $a=Db::name('user')->where('id',$order['user_id'])->setDec('balance',$total_fee);
         $d=['out_trade_no'=>$order_no];
@@ -267,7 +267,7 @@ class WechatPayController extends RestBaseController {
                             'description'=>'充值'
                         ]);
                     }else{
-                        $this->error('请不要重复支付');
+                        $this->error('请不要重复支付','');
                     }
 
                 }else{
@@ -314,9 +314,9 @@ class WechatPayController extends RestBaseController {
 
                 }
             }
-            $this->success('支付成功');
+            $this->success('支付成功','');
         }else{
-            $this->error('支付失败');
+            $this->error('支付失败','');
         }
     }
 
