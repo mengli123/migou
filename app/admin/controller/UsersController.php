@@ -86,8 +86,15 @@ class UsersController extends AdminBaseController
     /**获取余额明细 */
     public function user_balance_log(){
         $user_id=input('user_id');
-        $log=Db::name('user_balance_log')->where('user_id',$user_id)->select()->all();
-        $this->success('获取成功',$log);
+        $list=Db::name('user_balance_log')
+            ->alias('ubl')
+            ->join('user u', 'u.id=ubl.user_id')
+            ->field('ubl.*,u.user_nickname')
+            ->order('id desc')
+            ->paginate(10);
+        $this->assign("list",$list);
+        $this->assign('page', $list->render());
+        return $this->fetch();
     }
 
 

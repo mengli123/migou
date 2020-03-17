@@ -217,6 +217,39 @@ class WechatPayController extends RestBaseController {
 //            'out_trade_no'=>'20200301173225653173'
 //        ];
         //return json($d);
+       $this->notify_methed($d);
+
+//  验证函数
+//        if (empty($d['sign'])) {
+//            return false;
+//        }
+//        $sign = $d['sign'];
+//        unset($d['sign']);
+//        return $sign == $this->sign($d);
+    }
+    /** 余额支付*/
+    public function balance_pay(){
+        $total_fee=input('total_fee');
+        $order_no=input('order_no');
+        $order=Db::name('order')->where('order_no',$order_no)->field('goods_id,user_id,total_price,share_id,status')->find();
+        if(!$order){
+            $this->error('查不到该订单号');
+        }
+        $user_balance=Db::name('user')->where('id',$order['user_id'])->value('balance');
+        if($user_balance<$total_fee){
+            $this->error('余额不足本次支付');
+        }
+        $a=Db::name('user')->where('id',$order['user_id'])->setDec('balance',$total_fee);
+        $d=['out_trade_no'=>$order_no];
+        if($a){
+            $d['return_code']='SUCCESS';
+        }else{
+            $d['return_code']='FAILED';
+        }
+        $this->notify_methed($d);
+    }
+
+    public function notify_methed($d){
         if ($d['return_code'] == 'SUCCESS') {
             $order_no=$d['out_trade_no'];
             $order=Db::name('order')->where('order_no',$order_no)->field('goods_id,user_id,total_price,share_id,status')->select();
@@ -228,7 +261,7 @@ class WechatPayController extends RestBaseController {
                         $balance = $v['total_price'];
                         Db::name('user')->where('id', $v['user_id'])->setInc('balance', $balance);
                         Db::name('user_balance_log')->insert([
-                           'user_id'=>$v['user_id'],
+                            'user_id'=>$v['user_id'],
                             'create_time'=>time(),
                             'change'=>'+'.$balance,
                             'description'=>'充值'
@@ -285,15 +318,8 @@ class WechatPayController extends RestBaseController {
         }else{
             $this->error('支付失败');
         }
-
-//  验证函数
-//        if (empty($d['sign'])) {
-//            return false;
-//        }
-//        $sign = $d['sign'];
-//        unset($d['sign']);
-//        return $sign == $this->sign($d);
     }
+
     public function test_notify()
     {
         $d = [
