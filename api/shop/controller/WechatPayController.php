@@ -242,6 +242,12 @@ class WechatPayController extends RestBaseController {
         $a=Db::name('user')->where('id',$order['user_id'])->setDec('balance',$total_fee);
         $d=['out_trade_no'=>$order_no];
         if($a){
+            Db::name('user_balance_log')->insert([
+                'user_id'=>$order['user_id'],
+                'create_time'=>time(),
+                'change'=>'-'.$total_fee,
+                'description'=>'余额支付'
+            ]);
             $d['return_code']='SUCCESS';
         }else{
             $d['return_code']='FAILED';

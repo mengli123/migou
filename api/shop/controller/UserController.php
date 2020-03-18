@@ -566,6 +566,12 @@ class UserController extends RestBaseController
         $balance =Db::name('user')->where('id',$user_id)->setDec('balance',$money);
         if($balance){
             Db::name('user')->where('id',$user_id)->setInc('score',$score);
+            Db::name('user_balance_log')->insert([
+                'user_id'=>$user_id,
+                'create_time'=>time(),
+                'change'=>'-'.$money,
+                'description'=>'余额换积分'
+            ]);
             $this->success('余额充值积分成功');
         }else{
             $this->error('充值积分失败');

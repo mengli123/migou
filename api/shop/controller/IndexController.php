@@ -147,7 +147,7 @@ class IndexController extends RestBaseController
             }
             $this->success('请求成功!', $list);
         }else{
-            $this->error('请求失败');
+            $this->error('请求失败',[]);
         }
     }
     /**
