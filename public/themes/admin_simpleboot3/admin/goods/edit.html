@@ -103,10 +103,10 @@
 				<label for="input-user_email" class="col-sm-2 control-label"><span class="form-required"></span>推荐栏目</label>
 				<div class="col-md-2 col-sm-10">
 					<select class="form-control" name="recommend_id" id="">
-						<option value="0">不推荐</option>
-						<option value="2">今日爆款</option>
-						<option value="3">今日特价</option>
-						<option value="4">店长推荐</option>
+						<option value="0" {$goods.recommend_id==0?'selected':''}>不推荐</option>
+						<option value="2" {$goods.recommend_id==2?'selected':''}>今日爆款</option>
+						<option value="3" {$goods.recommend_id==3?'selected':''}>今日特价</option>
+						<option value="4" {$goods.recommend_id==4?'selected':''}>店长推荐</option>
 					</select>
 				</div>
 			</div>
