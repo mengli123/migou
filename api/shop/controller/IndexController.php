@@ -323,6 +323,7 @@ class IndexController extends RestBaseController
     //获取当前版本
     public function get_now_version(){
         $data=Db::name('app_version')->where('status',1)->find();
+        $data['version']=$data['version'].$data['id'];
         $this->success('当前版本',$data);
     }
 }
