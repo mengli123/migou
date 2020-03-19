@@ -320,4 +320,9 @@ class IndexController extends RestBaseController
 //            $this->error('请求失败');
 //        }
     }
+    //获取当前版本
+    public function get_now_version(){
+        $data=Db::name('app_version')->where('status',1)->find();
+        $this->success('当前版本',$data);
+    }
 }
